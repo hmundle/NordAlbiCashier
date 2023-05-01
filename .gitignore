@@ -475,3 +475,11 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+##
+## protect NordAlbiCashier specific
+##
+
+**/_publish/*
+**/efbundle*
+**/wwwroot/lib/*

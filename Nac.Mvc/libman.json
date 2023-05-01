@@ -1,0 +1,140 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "jquery@3.6.4",
+      "destination": "wwwroot/lib/jquery",
+      "files": [
+        "jquery.js",
+        "jquery.min.js"
+      ]
+    },
+    {
+      "library": "jquery-validate@1.19.5",
+      "destination": "wwwroot/lib/jquery-validation",
+      "files": [
+        "jquery.validate.js",
+        "jquery.validate.min.js",
+        "additional-methods.js",
+        "additional-methods.min.js"
+      ]
+    },
+    {
+      "library": "jquery-validation-unobtrusive@3.2.12",
+      "destination": "wwwroot/lib/jquery-validation-unobtrusive",
+      "files": [
+        "jquery.validate.unobtrusive.js",
+        "jquery.validate.unobtrusive.min.js"
+      ]
+    },
+    {
+      "library": "bootstrap@5.2.3",
+      "destination": "wwwroot/lib/bootstrap",
+      "files": [
+        "css/bootstrap.css",
+        "css/bootstrap.css.map",
+        "css/bootstrap.min.css",
+        "css/bootstrap.min.css.map",
+        "js/bootstrap.bundle.js",
+        "js/bootstrap.bundle.js.map",
+        "js/bootstrap.bundle.min.js",
+        "js/bootstrap.bundle.min.js.map",
+        "js/bootstrap.js",
+        "js/bootstrap.js.map",
+        "js/bootstrap.min.js",
+        "js/bootstrap.min.js.map"
+      ]
+    },
+    {
+      "library": "font-awesome@5.15.4",
+      "destination": "wwwroot/lib/font-awesome/",
+      "files": [
+        "js/all.js",
+        "css/all.css",
+        "sprites/brands.svg",
+        "sprites/regular.svg",
+        "sprites/solid.svg",
+        "webfonts/fa-brands-400.eot",
+        "webfonts/fa-brands-400.svg",
+        "webfonts/fa-brands-400.ttf",
+        "webfonts/fa-brands-400.woff",
+        "webfonts/fa-brands-400.woff2",
+        "webfonts/fa-regular-400.eot",
+        "webfonts/fa-regular-400.svg",
+        "webfonts/fa-regular-400.ttf",
+        "webfonts/fa-regular-400.woff",
+        "webfonts/fa-regular-400.woff2",
+        "webfonts/fa-solid-900.eot",
+        "webfonts/fa-solid-900.svg",
+        "webfonts/fa-solid-900.ttf",
+        "webfonts/fa-solid-900.woff",
+        "webfonts/fa-solid-900.woff2"
+      ]
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "datatables.net@1.13.4",
+      "destination": "wwwroot/lib/datatables.net/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "datatables.net-bs5@1.13.4",
+      "destination": "wwwroot/lib/datatables.net-bs5/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "datatables.net-searchpanes@2.1.2",
+      "destination": "wwwroot/lib/datatables.net-searchpanes/",
+      "files": [
+        "js/dataTables.searchPanes.js",
+        "js/dataTables.searchPanes.min.js",
+        "js/dataTables.searchPanes.min.mjs",
+        "js/dataTables.searchPanes.mjs",
+        "License.txt",
+        "package.json",
+        "Readme.md"
+      ]
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "datatables.net-searchpanes-bs5@2.1.2",
+      "destination": "wwwroot/lib/datatables.net-searchpanes-bs5/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "datatables.net-select@1.6.2",
+      "destination": "wwwroot/lib/datatables.net-select/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "datatables.net-select-bs5@1.6.2",
+      "destination": "wwwroot/lib/datatables.net-select-bs5/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "datatables.net-buttons@2.3.6",
+      "destination": "wwwroot/lib/datatables.net-buttons/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "datatables.net-buttons-bs5@2.3.6",
+      "destination": "wwwroot/lib/datatables.net-buttons-bs5/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "datatables.net-searchbuilder@1.4.2",
+      "destination": "wwwroot/lib/datatables.net-searchbuilder/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "datatables.net-searchbuilder-bs5@1.4.2",
+      "destination": "wwwroot/lib/datatables.net-searchbuilder-bs5/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "datatables.net-datetime@1.4.0",
+      "destination": "wwwroot/lib/datatables.net-datetime/"
+    }
+  ]
+}
