@@ -1,2 +1,2 @@
-# NordAlbiCash
-Cash system for distributed cash at Nordalbi
+# NordAlbiCashier
+Cash system for distributed cashes at Nordalbi
