@@ -5,7 +5,7 @@ namespace Nac.Models.Entities.Base;
 public abstract class BaseEntity
 {
     [Required]
-    [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
+    [Key]
     public Guid Id { get; set; }
 
     [Required]

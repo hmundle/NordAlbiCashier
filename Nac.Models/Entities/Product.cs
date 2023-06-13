@@ -1,6 +1,7 @@
 ﻿namespace Nac.Models.Entities;
 
 [Index(nameof(Created), IsUnique = false)]
+[Index(nameof(BarCode), IsUnique = true)]
 public partial class Product : BaseEntity
 {
     // reference to Sellings
