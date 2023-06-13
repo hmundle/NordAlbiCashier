@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Nac.Lib\Nac.Lib.csproj" />
     <ProjectReference Include="..\Nac.Models\Nac.Models.csproj" />
     <ProjectReference Include="..\Nac.Dal\Nac.Dal.csproj" />
   </ItemGroup>
