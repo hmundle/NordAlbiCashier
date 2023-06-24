@@ -1,0 +1,74 @@
+﻿@using Nac.Lib.Utilities
+
+<!-- Partials/_Menu -->
+<nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">@AssemblyProperties.GetAppName()</a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="navmenu" class="collapse navbar-collapse">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <div id="systemStatus" class="nav-link fw-bolder text-light" style="display: none;">System Status <span id="errorCounter">- OK</span></div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-bolder" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle fw-bolder" href="#" id="navmenuMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Quality Control
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navmenuMenuLink">
+                        <li>
+                            <a class="dropdown-item fw-bolder" asp-area="" asp-controller="L0QualityControl" asp-action="Index">L0 Quality Control</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-bolder" asp-area="" asp-controller="L1QualityControl" asp-action="Index">L1 Quality Control</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle fw-bolder" href="#" id="navmenuMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Products
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navmenuMenuLink">
+                        <li>
+                            <a class="dropdown-item fw-bolder" asp-area="" asp-controller="TProduct" asp-action="Index">Trans. Product</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-bolder" asp-area="" asp-controller="L0Product" asp-action="Index">L0 Product</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-bolder" asp-area="" asp-controller="L1Product" asp-action="Index">L1 Product</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle fw-bolder" href="#" id="navmenuMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Management
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navmenuMenuLink">
+                        <li>
+                            <a class="dropdown-item fw-bolder" asp-area="" asp-controller="Statistics" asp-action="Index">Statistics</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-bolder" asp-area="" asp-controller="ProcError" asp-action="Index">Proc Errors</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-bolder" asp-area="" asp-controller="WorkflowStatus" asp-action="Index">Workflow Status</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <partial name="Partials/_LoginMenu" />
+
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,4 +1,27 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+﻿AddCrudButtons = function (data, buttons) {
+    let htmlOutput = "";
+    buttons.forEach(b => {
+        htmlOutput += '<a class="px-1" href="' + b.uriBase + '/' + data + '"><i class="lead fas fa-' + b.icon + '"></i></a>'
+    });
+    return htmlOutput;
+}
 
-// Write your JavaScript code.
+CopyTextFromElement = function (elementId) {
+    navigator.clipboard.writeText($(elementId).text());
+}
+
+LaunchSubProc = function (apiUrl, data) {
+    $.ajax({
+        url: apiUrl,
+        data: data,
+        success: function (data) {
+            alert('Launched successfully: ' + data.message);
+            location.reload();
+        },
+        error: function (xhr, status, error) {
+            alert(xhr.responseJSON.message
+                + '\nLaunch failed with status: ' + xhr.status);
+            location.reload();
+        }
+    });
+}

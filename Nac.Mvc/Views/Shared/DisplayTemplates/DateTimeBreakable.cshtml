@@ -1,0 +1,17 @@
+﻿@using Nac.Lib.Utilities;
+@model DateTime?
+@if (Model == null)
+{
+    @:Unknown
+}
+else
+{
+    if (ViewData.ModelMetadata.IsNullableValueType)
+    {
+        @:@(Model.Value.ToUtcBreakableNoSubSec())
+    }
+    else
+    {
+        @:@(((DateTime)Model).ToUtcBreakableNoSubSec())
+    }
+}

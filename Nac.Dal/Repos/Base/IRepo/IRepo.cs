@@ -2,6 +2,7 @@
 
 public interface IRepo<T> : IDisposable
 {
+    NacDbContext Context { get; }
     ValueTask<int> AddAsync(T entity, bool persist = true);
     ValueTask<int> AddRangeAsync(IEnumerable<T> entities, bool persist = true);
     ValueTask<int> UpdateAsync(T entity, bool persist = true);

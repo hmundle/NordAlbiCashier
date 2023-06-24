@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using Nac.Dal.Repos.Base.IRepo;
+
 namespace Nac.Mvc.Controllers.Base;
 
 [Route("[controller]/[action]")]
@@ -7,27 +10,27 @@ where TEntity : BaseEntity, new()
 where TController: class
 {
     protected readonly IAppLogging<TController> AppLoggingInstance;
-    protected readonly IDataServiceBase<TEntity> MainDataService;
+    protected readonly IIdRepo<TEntity> MainRepo;
 
     protected BaseCrudController(
         IAppLogging<TController> appLogging,
-        IDataServiceBase<TEntity> mainDataService)
+        IIdRepo<TEntity> mainRepo)
     {
         AppLoggingInstance = appLogging;
-        MainDataService = mainDataService;
+        MainRepo = mainRepo;
     }
 
-    protected async Task<TEntity> GetOneEntityAsync(int id)
-        => await MainDataService.FindAsync(id);
+    protected async Task<TEntity?> GetOneEntityAsync(Guid? id)
+        => await MainRepo.FindAsync(id);
 
     [HttpGet]
     [Route("/[controller]")]
     [Route("/[controller]/[action]")]
-    public virtual async Task<IActionResult> IndexAsync()
-        => View(await MainDataService.GetAllAsync());
+    public virtual async Task<IActionResult> IndexAsync() 
+        => View(await MainRepo.GetAll().ToListAsync());
 
     [HttpGet("{id?}")]
-    public virtual async Task<IActionResult> DetailsAsync(int? id)
+    public virtual async Task<IActionResult> DetailsAsync(Guid? id)
     {
         if (!id.HasValue)
         {
@@ -44,7 +47,7 @@ where TController: class
     [HttpGet]
     public virtual async Task<IActionResult> CreateAsync()
     {
-        ViewData["LookupValues"] = await GetLookupValuesAsync();
+        // ViewData["LookupValues"] = await GetLookupValuesAsync();
         return View();
     }
 
@@ -54,15 +57,15 @@ where TController: class
     {
         if (ModelState.IsValid)
         {
-            await MainDataService.AddAsync(entity);
-            return RedirectToAction(nameof(DetailsAsync).RemoveAsyncSuffix(),new {id = entity.Id});
+            await MainRepo.AddAsync(entity);
+            return RedirectToAction(nameof(DetailsAsync).RemoveAsyncPostfix(),new {id = entity.Id});
         }
-        ViewData["LookupValues"] = await GetLookupValuesAsync();
+        // ViewData["LookupValues"] = await GetLookupValuesAsync();
         return View(entity);
     }
 
     [HttpGet("{id?}")]
-    public virtual async Task<IActionResult> EditAsync(int? id)
+    public virtual async Task<IActionResult> EditAsync(Guid? id)
     {
         if (!id.HasValue)
         {
@@ -75,13 +78,13 @@ where TController: class
             ViewData["Error"] = "Not Found";
             return View();
         }
-        ViewData["LookupValues"] = await GetLookupValuesAsync();
+        // ViewData["LookupValues"] = await GetLookupValuesAsync();
         return View(entity);
     }
 
-    [HttpPost(“{id}”)]
+    [HttpPost("{id}")]
     [ValidateAntiForgeryToken]
-    public virtual async Task<IActionResult> EditAsync(int id, TEntity entity)
+    public virtual async Task<IActionResult> EditAsync(Guid id, TEntity entity)
     {
         if (id != entity.Id)
         {
@@ -90,15 +93,15 @@ where TController: class
         }
         if (ModelState.IsValid)
         {
-            await MainDataService.UpdateAsync(entity);
-            return RedirectToAction(nameof(DetailsAsync).RemoveAsyncSuffix(),new {id});
+            await MainRepo.UpdateAsync(entity);
+            return RedirectToAction(nameof(DetailsAsync).RemoveAsyncPostfix(),new {id});
         }
-        ViewData["LookupValues"] = await GetLookupValuesAsync();
+        // ViewData["LookupValues"] = await GetLookupValuesAsync();
         return View(entity);
     }
 
     [HttpGet("{id?}")]
-    public virtual async Task<IActionResult> DeleteAsync(int? id)
+    public virtual async Task<IActionResult> DeleteAsync(Guid? id)
     {
         if (!id.HasValue)
         {
@@ -116,7 +119,7 @@ where TController: class
 
     [HttpPost("{id}")]
     [ValidateAntiForgeryToken]
-    public virtual async Task<IActionResult> DeleteAsync(int id, TEntity entity)
+    public virtual async Task<IActionResult> DeleteAsync(Guid id, TEntity entity)
     {
         if (id != entity.Id)
         {
@@ -125,16 +128,17 @@ where TController: class
         }
         try
         {
-            await MainDataService.DeleteAsync(entity);
-            return RedirectToAction(nameof(IndexAsync).RemoveAsyncSuffix());
+            await MainRepo.DeleteAsync(entity);
+            return RedirectToAction(nameof(IndexAsync).RemoveAsyncPostfix());
         }
         catch (Exception ex)
         {
             ModelState.Clear();
             ModelState.AddModelError(string.Empty,ex.Message);
-            MainDataService.ResetChangeTracker();
-            entity = await GetOneEntityAsync(id);
-            return View(entity);
+            MainRepo.Context.ChangeTracker.Clear();
+
+            var entityOrig = await GetOneEntityAsync(id);
+            return View(entityOrig);
         }
     }
 

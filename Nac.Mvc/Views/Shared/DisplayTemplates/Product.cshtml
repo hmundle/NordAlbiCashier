@@ -1,0 +1,80 @@
+﻿@model Nac.Models.Entities.Product
+
+<div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-1 mb-2">
+    <div class="col">
+
+        <div class="card h-100 mb-1">
+            <div class="card-header fw-bolder">Product</div>
+            <div class="card-body py-1">
+
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.Id)
+                    </dt>
+                    <dd class="col-sm-7">
+                        @Html.DisplayFor(model => model.Id) &nbsp;
+                    </dd>
+
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.Category)
+                    </dt>
+                    <dd class="col-sm-7">
+                         @Html.DisplayFor(model => model.Category)
+                    </dd>
+
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.BarCode)
+                    </dt>
+                    <dd class="col-sm-7">
+                         @Html.DisplayFor(model => model.BarCode)
+                    </dd>
+
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.Name)
+                    </dt>
+                    <dd class="col-sm-7">
+                         @Html.DisplayFor(model => model.Name)
+                    </dd>
+
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.Price)
+                    </dt>
+                    <dd class="col-sm-7">
+                         @Html.DisplayFor(model => model.Price)
+                    </dd>
+
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.PriceReduced)
+                    </dt>
+                    <dd class="col-sm-7">
+                         @Html.DisplayFor(model => model.PriceReduced)
+                    </dd>
+
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.IsSychronized)
+                    </dt>
+                    <dd class="col-sm-7">
+                         @Html.DisplayFor(model => model.IsSychronized)
+                    </dd>
+
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.Created)
+                    </dt>
+                    <dd class="col-sm-7">
+                        @Html.DisplayFor(model => model.Created) &nbsp;
+                    </dd>
+
+                    <dt class="col-sm-5">
+                        @Html.DisplayNameFor(model => model.Modified)
+                    </dt>
+                    <dd class="col-sm-7">
+                         @Html.DisplayFor(model => model.Modified)
+                    </dd>
+
+                </dl>
+
+            </div>
+        </div>
+
+    </div>
+</div>

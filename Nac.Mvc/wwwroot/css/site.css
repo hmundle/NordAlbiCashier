@@ -1,22 +1,47 @@
-html {
-  font-size: 14px;
+:root {
+    /*--ppas-default-color: var(--bs-green);*/
+    --ppas-default-color: #198754;
+    --ppas-default-color-shade15: #157347;
+    --ppas-default-color-shade20: #146c43;
+    --ppas-default-color-shade25: #13653f;
+    /*--ppas-default-color-rgb: var(--bs-green-rgb);*/
+    --ppas-default-color-rgb: 25, 135, 84;
+    --bs-body-font-size: 0.85rem;
+    font-size: var(--bs-body-font-size);
+    --bs-primary: var(--ppas-default-color);
+    --bs-primary-rgb: var(--ppas-default-color-rgb);
+    --bs-link-color: var(--ppas-default-color);
+    --bs-link-hover-color: var(--ppas-default-color-shade20);
+    --dt-row-selected: var(--ppas-default-color-rgb);
+    --dt-row-selected-link: 209, 231, 221; /* 80% lighter */
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+dd, dt {
+    margin-bottom: 0.1rem;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+th, td {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
 }
 
-html {
-  position: relative;
-  min-height: 100%;
+.btn-primary {
+    --bs-btn-bg: var(--ppas-default-color);
+    --bs-btn-border-color: var(--bs-white);
+    --bs-btn-disabled-bg: var(--ppas-default-color);
+    --bs-btn-disabled-border-color: var(--ppas-default-color);
+    --bs-btn-hover-bg: var(--ppas-default-color-shade15);
+    --bs-btn-hover-border-color: var(--ppas-default-color-shade20);
+    --bs-btn-active-bg: var(--ppas-default-color-shade20);
+    --bs-btn-active-border-color: var(--ppas-default-color-shade25);
 }
 
-body {
-  margin-bottom: 60px;
+.pagination {
+    --bs-pagination-active-bg: var(--ppas-default-color);
+    --bs-pagination-active-border-color: var(--ppas-default-color);
+}
+
+/* in datatables.net searchbuilder hide the logic container, we are only doing AND */
+.dtsb-logicContainer {
+    display: none !important;
 }

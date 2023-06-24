@@ -1,0 +1,27 @@
+﻿@if (User.Identity != null && User.Identity.IsAuthenticated)
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle fw-bolder" href="#" id="navmenuMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            User: @User.Identity?.Name
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navmenuMenuLink">
+            <li>
+                <a class="dropdown-item fw-bolder" asp-area="" asp-controller="User" asp-action="Logout"
+               asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">Logout</a>
+            </li>
+        </ul>
+    </li>
+}
+else
+{
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle fw-bolder text-danger" href="#" id="navmenuMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Login required
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navmenuMenuLink">
+            <li>
+                <a class="dropdown-item fw-bolder" asp-area="" asp-controller="User" asp-action="Login">Login</a>
+            </li>
+        </ul>
+    </li>
+}
