@@ -13,10 +13,6 @@ public class ProductsController : BaseCrudController<Product, ProductsController
     {
     }
 
-    // protected override async Task<SelectList> GetLookupValuesAsync()
-    //     => new SelectList(await _lookupDataService.GetAllAsync(), nameof(Make.Id), nameof(Make.Name));
-
-
     //[HttpPost]
     //[ActionName("Create")]
     //[ValidateAntiForgeryToken]

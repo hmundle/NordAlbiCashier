@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Ppas.Dal.EfStructures;
+namespace Nac.Dal.EfStructures;
 
 public static class MigrationHelpersViews
 {
     public static void CreateL0QualityControlView(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.Sql($@"
-CREATE VIEW ppas.v_l0_quality_controls AS
+CREATE VIEW nac.v_l0_quality_controls AS
 SELECT 
 qc.id, 
 qc.created, 
@@ -77,7 +77,7 @@ WHERE NOT (qc.is_deleted)
     public static void CreateL1QualityControlView(MigrationBuilder migrationBuilder)
     {
         migrationBuilder.Sql($@"
-CREATE VIEW ppas.v_l1_quality_controls AS
+CREATE VIEW nac.v_l1_quality_controls AS
 SELECT 
 qc.id, 
 qc.created, 

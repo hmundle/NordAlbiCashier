@@ -8,7 +8,6 @@ public abstract class BaseEntity
     [Key]
     public Guid Id { get; set; }
 
-    [Required]
     [JsonConverter(typeof(UtcDateTimeConverter))]
     public DateTime? Created { get; set; }
 

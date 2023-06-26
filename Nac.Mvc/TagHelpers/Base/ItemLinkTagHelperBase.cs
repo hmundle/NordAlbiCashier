@@ -16,8 +16,7 @@ public abstract class ItemLinkTagHelperBase : TagHelper
         UrlHelper = urlHelperFactory.GetUrlHelper(contextAccessor.ActionContext!);
     }
 
-    public int? ItemId { get; set; }
-    public Guid? ItemProcId { get; set; }
+    public Guid? ItemId { get; set; }
     public String? ItemControllerName { get; set; } = null; // null is the current controller
 
     protected void BuildContent(TagHelperOutput output,
@@ -30,8 +29,6 @@ public abstract class ItemLinkTagHelperBase : TagHelper
         output.TagName = "a"; // Replaces <item-list> with <a> tag
         var target = (ItemId.HasValue)
         ? UrlHelper.Action(actionName, ItemControllerName, new { id = ItemId })
-        : (ItemProcId.HasValue)
-        ? UrlHelper.Action(actionName, ItemControllerName, new { ProcId = ItemProcId })
         : UrlHelper.Action(actionName, ItemControllerName);
         output.Attributes.SetAttribute("href", target);
         output.Attributes.Add("class", cssClassName + " px-2");

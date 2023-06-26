@@ -1,8 +1,48 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Authentication
+@inject IConfiguration config;
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row row-cols-1 row-cols-sm-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5 g-1 mb-2">
+    <div class="col">
+        <div class="card h-100 mb-1">
+            <div class="card-header fw-bolder">Login User</div>
+            <div class="card-body py-1">
+
+                <dl class="row mb-0">
+                    @foreach (var claim in User.Claims)
+                    {
+                        <dt class="col-sm-5">@claim.Type</dt>
+                        <dd class="col-sm-7">@claim.Value</dd>
+                    }
+                </dl>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="card h-100 mb-1">
+            <div class="card-header fw-bolder">Authentication Properties</div>
+            <div class="card-body py-1">
+
+                <dl class="row mb-0">
+                    @{
+                        var auth = await Context.AuthenticateAsync();
+                        if (auth.Properties != null)
+                        {
+                            foreach (var prop in auth.Properties.Items)
+                            {
+                                <dt class="col-sm-5">@prop.Key</dt>
+                                <dd class="col-sm-7">@prop.Value</dd>
+                            }
+                        }
+                    }
+                </dl>
+
+            </div>
+        </div>
+    </div>
+
 </div>
