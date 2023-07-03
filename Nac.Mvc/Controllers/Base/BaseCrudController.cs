@@ -5,9 +5,9 @@ using Nac.Dal.Repos.Base.IRepo;
 namespace Nac.Mvc.Controllers.Base;
 
 [Route("[controller]/[action]")]
-public abstract class BaseCrudController<TEntity,TController> : Controller
+public abstract class BaseCrudController<TEntity, TController> : Controller
 where TEntity : BaseEntity, new()
-where TController: class
+where TController : class
 {
     protected readonly IAppLogging<TController> AppLoggingInstance;
     protected readonly IIdRepo<TEntity> MainRepo;
@@ -26,7 +26,7 @@ where TController: class
     [HttpGet]
     [Route("/[controller]")]
     [Route("/[controller]/[action]")]
-    public virtual async Task<IActionResult> IndexAsync() 
+    public virtual async Task<IActionResult> IndexAsync()
         => View(await MainRepo.GetAll().ToListAsync());
 
     [HttpGet("{id?}")]
@@ -58,7 +58,7 @@ where TController: class
         if (ModelState.IsValid)
         {
             await MainRepo.AddAsync(entity);
-            return RedirectToAction(nameof(DetailsAsync).RemoveAsyncPostfix(),new {id = entity.Id});
+            return RedirectToAction(nameof(DetailsAsync).RemoveAsyncPostfix(), new { id = entity.Id });
         }
         // ViewData["LookupValues"] = await GetLookupValuesAsync();
         return View(entity);
@@ -93,12 +93,41 @@ where TController: class
         }
         if (ModelState.IsValid)
         {
+            // set UTC flag again, got lost in view
+            entity.Created = DateTime.SpecifyKind(entity.Created!.Value, DateTimeKind.Utc);
+            // set the modified data
+            entity.Modified = DateTime.UtcNow;
             await MainRepo.UpdateAsync(entity);
-            return RedirectToAction(nameof(DetailsAsync).RemoveAsyncPostfix(),new {id});
+            return RedirectToAction(nameof(DetailsAsync).RemoveAsyncPostfix(), new { id });
         }
         // ViewData["LookupValues"] = await GetLookupValuesAsync();
         return View(entity);
     }
+
+    //[HttpPost("{id}")]
+    //[ValidateAntiForgeryToken]
+    //public virtual async Task<IActionResult> EditAsync(Guid id)
+    //{
+    //    var entityToUpdate = await GetOneEntityAsync(id);
+    //    if (entityToUpdate == null)
+    //    {
+    //        return NoContent();
+    //    }
+    //    // use manual model binding, to avoid sending all value in
+    //    // hidden inputs and due to issue with DateType.Kind == UTC
+    //    if (await TryUpdateModelAsync<TEntity>(
+    //        entityToUpdate,
+    //        ""))
+    //    {
+    //        // SaveChanges would be enough, but for clearness do the Update
+    //        // await _context.SaveChangesAsync();
+    //        await MainRepo.UpdateAsync(entityToUpdate, persist: true);
+
+    //        return RedirectToAction(nameof(DetailsAsync).RemoveAsyncPostfix(), new { id });
+    //    }
+    //    // ViewData["LookupValues"] = await GetLookupValuesAsync();
+    //    return View(entityToUpdate);
+    //}
 
     [HttpGet("{id?}")]
     public virtual async Task<IActionResult> DeleteAsync(Guid? id)
@@ -114,37 +143,10 @@ where TController: class
             ViewData["Error"] = "Not Found";
             return View();
         }
-        return View(entity);
+        entity.Modified = DateTime.UtcNow;
+        entity.IsDeleted = true;
+        await MainRepo.UpdateAsync(entity, persist: true);
+        return RedirectToAction(nameof(IndexAsync).RemoveAsyncPostfix());
     }
-
-    [HttpPost("{id}")]
-    [ValidateAntiForgeryToken]
-    public virtual async Task<IActionResult> DeleteAsync(Guid id, TEntity entity)
-    {
-        if (id != entity.Id)
-        {
-            ViewData["Error"] = "Bad Request";
-            return View();
-        }
-        try
-        {
-            await MainRepo.DeleteAsync(entity);
-            return RedirectToAction(nameof(IndexAsync).RemoveAsyncPostfix());
-        }
-        catch (Exception ex)
-        {
-            ModelState.Clear();
-            ModelState.AddModelError(string.Empty,ex.Message);
-            MainRepo.Context.ChangeTracker.Clear();
-
-            var entityOrig = await GetOneEntityAsync(id);
-            return View(entityOrig);
-        }
-    }
-
-
-
-
-
 
 }
