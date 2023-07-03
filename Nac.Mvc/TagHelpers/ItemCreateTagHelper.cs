@@ -5,14 +5,14 @@ using Nac.Mvc.TagHelpers.Base;
 
 namespace Nac.Mvc.TagHelpers;
 
-public class ItemEditTagHelper : ItemLinkTagHelperBase
+public class ItemCreateTagHelper : ItemLinkTagHelperBase
 {
-    public ItemEditTagHelper(IActionContextAccessor contextAccessor, IUrlHelperFactory urlHelperFactory)
+    public ItemCreateTagHelper(IActionContextAccessor contextAccessor, IUrlHelperFactory urlHelperFactory)
         : base(contextAccessor, urlHelperFactory)
     { }
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        BuildContent(output, "Edit", "", "", "Modify", "edit");
+        BuildContent(output, "Create", "text-success", "", "Neu", "plus");
     }
 }

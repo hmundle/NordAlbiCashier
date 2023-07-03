@@ -8,7 +8,8 @@ namespace Nac.Mvc.TagHelpers;
 public class ItemDetailsTagHelper : ItemLinkTagHelperBase
 {
     public ItemDetailsTagHelper(IActionContextAccessor contextAccessor, IUrlHelperFactory urlHelperFactory)
-        : base(contextAccessor, urlHelperFactory) { }
+        : base(contextAccessor, urlHelperFactory)
+    { }
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
