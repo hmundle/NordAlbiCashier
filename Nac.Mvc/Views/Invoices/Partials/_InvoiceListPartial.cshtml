@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Invoice>
+<p>
+    <item-create></item-create>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameFor(model => model.Type)</th>
+            @*            <th>@Html.DisplayNameFor(model => model.Sellings)</th>
+            *@
+            <th>@Html.DisplayNameFor(model => model.Created)</th>
+            <th>@Html.DisplayNameFor(model => model.Modified)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                @*                <td>@Html.DisplayFor(modelItem => item.Sellings.Count())</td>
+            *@
+                <td>@Html.DisplayFor(modelItem => item.Created)</td>
+                <td>@Html.DisplayFor(modelItem => item.Modified)</td>
+                <td>
+                    <item-edit item-id="@item.Id"></item-edit> |
+                    <item-details item-id="@item.Id"></item-details> |
+                    <item-delete item-id="@item.Id"></item-delete>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

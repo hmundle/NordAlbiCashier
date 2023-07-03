@@ -1,0 +1,6 @@
+﻿@model IEnumerable<Invoice>
+@{
+    ViewData["Title"] = "Index";
+}
+<h1>Rechnungen</h1>
+<partial name="Partials/_InvoiceListPartial" model="@Model" />

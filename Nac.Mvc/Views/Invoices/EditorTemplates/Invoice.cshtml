@@ -1,0 +1,9 @@
+﻿@using Nac.Mvc.Utilities;
+@model Invoice
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<div>
+    <label asp-for="Type" class="col-form-label"></label>
+    <select asp-for="Type" class="form-control" asp-items="@ControllerHelper.PaymentTypeSelectionList()" size="@ControllerHelper.PaymentTypeSelectionList().Count()"></select>
+    <span asp-validation-for="Type" class="text-danger"></span>
+</div>
