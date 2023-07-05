@@ -18,6 +18,26 @@
                     <a class="nav-link fw-bolder" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                 </li>
 
+                <li class="nav-item">
+                    <div id="systemStatus" class="nav-link fw-bolder">|</div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-bolder" asp-area="" asp-controller="Products" asp-action="Index">Produkte</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-bolder" asp-area="" asp-controller="Sellings" asp-action="Index">Verkäufe</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link fw-bolder" asp-area="" asp-controller="Invoices" asp-action="Index">Rechnungen</a>
+                </li>
+
+                <li class="nav-item">
+                    <div id="systemStatus" class="nav-link fw-bolder">|</div>
+                </li>
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle fw-bolder" href="#" id="navmenuMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Produkte
@@ -58,6 +78,10 @@
                             <a class="dropdown-item fw-bolder" asp-area="" asp-controller="Invoices" asp-action="Create">Neu</a>
                         </li>
                     </ul>
+                </li>
+
+                <li class="nav-item">
+                    <div id="systemStatus" class="nav-link fw-bolder">|</div>
                 </li>
 
                 <partial name="Partials/_LoginMenu" />
