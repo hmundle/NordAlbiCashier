@@ -1,4 +1,5 @@
 ﻿@model Invoice
+
 <dl class="row">
     <dt class="col-sm-2">
         @Html.DisplayNameFor(model => model.Id)
@@ -25,3 +26,36 @@
         @Html.DisplayFor(model => model.Modified)
     </dd>
 </dl>
+
+@{
+    var sampleProduct = new Product();
+    var sampleSelling = new Selling();
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameFor(model => sampleSelling.FinalPrice)</th>
+            <th>@Html.DisplayNameFor(model => sampleProduct.Name)</th>
+            <th>@Html.DisplayNameFor(model => sampleProduct.BarCode)</th>
+            <th>@Html.DisplayNameFor(model => sampleProduct.Category)</th>
+            <th>@Html.DisplayNameFor(model => sampleProduct.Price)</th>
+            <th>@Html.DisplayNameFor(model => sampleProduct.PriceReduced)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Sellings)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                <td>@Html.DisplayFor(modelItem => item.FinalPrice)</td>
+                <td>@Html.DisplayFor(modelItem => item.ProductNavigation!.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.ProductNavigation!.BarCode)</td>
+                <td>@Html.DisplayFor(modelItem => item.ProductNavigation!.Category)</td>
+                <td>@Html.DisplayFor(modelItem => item.ProductNavigation!.Price)</td>
+                <td>@Html.DisplayFor(modelItem => item.ProductNavigation!.PriceReduced)</td>
+            </tr>
+        }
+    </tbody>
+</table>
