@@ -13,6 +13,13 @@ public class ProductsController : BaseCrudController<Product, ProductsController
     {
     }
 
+
+    [HttpGet]
+    public override async Task<IActionResult> CreateAsync()
+    {
+        return View(new Product());
+    }
+
     //[HttpPost]
     //[ActionName("Create")]
     //[ValidateAntiForgeryToken]
