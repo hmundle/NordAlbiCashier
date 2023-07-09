@@ -1,35 +1,75 @@
 ﻿@model IEnumerable<Product>
+
 <p>
     <item-create>sdf</item-create>
 </p>
-<table class="table">
+<table id="myDataTable" class="table table-striped nowrap" style="width:100%">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.Id)</th>
-            <th>@Html.DisplayNameFor(model => model.Name)</th>
-            <th>@Html.DisplayNameFor(model => model.BarCode)</th>
-            <th>@Html.DisplayNameFor(model => model.Category)</th>
-            <th>@Html.DisplayNameFor(model => model.Price)</th>
-            <th>@Html.DisplayNameFor(model => model.PriceReduced)</th>
-            <th></th>
+            <th>&nbsp;XXXXXXXX</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BarCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PriceReduced)
+            </th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@Html.DisplayFor(modelItem => item.Id)</td>
-                <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.BarCode)</td>
-                <td>@Html.DisplayFor(modelItem => item.Category)</td>
-                <td>@Html.DisplayFor(modelItem => item.Price)</td>
-                <td>@Html.DisplayFor(modelItem => item.PriceReduced)</td>
-                <td>
-                    <item-edit item-id="@item.Id"></item-edit> |
-                    <item-details item-id="@item.Id"></item-details> |
-                    <item-delete item-id="@item.Id"></item-delete>
-                </td>
-            </tr>
-        }
-    </tbody>
 </table>
+
+@section Scripts{
+    <script>
+        let columnSearchBuilderSearch = [12, 13, 14];
+        let columnSearchBuilderDate = [11];
+        let columnSearchBuilderNum = [9, 10];
+        let columnsSearchPanesEnabled = [
+            2,
+            @*{ id: 3, header: '@Html.DisplayNameForInnerType((L0QualityControl q) => q.QC01_L0Browse)' },
+            //{ id: 4, header: '@Html.DisplayNameForInnerType((L0QualityControl q) => q.QC02_L0SipMeta)' },
+            *@5,
+            6,
+            7,
+            8];
+        let enableRowSelection = true;
+        let columnsDefinition = [
+            {
+                data: "id", name: "CRUD", orderable: false,
+                render: function (data, type) {
+                    if (type === 'display') {
+                        return AddCrudButtons(data, [
+                            { uriBase: '@this.Url.Action("Details")', icon: 'info-circle' },
+                            { uriBase: '@this.Url.Action("Edit")', icon: 'edit' }
+                        ]);
+                    }
+                    return data;
+                }
+            },
+            {
+                data: "id", name: "Id",
+                render: function (data, type) {
+                    if (type === 'display') {
+                        return '<a href="@this.Url.Action("Details")/' + data + '">' + data + '</a>';
+                    }
+                    return data;
+                }
+            },
+            { data: "name", name: "Name" },
+            { data: "barCode", name: "barCode", orderable: true },
+            { data: "category", name: "Category", orderable: true },
+            { data: "price", name: "Price", orderable: true },
+            { data: "PriceReduced", name: "PriceReduced" },
+        ];
+    </script>
+}

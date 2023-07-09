@@ -1,6 +1,71 @@
 ﻿@model IEnumerable<Product>
-@{
+@* @{
     ViewData["Title"] = "Index";
 }
+*@ @{
+    var myObjectName = typeof(Product).Name;
+    ViewData["Title"] = "Index " + myObjectName;
+    ViewData["UseDatatables"] = true;
+}
+
 <h1>Produkte</h1>
-<partial name="Partials/_ProductListPartial" model="@Model"/>
+
+<p>
+    <item-create>sdf</item-create>
+</p>
+<table id="myDataTable" class="table table-striped nowrap" style="width:100%">
+    <thead>
+        <tr>
+            <th>&nbsp;</th>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BarCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PriceReduced)
+            </th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts{
+    <script>
+        debugger
+        let columnSearchBuilderSearch = [1, 2];
+        //let columnSearchBuilderDate = [11];
+        //let columnSearchBuilderNum = [9, 10];
+        let columnsSearchPanesEnabled = [
+            3,
+        @*{ id: 3, header: '@Html.DisplayNameForInnerType((L0QualityControl q) => q.QC01_L0Browse)' },
+        //{ id: 4, header: '@Html.DisplayNameForInnerType((L0QualityControl q) => q.QC02_L0SipMeta)' },
+        *@];
+        //let enableRowSelection = true;
+        let columnsDefinition = [
+            {
+                data: "id", name: "CRUD", orderable: false,
+                render: function (data, type) {
+                    if (type === 'display') {
+                        return AddCrudButtons(data, [
+                            { uriBase: '@this.Url.Action("Details")', icon: 'info-circle' },
+                            { uriBase: '@this.Url.Action("Edit")', icon: 'edit' }
+                        ]);
+                    }
+                    return data;
+                }
+            },
+            { data: "name", name: "Name" },
+            { data: "barCode", name: "barCode", orderable: true },
+            { data: "category", name: "Category", orderable: true },
+            { data: "price", name: "Price", orderable: true },
+            { data: "priceReduced", name: "PriceReduced" },
+        ];
+    </script>
+}

@@ -1,6 +1,8 @@
-﻿using Nac.Dal.Repos.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Nac.Dal.Repos.Interfaces;
 using Nac.Models.Entities;
 using Nac.Mvc.Controllers.Base;
+using Nac.Mvc.Utilities;
 
 namespace Nac.Mvc.Controllers;
 
@@ -13,6 +15,96 @@ public class ProductsController : BaseCrudController<Product, ProductsController
     {
     }
 
+    public class ProductSearchModel
+    {
+        public List<ProductCategory> CategoryOrFilter { get; set; } = new();
+    }
+
+    private static IQueryable<Product> AddFiltersToQuery(ProductSearchModel searchModel, IQueryable<Product> query)
+    {
+        if (searchModel.CategoryOrFilter.Count > 0)
+        {
+            query = query.Where(x => searchModel.CategoryOrFilter.Contains(x.Category));
+        }
+        return query;
+    }
+
+    private static IQueryable<Product> AddConditionsToQuery(
+        List<ControllerHelper.DataTablesSearchBuilderCondition> conditions, IQueryable<Product> query)
+    {
+        foreach (var condition in conditions)
+        {
+            switch (condition.OrigData)
+            {
+                default:
+                    break;
+                case "barCode":
+                    query = ControllerHelper.QueryForStringProperty(condition, query, "BarCode");
+                    break;
+                case "name":
+                    query = ControllerHelper.QueryForStringProperty(condition, query, "Name");
+                    break;
+            }
+        }
+        return query;
+    }
+
+
+    [HttpPost]
+    [Produces("application/json")]
+    public async Task<IActionResult> GetListAsync()
+    {
+        var dataTablesRequest = ControllerHelper.ExtractDataTablesRequest(Request);
+
+        MainRepo.GetAll();
+        var query = MainRepo.GetAll();
+
+        // search pane request
+        ProductSearchModel searchModel = new()
+        {
+            CategoryOrFilter = ControllerHelper.ExtractFilterEnum<ProductCategory>(Request, "category"),
+        };
+
+        // search builder request
+        var listConditions = ControllerHelper.ExtractSearchBuilderConditions(Request);
+
+        // get total count of data in table
+        dataTablesRequest.TotalRecord = await query.CountAsync();
+
+        query = AddFiltersToQuery(searchModel, query);
+        query = AddConditionsToQuery(listConditions, query);
+
+        // get total count of records after search
+        dataTablesRequest.FilterRecord = await query.CountAsync();
+
+        // sort data
+        if (!string.IsNullOrEmpty(dataTablesRequest.SortColumn))
+        {
+            query = query.OrderBy(x => EF.Property<object>(x, dataTablesRequest.SortColumn));
+            if (!dataTablesRequest.SortColumnDirectionIsAsc)
+            {
+                query = query.Reverse();
+            }
+        }
+        // pagination
+        var matList = await query.Skip(dataTablesRequest.Skip).Take(dataTablesRequest.PageSize).ToListAsync();
+
+        var returnObj = new
+        {
+            draw = dataTablesRequest.Draw,
+            recordsTotal = dataTablesRequest.TotalRecord,
+            recordsFiltered = dataTablesRequest.FilterRecord,
+            data = matList,
+            searchPanes = new
+            {
+                options = new
+                {
+                    category = ControllerHelper.ProductCategoryValues,
+                }
+            }
+        };
+        return Ok(returnObj);
+    }
 
     [HttpGet]
     public override async Task<IActionResult> CreateAsync()
