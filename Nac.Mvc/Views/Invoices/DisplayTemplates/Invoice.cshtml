@@ -27,21 +27,16 @@
     </dd>
 </dl>
 
-@{
-    var sampleProduct = new Product();
-    var sampleSelling = new Selling();
-}
-
 <table class="table">
     <thead>
         <tr>
             <th>@Html.DisplayNameFor(model => model.Id)</th>
-            <th>@Html.DisplayNameFor(model => sampleSelling.FinalPrice)</th>
-            <th>@Html.DisplayNameFor(model => sampleProduct.Name)</th>
-            <th>@Html.DisplayNameFor(model => sampleProduct.BarCode)</th>
-            <th>@Html.DisplayNameFor(model => sampleProduct.Category)</th>
-            <th>@Html.DisplayNameFor(model => sampleProduct.Price)</th>
-            <th>@Html.DisplayNameFor(model => sampleProduct.PriceReduced)</th>
+            <th>@Html.DisplayNameForInnerType((Selling s) => s.FinalPrice)</th>
+            <th>@Html.DisplayNameForInnerType((Product p) => p.Name)</th>
+            <th>@Html.DisplayNameForInnerType((Product p) => p.BarCode)</th>
+            <th>@Html.DisplayNameForInnerType((Product p) => p.Category)</th>
+            <th>@Html.DisplayNameForInnerType((Product p) => p.Price)</th>
+            <th>@Html.DisplayNameForInnerType((Product p) => p.PriceReduced)</th>
         </tr>
     </thead>
     <tbody>
