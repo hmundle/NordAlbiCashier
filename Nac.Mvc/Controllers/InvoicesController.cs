@@ -13,5 +13,16 @@ public class InvoicesController : BaseCrudController<Invoice, InvoicesController
     {
     }
 
+    [HttpGet]
+    public async Task<IActionResult> NewAsync()
+    {
+        var invoice = new Invoice()
+        {
+            Type = PaymentType.Pending
+        };
+        await MainRepo.AddAsync(invoice);
+
+        return View(invoice);
+    }
 
 }

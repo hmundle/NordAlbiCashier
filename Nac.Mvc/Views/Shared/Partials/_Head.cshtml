@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
 </environment>
 @{
-    if (ViewData["UseDatatables"] as bool? == true)
+    if (ViewData["UseDatatables"] as bool? == true || ViewData["UseDatatablesInsert"] as bool? == true)
     {
         <environment include="Development">
             <link rel="stylesheet" href="~/lib/datatables.net-bs5/css/dataTables.bootstrap5.css" asp-append-version="true" />

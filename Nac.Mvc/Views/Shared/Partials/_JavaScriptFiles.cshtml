@@ -11,7 +11,7 @@
     <script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
 </environment>
 @{
-    if (ViewData["UseDatatables"] as bool? == true)
+    if (ViewData["UseDatatables"] as bool? == true || ViewData["UseDatatablesInsert"] as bool? == true)
     {
         <environment include="Development">
             <script src="~/lib/datatables.net/js/jquery.dataTables.js"></script>

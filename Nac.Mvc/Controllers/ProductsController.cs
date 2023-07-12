@@ -49,14 +49,12 @@ public class ProductsController : BaseCrudController<Product, ProductsController
         return query;
     }
 
-
     [HttpPost]
     [Produces("application/json")]
     public async Task<IActionResult> GetListAsync()
     {
         var dataTablesRequest = ControllerHelper.ExtractDataTablesRequest(Request);
 
-        MainRepo.GetAll();
         var query = MainRepo.GetAll();
 
         // search pane request
@@ -104,6 +102,19 @@ public class ProductsController : BaseCrudController<Product, ProductsController
             }
         };
         return Ok(returnObj);
+    }
+
+    [HttpGet("{barCode?}")]
+    [Produces("application/json")]
+    public async Task<IActionResult> GetProductAsync(string? barCode)
+    {
+        var product = await MainRepo.GetAll().FirstOrDefaultAsync(product => product.BarCode == barCode);
+        if(product == null)
+        {
+            return BadRequest();
+        }
+
+        return Ok(product);
     }
 
     [HttpGet]

@@ -78,38 +78,40 @@
             };
             // dynamically add some datatables.net properties
             config.columns = columnsDefinition;
-            config.buttons[0].config.columns
-                // convert the objects to integer
-                = columnsSearchPanesEnabled.map(e => {
+            if (typeof columnSearchBuilderDate !== 'undefined') {
+                config.buttons[0].config.columns
+                    // convert the objects to integer
+                    = columnsSearchPanesEnabled.map(e => {
+                        if (Number.isInteger(e)) {
+                            return e;
+                        }
+                        else {
+                            return e.id;
+                        }
+                    });
+                columnsSearchPanesEnabled.forEach(e => {
+                    let idx = 0;
+                    let header = null;
                     if (Number.isInteger(e)) {
-                        return e;
+                        idx = e;
                     }
                     else {
-                        return e.id;
+                        idx = e.id;
+                        // overwrite the header
+                        header = e.header;
                     }
-                });
-            columnsSearchPanesEnabled.forEach(e => {
-                let idx = 0;
-                let header = null;
-                if (Number.isInteger(e)) {
-                    idx = e;
-                }
-                else {
-                    idx = e.id;
-                    // overwrite the header
-                    header = e.header;
-                }
 
-                config.columnDefs.push(
-                    {
-                        searchPanes: {
-                            show: true, // guarantee, that the pane is shown, there where some issues without
-                            header: header
-                        },
-                        targets: [idx]
-                    }
-                );
-            });
+                    config.columnDefs.push(
+                        {
+                            searchPanes: {
+                                show: true, // guarantee, that the pane is shown, there where some issues without
+                                header: header
+                            },
+                            targets: [idx]
+                        }
+                    );
+                });
+            }
             if (typeof columnSearchBuilderDate !== 'undefined') {
                 columnSearchBuilderDate.forEach(e => {
                     config.buttons[1].config.columns.push(e);

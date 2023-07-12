@@ -1,0 +1,142 @@
+﻿@model Invoice
+
+@{
+    var myObjectName = typeof(Invoice).Name;
+    ViewData["Title"] = "New " + myObjectName;
+    ViewData["UseDatatablesInsert"] = true;
+}
+<h1>Neu angelegt</h1>
+<hr />
+<h2>Produkte zur Rechnung</h2>
+
+<table id="myDataTable" class="table table-striped nowrap" style="width:100%">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            <th>@Html.DisplayNameForInnerType((Selling s) => s.FinalPrice)</th>
+            <th>@Html.DisplayNameForInnerType((Product p) => p.Name)</th>
+            <th>@Html.DisplayNameForInnerType((Product p) => p.BarCode)</th>
+            <th>@Html.DisplayNameForInnerType((Product p) => p.Category)</th>
+            <th>@Html.DisplayNameForInnerType((Product p) => p.Price)</th>
+            <th>@Html.DisplayNameForInnerType((Product p) => p.PriceReduced)</th>
+        </tr>
+    </thead>
+</table>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<div>
+    @*    <label class="col-form-label">XXX</label>
+    *@    <input id="newCode" type="text" class="form-control" />
+    <input type="button" id="btnAdd" value="Weiter" />
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+        let table;
+        let idCounter = 1;
+        let columnsDefinition = [
+            {
+                data: "rowIdx", name: "CRUD", orderable: false,
+                render: function (data, type) {
+                    if (type === 'display') {
+                        return `<a class="px-1 text-danger" href="javascript:Remove(${data})"><i class="lead fas fa-trash"></i></a>`;
+                    }
+                    return data;
+                }
+            },
+            { data: "finalPrice", name: "FinalPrice" },
+            { data: "name", name: "Name" },
+            { data: "barCode", name: "BarCode", orderable: true },
+            { data: "category", name: "Category", orderable: true },
+            { data: "price", name: "Price", orderable: true },
+            { data: "priceReduced", name: "PriceReduced" },
+        ];
+
+        $(document).ready(function () {
+            table = $('#myDataTable').DataTable(
+                {
+                    columns: columnsDefinition
+                }
+            );
+
+        });
+
+        $("body").on("click", "#btnAdd", addNewRow);
+
+        function addNewRow() {
+            //Reference the Name and Country TextBoxes.
+            var newCode = $("#newCode");
+
+            // get product
+            $.get(`@this.Url.Action(nameof(ProductsController.GetProductAsync).RemoveAsyncPostfix(), nameof(ProductsController).RemoveController())/${newCode.val()}`,
+                null, null,
+                "json"
+            ).done(function (result) {
+                result.finalPrice = result.price;
+                result.rowIdx = idCounter;
+                table.row.add(
+                    //{
+                    //    id: idCounter,
+                    //    finalPrice: 'myFinPrice',
+                    //    name: 'MyName',
+                    //    barCode: newCode.val(),
+                    //    category: 'myCat',
+                    //    price: 'myPrice',
+                    //    priceReduced: 'myPriceRed'
+                    //}
+                    result
+                )
+                    .draw(false);
+                idCounter++;
+
+                //Clear the TextBoxes.
+                newCode.val("");
+            })
+                .fail(function (r) {
+                    debugger;
+                    alert('Produkt nicht gefunden!');
+                });
+        }
+
+        function Remove(rowIdx) {
+            var rows = table
+                .rows(function (idx, data, node) {
+                    return data.rowIdx === rowIdx ?
+                        true : false;
+                });
+            if (rows.length < 1) {
+                alert('Nicht zum Löschen gefunden!')
+                return;
+            }
+            if (!confirm(`Löschen von Kauf '${rows.data()[0].name}'? Kann nicht rückgängig gemacht werden!'`)) {
+                return;
+            }
+            rows.remove().draw();
+        };
+
+        $("body").on("click", "#btnSave", function () {
+            //Loop through the Table rows and build a JSON array.
+            var customers = new Array();
+            $("#tblCustomers TBODY TR").each(function () {
+                var row = $(this);
+                var customer = {};
+                customer.Name = row.find("TD").eq(0).html();
+                customer.Country = row.find("TD").eq(1).html();
+                customers.push(customer);
+            });
+
+            //Send the JSON array to Controller using AJAX.
+            $.ajax({
+                type: "POST",
+                url: "/Home/InsertCustomers",
+                data: JSON.stringify(customers),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (r) {
+                    alert(r + " record(s) inserted.");
+                }
+            });
+        });
+    </script>
+}
