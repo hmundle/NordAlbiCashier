@@ -14,10 +14,13 @@
         <tr>
             <th>@Html.DisplayNameFor(model => model.Id)</th>
             <th>@Html.DisplayNameForInnerType((Selling s) => s.FinalPrice)</th>
+            <th>@Html.DisplayNameForInnerType((Selling s) => s.Quantity)</th>
+            <th>@Html.DisplayNameForInnerType((Selling s) => s.PriceManual)</th>
+            <th>@Html.DisplayNameForInnerType((Selling s) => s.Weight)</th>
+            <th>Grund-@Html.DisplayNameForInnerType((Product p) => p.Price)</th>
             <th>@Html.DisplayNameForInnerType((Product p) => p.Name)</th>
             <th>@Html.DisplayNameForInnerType((Product p) => p.BarCode)</th>
             <th>@Html.DisplayNameForInnerType((Product p) => p.Category)</th>
-            <th>@Html.DisplayNameForInnerType((Product p) => p.Price)</th>
             <th>@Html.DisplayNameForInnerType((Product p) => p.PriceReduced)</th>
         </tr>
     </thead>
@@ -46,10 +49,13 @@
                 }
             },
             { data: "finalPrice", name: "FinalPrice" },
+            { data: "quantity", name: "Quantity" },
+            { data: "priceManual", name: "PriceManual" },
+            { data: "weight", name: "Weight" },
+            { data: "price", name: "Price", orderable: true },
             { data: "name", name: "Name" },
             { data: "barCode", name: "BarCode", orderable: true },
             { data: "category", name: "Category", orderable: true },
-            { data: "price", name: "Price", orderable: true },
             { data: "priceReduced", name: "PriceReduced" },
         ];
 
@@ -66,37 +72,81 @@
 
         function addNewRow() {
             //Reference the Name and Country TextBoxes.
-            var newCode = $("#newCode");
+            //var newCode = $("#newCode");
 
             // get product
-            $.get(`@this.Url.Action(nameof(ProductsController.GetProductAsync).RemoveAsyncPostfix(), nameof(ProductsController).RemoveController())/${newCode.val()}`,
+            $.get(`@this.Url.Action(nameof(ProductsController.GetProductAsync).RemoveAsyncPostfix(), nameof(ProductsController).RemoveController())/${$("#newCode").val()}`,
                 null, null,
                 "json"
-            ).done(function (result) {
-                result.finalPrice = result.price;
-                result.rowIdx = idCounter;
-                table.row.add(
-                    //{
-                    //    id: idCounter,
-                    //    finalPrice: 'myFinPrice',
-                    //    name: 'MyName',
-                    //    barCode: newCode.val(),
-                    //    category: 'myCat',
-                    //    price: 'myPrice',
-                    //    priceReduced: 'myPriceRed'
-                    //}
-                    result
-                )
-                    .draw(false);
-                idCounter++;
+            ).done(NewProductReceived)
+                .fail(NewProductFailed);
+        };
 
-                //Clear the TextBoxes.
-                newCode.val("");
-            })
-                .fail(function (r) {
-                    debugger;
-                    alert('Produkt nicht gefunden!');
-                });
+        function NewProductReceived(result) {
+            result.quantity = 1;
+            result.priceManual = 0.0;
+            result.weight = 0;
+            switch (result.category) {
+                case 'Code':
+                    result.finalPrice = result.price;
+                    break;
+                case 'Quantity':
+                    result.quantity = doQuantity(result);
+                    result.finalPrice = result.quantity * result.price;
+                    break;
+                case 'Price':
+                    result.priceManual = doPrice(result);
+                    result.finalPrice = result.priceManual;
+                    break;
+                case 'Weight':
+                    result.weight = doWeight(result);
+                    result.finalPrice = result.weight * result.price;
+                    break;
+                default:
+                    alert(`Keine gültige Kategorie für das Product '${result.name}'`);
+                    break;
+            }
+            result.rowIdx = idCounter;
+            table.row.add(
+                result
+            ).draw(false);
+            idCounter++;
+
+            //Clear the TextBoxes.
+            $("#newCode").val("");
+        };
+
+        function NewProductFailed(r) {
+            alert('Produkt nicht gefunden!');
+        };
+
+        function doQuantity(result) {
+            let multiplier = 1;
+            do {
+                const val = prompt(`Wieviele '${result.name}'?`);
+                multiplier = parseInt(val);
+            }
+            while (isNaN(multiplier));
+            return multiplier;
+        }
+        function doPrice(result) {
+            let price = 0.0;
+            do {
+                let val = prompt(`'${result.name}' kostet?`);
+                val = val.replace(',', '.');
+                price = parseFloat(val);
+            }
+            while (isNaN(price));
+            return price;
+        }
+        function doWeight(result) {
+            let weight = 0;
+            do {
+                let val = prompt(`'${result.name}' wiegt in GRAMM?`);
+                weight = parseInt(val);
+            }
+            while (isNaN(weight));
+            return weight;
         }
 
         function Remove(rowIdx) {
