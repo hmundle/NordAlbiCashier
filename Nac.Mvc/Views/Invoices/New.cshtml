@@ -121,7 +121,8 @@
             //var newCode = newCodeInput;
 
             // get product
-            $.get(`@this.Url.Action(nameof(ProductsController.GetProductAsync).RemoveAsyncPostfix(), nameof(ProductsController).RemoveController())/${newCodeInput.val()}`,
+            $.get(
+                `@this.Url.Action(nameof(ProductsController.GetDetailsDataAsync).RemoveAsyncPostfix(), nameof(ProductsController).RemoveController())/${newCodeInput.val()}`,
                 null, null,
                 'json'
             ).done(NewProductReceived)
@@ -129,6 +130,11 @@
         }
 
         function NewProductReceived(result) {
+            result.productId = result.id;
+            // if we clean the ID, the model will not be validated, when parsing the POST
+            //result.id = null;
+            result.id = '00000000-0000-0000-0000-000000000000';
+            result.invoiceId = '@Model.Id';
             result.quantity = 1;
             result.priceManual = 0.0;
             result.weight = 0;
@@ -227,7 +233,7 @@
             //Send the JSON array to Controller using AJAX.
             $.ajax({
                 type: "POST",
-                url: "/Home/InsertCustomers",
+                url: `@this.Url.Action(nameof(InvoicesController.AddSellingsAsync).RemoveAsyncPostfix())/@Model.Id`,
                 data: JSON.stringify(table.data().toArray()),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",

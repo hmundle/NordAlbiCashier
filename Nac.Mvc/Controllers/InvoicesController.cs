@@ -8,7 +8,7 @@ public class InvoicesController : BaseCrudController<Invoice, InvoicesController
 {
 
 
-    public InvoicesController(IAppLogging<InvoicesController> appLogging, IInvoiceRepo mainRepo) 
+    public InvoicesController(IAppLogging<InvoicesController> appLogging, IInvoiceRepo mainRepo)
     : base(appLogging, mainRepo)
     {
     }
@@ -23,6 +23,21 @@ public class InvoicesController : BaseCrudController<Invoice, InvoicesController
         await MainRepo.AddAsync(invoice);
 
         return View(invoice);
+    }
+
+
+    [HttpPost("{id?}")]
+    [Produces("application/json")]
+    public async Task<IActionResult> AddSellingsAsync(Guid? id, [FromBody] List<Selling> sellings, [FromServices] ISellingRepo sellingRepo)
+    {
+        if (id == null || sellings == null)
+        {
+            return BadRequest();
+        }
+
+        await sellingRepo.AddRangeAsync(sellings);
+
+        return Ok();
     }
 
 }

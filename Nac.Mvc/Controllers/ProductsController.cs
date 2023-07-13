@@ -106,7 +106,7 @@ public class ProductsController : BaseCrudController<Product, ProductsController
 
     [HttpGet("{barCode?}")]
     [Produces("application/json")]
-    public async Task<IActionResult> GetProductAsync(string? barCode)
+    public async Task<IActionResult> GetDetailsDataAsync(string? barCode)
     {
         var product = await MainRepo.GetAll().FirstOrDefaultAsync(product => product.BarCode == barCode);
         if(product == null)
