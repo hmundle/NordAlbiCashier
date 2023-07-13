@@ -5,9 +5,27 @@
     ViewData["Title"] = "New " + myObjectName;
     ViewData["UseDatatablesInsert"] = true;
 }
-<h1>Neu angelegt</h1>
-<hr />
-<h2>Produkte zur Rechnung</h2>
+<h2>Rechnung erstellen</h2>
+
+
+
+<div class="d-flex flex-row">
+    <div class="p-2">
+        <button id="btnAdd" type="button" class="btn btn-primary">Eingabe Bar Code</button>
+    </div>
+    <div class="p-2">
+        <div class="input-group">
+            <span class="input-group-text" id="newCodeLabel">Bar Code:</span>
+            <input id="newCode" type="text" class="form-control" placeholder="Bar Code String" aria-label="Bar Code" aria-describedby="newCodeLabel">
+        </div>
+    </div>
+    <div class="p-2">
+        <span id="sum" class=" p-3 mx-3 text-bg-warning fw-bold lead">
+            Summe:
+        </span>
+    </div>
+</div>
+
 
 <table id="myDataTable" class="table table-striped nowrap" style="width:100%">
     <thead>
@@ -28,13 +46,13 @@
 
 <div asp-validation-summary="All" class="text-danger"></div>
 
-<div>
-    <form>
-        @*    <label class="col-form-label">XXX</label>
-        *@    <input id="newCode" type="text" class="form-control" />
+
+@*    <form>
+        <label class="col-form-label">XXX</label>
+        <input type="text" class="form-control" />
         <input type="button" id="btnAdd" value="Weiter" />
     </form>
-</div>
+*@
 
 @section Scripts{
     <script type="text/javascript">
@@ -50,24 +68,30 @@
                     return data;
                 }
             },
-            { data: "finalPrice", name: "FinalPrice" },
-            { data: "quantity", name: "Quantity" },
-            { data: "priceManual", name: "PriceManual" },
-            { data: "weight", name: "Weight" },
-            { data: "price", name: "Price", orderable: true },
-            { data: "name", name: "Name" },
-            { data: "barCode", name: "BarCode", orderable: true },
-            { data: "category", name: "Category", orderable: true },
-            { data: "priceReduced", name: "PriceReduced" },
+            { data: "finalPrice", name: "FinalPrice", orderable: false },
+            { data: "quantity", name: "Quantity", orderable: false },
+            { data: "priceManual", name: "PriceManual", orderable: false },
+            { data: "weight", name: "Weight", orderable: false },
+            { data: "price", name: "Price", orderable: false },
+            { data: "name", name: "Name", orderable: false },
+            { data: "barCode", name: "BarCode", orderable: false },
+            { data: "category", name: "Category", orderable: false },
+            { data: "priceReduced", name: "PriceReduced", orderable: false },
         ];
 
         $(document).ready(function () {
             table = $('#myDataTable').DataTable(
                 {
+                    info: false,
+                    ordering: true,
+                    paging: false,
+                    order: [[0, 'desc']],
                     columns: columnsDefinition
                 }
             );
-
+            addBtn = $("#btnAdd");
+            newCodeInput = $("#newCode");
+            sumField = $("#sum");
         });
 
         $("body").on("click", "#btnAdd", addNewRow);
@@ -79,29 +103,30 @@
                 // Cancel the default action, if needed
                 event.preventDefault();
                 // Trigger the button element with a click
-                $("#btnAdd").click();
+                addBtn.click();
             }
             // If the user presses the "Enter" key on the keyboard
             if (event.code === 'NumpadSubtract') {
                 // Cancel the default action, if needed
                 event.preventDefault();
                 // Trigger the button element with a click
-                //$("#btnAdd").click();
+                //addBtn.click();
+                Save();
                 alert('Fertig')
             }
         }
 
         function addNewRow() {
             //Reference the Name and Country TextBoxes.
-            //var newCode = $("#newCode");
+            //var newCode = newCodeInput;
 
             // get product
-            $.get(`@this.Url.Action(nameof(ProductsController.GetProductAsync).RemoveAsyncPostfix(), nameof(ProductsController).RemoveController())/${$("#newCode").val()}`,
+            $.get(`@this.Url.Action(nameof(ProductsController.GetProductAsync).RemoveAsyncPostfix(), nameof(ProductsController).RemoveController())/${newCodeInput.val()}`,
                 null, null,
-                "json"
+                'json'
             ).done(NewProductReceived)
                 .fail(NewProductFailed);
-        };
+        }
 
         function NewProductReceived(result) {
             result.quantity = 1;
@@ -133,13 +158,16 @@
             ).draw(false);
             idCounter++;
 
-            //Clear the TextBoxes.
-            $("#newCode").val("");
-        };
+            // show sum
+            sumField.html(`Summe: EUR ${sumUpAllPrices()}`);
+
+            // Clear the TextBoxes.
+            newCodeInput.val('');
+        }
 
         function NewProductFailed(r) {
             alert('Produkt nicht gefunden!');
-        };
+        }
 
         function doQuantity(result) {
             let multiplier = 1;
@@ -170,6 +198,14 @@
             return weight;
         }
 
+        function sumUpAllPrices() {
+            const initialValue = 0;
+            return table.data().reduce(
+                (accumulator, currentValue) => accumulator + currentValue.finalPrice,
+                initialValue
+            );
+        }
+
         function Remove(rowIdx) {
             var rows = table
                 .rows(function (idx, data, node) {
@@ -184,30 +220,21 @@
                 return;
             }
             rows.remove().draw();
-        };
+        }
 
-        $("body").on("click", "#btnSave", function () {
-            //Loop through the Table rows and build a JSON array.
-            var customers = new Array();
-            $("#tblCustomers TBODY TR").each(function () {
-                var row = $(this);
-                var customer = {};
-                customer.Name = row.find("TD").eq(0).html();
-                customer.Country = row.find("TD").eq(1).html();
-                customers.push(customer);
-            });
+        function Save() {
 
             //Send the JSON array to Controller using AJAX.
             $.ajax({
                 type: "POST",
                 url: "/Home/InsertCustomers",
-                data: JSON.stringify(customers),
+                data: JSON.stringify(table.data().toArray()),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (r) {
                     alert(r + " record(s) inserted.");
                 }
             });
-        });
+        }
     </script>
 }
