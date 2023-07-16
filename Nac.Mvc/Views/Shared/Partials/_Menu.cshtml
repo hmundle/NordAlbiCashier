@@ -15,7 +15,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link fw-bolder" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    <a class="nav-link fw-bolder" asp-area="" asp-controller="Invoices" asp-action="New">Kasse</a>
                 </li>
 
                 <li class="nav-item">
@@ -71,6 +71,9 @@
                         Rechnungen
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navmenuMenuLink">
+                        <li>
+                            <a class="dropdown-item fw-bolder" asp-area="" asp-controller="Invoices" asp-action="New">Kasse</a>
+                        </li>
                         <li>
                             <a class="dropdown-item fw-bolder" asp-area="" asp-controller="Invoices" asp-action="Index">Liste</a>
                         </li>
