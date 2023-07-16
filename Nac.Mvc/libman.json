@@ -17,7 +17,11 @@
         "jquery.validate.js",
         "jquery.validate.min.js",
         "additional-methods.js",
-        "additional-methods.min.js"
+        "additional-methods.min.js",
+        "localization/messages_de.min.js",
+        "localization/messages_de.js",
+        "localization/methods_de.js",
+        "localization/methods_de.min.js"
       ]
     },
     {
