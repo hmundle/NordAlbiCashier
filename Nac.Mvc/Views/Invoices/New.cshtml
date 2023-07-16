@@ -11,18 +11,21 @@
 
 <div class="d-flex flex-row">
     <div class="p-2">
-        <button id="btnAdd" type="button" class="btn btn-primary">Eingabe Bar Code</button>
-    </div>
-    <div class="p-2">
         <div class="input-group">
             <span class="input-group-text" id="newCodeLabel">Bar Code:</span>
             <input id="newCode" type="text" class="form-control" placeholder="Bar Code String" aria-label="Bar Code" aria-describedby="newCodeLabel">
         </div>
     </div>
     <div class="p-2">
+        <button id="btnAdd" type="button" class="btn btn-primary">Eingabe Bar Code</button>
+    </div>
+    <div class="p-2">
         <span id="sum" class=" p-3 mx-3 text-bg-warning fw-bold lead">
             Summe:
         </span>
+    </div>
+    <div class="p-2">
+        <button id="btnPay" type="button" class="btn btn-primary">Bezahlen</button>
     </div>
 </div>
 
@@ -63,7 +66,7 @@
                 data: "rowIdx", name: "CRUD", orderable: false,
                 render: function (data, type) {
                     if (type === 'display') {
-                        return `<a class="px-1 text-danger" href="javascript:Remove(${data})"><i class="lead fas fa-trash"></i></a>`;
+                        return `<a class="px-1 text-danger" href="javascript:remove(${data})"><i class="lead fas fa-trash"></i></a>`;
                     }
                     return data;
                 }
@@ -95,9 +98,10 @@
         });
 
         $("body").on("click", "#btnAdd", addNewRow);
-        $("body").on("keypress", "#newCode", pressEnter);
+        $("body").on("click", "#btnPay", save);
+        $("body").on("keypress", "#newCode", captureKeyPress    );
 
-        function pressEnter(event) {
+        function captureKeyPress(event) {
             // If the user presses the "Enter" key on the keyboard
             if (event.key === 'Enter') {
                 // Cancel the default action, if needed
@@ -109,10 +113,7 @@
             if (event.code === 'NumpadSubtract') {
                 // Cancel the default action, if needed
                 event.preventDefault();
-                // Trigger the button element with a click
-                //addBtn.click();
                 Save();
-                alert('Fertig')
             }
         }
 
@@ -125,12 +126,12 @@
                 `@this.Url.Action(nameof(ProductsController.GetDetailsDataAsync).RemoveAsyncPostfix(), nameof(ProductsController).RemoveController())/${newCodeInput.val()}`,
                 null, null,
                 'json'
-            ).done(NewProductReceived)
-                .fail(NewProductFailed);
+            ).done(newProductReceived)
+                .fail(newProductFailed);
         }
 
-        function NewProductReceived(result) {
-            // the result is currently a Product object and is going to be a Selling object, 
+        function newProductReceived(result) {
+            // the result is currently a Product object and is going to be a Selling object,
             // therefore add the missing properties
             result.productId = result.id;
             // overwrite the Id, it has to be generated from DB for Selling object
@@ -153,7 +154,7 @@
                     break;
                 case 'Weight':
                     result.weight = doWeight(result);
-                    result.finalPrice = result.weight * result.price;
+                    result.finalPrice = result.weight / 1000.0 * result.price;
                     break;
                 default:
                     alert(`Keine gültige Kategorie für das Product '${result.name}'`);
@@ -172,7 +173,7 @@
             newCodeInput.val('');
         }
 
-        function NewProductFailed(r) {
+        function newProductFailed(r) {
             alert('Produkt nicht gefunden!');
         }
 
@@ -213,7 +214,7 @@
             );
         }
 
-        function Remove(rowIdx) {
+        function remove(rowIdx) {
             var rows = table
                 .rows(function (idx, data, node) {
                     return data.rowIdx === rowIdx ?
@@ -229,7 +230,7 @@
             rows.remove().draw();
         }
 
-        function Save() {
+        function save() {
 
             //Send the JSON array to Controller using AJAX.
             $.ajax({
