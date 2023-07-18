@@ -1,12 +1,15 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Options;
 using Nac.Dal.Configuration;
 using Nac.Dal.EfStructures;
 using Nac.Dal.Initialization;
 using Nac.Models.System;
 using Nac.Services.Logging.Configuration;
+using System.Globalization;
 
 const string CookieScheme = "NacScheme";
 const string CookieName = "NacUserCookie";
@@ -25,6 +28,22 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 
 // add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
+{
+    var supportedCultures = new[] {
+        new CultureInfo("de-DE"),
+        //new CultureInfo("fr-FR"),
+        //new CultureInfo("en-GB")
+    };
+    var cc = CultureInfo.CurrentCulture;
+    var cUIc = CultureInfo.CurrentUICulture;
+    options.DefaultRequestCulture = new RequestCulture(culture: supportedCultures[0].Name, uiCulture: supportedCultures[0].Name);
+    options.SupportedCultures = supportedCultures;
+    options.SupportedUICultures = supportedCultures;
+
+    options.ApplyCurrentCultureToResponseHeaders = true;
+});
 
 // configure DB connection
 var connectionString = builder.Configuration.GetConnectionString(NacConstants.CONNECTION_STRING_KEY);
@@ -94,6 +113,10 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+
+var options = app.Services.GetService<IOptions<RequestLocalizationOptions>>()!;
+app.UseRequestLocalization(options.Value);
+
 app.MapControllers();
 
 await app.RunAsync();
