@@ -46,6 +46,6 @@ public class InvoicesController : BaseCrudController<Invoice, InvoicesController
 
         await sellingRepo.AddRangeAsync(pay.Sellings);
 
-        return Ok();
+        return Ok(pay.Sellings.Count());
     }
 }
