@@ -63,8 +63,14 @@
             { data: "name", name: "Name" },
             { data: "barCode", name: "barCode", orderable: true },
             { data: "category", name: "Category", orderable: true },
-            { data: "price", name: "Price", orderable: true },
-            { data: "priceReduced", name: "PriceReduced" },
+            {
+                data: "price", name: "Price", orderable: true,
+                render: DataTable.render.number(null, null, 2, '€')
+            },
+            {
+                data: "priceReduced", name: "PriceReduced", orderable: false,
+                render: DataTable.render.number(null, null, 2, '€')
+            },
         ];
     </script>
 }

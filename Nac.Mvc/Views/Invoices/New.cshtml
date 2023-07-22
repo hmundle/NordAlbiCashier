@@ -104,15 +104,27 @@
                     return data;
                 }
             },
-            { data: "finalPrice", name: "FinalPrice", orderable: false },
+            {
+                data: "finalPrice", name: "FinalPrice", orderable: false,
+                render: DataTable.render.number(null, null, 2, '€')
+            },
             { data: "quantity", name: "Quantity", orderable: false },
-            { data: "priceManual", name: "PriceManual", orderable: false },
+            {
+                data: "priceManual", name: "PriceManual", orderable: false,
+                render: DataTable.render.number(null, null, 2, '€')
+            },
             { data: "weight", name: "Weight", orderable: false },
-            { data: "price", name: "Price", orderable: false },
+            {
+                data: "price", name: "Price", orderable: false,
+                render: DataTable.render.number(null, null, 2, '€')
+            },
             { data: "name", name: "Name", orderable: false },
             { data: "barCode", name: "BarCode", orderable: false },
             { data: "category", name: "Category", orderable: false },
-            { data: "priceReduced", name: "PriceReduced", orderable: false },
+            {
+                data: "priceReduced", name: "PriceReduced", orderable: false,
+                render: DataTable.render.number(null, null, 2, '€')
+            },
         ];
 
         $(document).ready(function () {
