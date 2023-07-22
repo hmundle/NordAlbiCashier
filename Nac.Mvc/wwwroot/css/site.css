@@ -6,7 +6,7 @@
     --nac-default-color-shade25: #13653f;
     /*--nac-default-color-rgb: var(--bs-green-rgb);*/
     --nac-default-color-rgb: 25, 135, 84;
-    --bs-body-font-size: 0.85rem;
+    --bs-body-font-size: 0.95rem;
     font-size: var(--bs-body-font-size);
     --bs-primary: var(--nac-default-color);
     --bs-primary-rgb: var(--nac-default-color-rgb);
