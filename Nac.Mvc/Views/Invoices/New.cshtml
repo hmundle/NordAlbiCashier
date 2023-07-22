@@ -1,4 +1,5 @@
-﻿@model Invoice
+﻿@using Nac.Mvc.Utilities;
+@model Invoice
 
 @{
     var myObjectName = typeof(Invoice).Name;
@@ -48,19 +49,51 @@
 </table>
 
 <div asp-validation-summary="All" class="text-danger"></div>
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    Launch demo modal
+</button>
 
-
-@*    <form>
-        <label class="col-form-label">XXX</label>
-        <input type="text" class="form-control" />
-        <input type="button" id="btnAdd" value="Weiter" />
-    </form>
-*@
+<!-- Modal -->
+<div class="modal fade" id="finalizeDialog" tabindex="-1" aria-labelledby="finalizeDialogLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label asp-for="Type" class="col-form-label"></label>
+                        <select asp-for="Type" class="form-control" asp-items="@ControllerHelper.PaymentTypeSelectionList()" size="@ControllerHelper.PaymentTypeSelectionList().Count()"></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Gesamtpreis:</label>
+                        <input type="text" class="form-control bg-warning" id="inptTotalPrice" disabled value="">
+                    </div>
+                    <div class="mb-3">
+                        <label for="message-text" class="col-form-label">Bar-Betrag:</label>
+                        <input type="text" class="form-control" id="inptCashValue">
+                    </div>
+                    <div class="mb-3">
+                        <label for="recipient-name" class="col-form-label">Rückgeld:</label>
+                        <input type="text" class="form-control bg-primary text-light fw-bold fs-2" id="inptReturn" disabled value="">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+                <button id="btnPaid" type="button" class="btn btn-primary">Bezahlt</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts{
     <script type="text/javascript">
         let table;
         let idCounter = 1;
+        let sum = 0.0;
         let columnsDefinition = [
             {
                 data: "rowIdx", name: "CRUD", orderable: false,
@@ -92,28 +125,43 @@
                     columns: columnsDefinition
                 }
             );
-            addBtn = $("#btnAdd");
+            btnAdd = $("#btnAdd");
             newCodeInput = $("#newCode");
             sumField = $("#sum");
+            payInptSum = $("#inptTotalPrice");
+            payInptCash = $("#inptCashValue");
+            payInptReturn = $("#inptReturn");
+            btnPaid = $("#btnPaid");
+            finalizeDialog = $("#finalizeDialog");
+
+            $("body").on("click", "#btnAdd", addNewRow);
+            $("body").on("click", "#btnPay", payment);
+            $("body").on("keypress", "#finalizeDialog", captureKeyPressCash);
+            $("body").on("keypress", "#newCode", captureKeyPressCode);
+            $("body").on("click", "#btnPaid", finalize);
+            $("body").on("input", "#inptCashValue", calcReturn);
+
+            finalizeDialog[0].addEventListener('shown.bs.modal', () => {
+                payInptCash.focus()
+            })
+
         });
 
-        $("body").on("click", "#btnAdd", addNewRow);
-        $("body").on("click", "#btnPay", save);
-        $("body").on("keypress", "#newCode", captureKeyPress    );
-
-        function captureKeyPress(event) {
-            // If the user presses the "Enter" key on the keyboard
+        function captureKeyPressCode(event) {
             if (event.key === 'Enter') {
-                // Cancel the default action, if needed
                 event.preventDefault();
-                // Trigger the button element with a click
-                addBtn.click();
+                btnAdd.click();
             }
-            // If the user presses the "Enter" key on the keyboard
             if (event.code === 'NumpadSubtract') {
-                // Cancel the default action, if needed
                 event.preventDefault();
-                save();
+                payment();
+            }
+        }
+
+        function captureKeyPressCash(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                btnPaid.click();
             }
         }
 
@@ -167,7 +215,10 @@
             idCounter++;
 
             // show sum
-            sumField.html(`Summe: EUR ${sumUpAllPrices()}`);
+            sum = sumUpAllPrices();
+            const sumString = sum.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+            sumField.html(`Summe: EUR ${sumString}`);
+            payInptSum.val(sumString);
 
             // Clear the TextBoxes.
             newCodeInput.val('');
@@ -221,7 +272,7 @@
                         true : false;
                 });
             if (rows.length < 1) {
-                alert('Nicht zum Löschen gefunden!')
+                alert('Nicht zum Löschen gefunden!');
                 return;
             }
             if (!confirm(`Löschen von Kauf '${rows.data()[0].name}'? Kann nicht rückgängig gemacht werden!'`)) {
@@ -230,13 +281,33 @@
             rows.remove().draw();
         }
 
-        function save() {
+        function payment() {
+            if (table.data().count() <= 0) {
+                alert('Noch keine Einkäufe vorhanden!');
+                return;
+            }
+            // open modal dialog
+            const myModal = new bootstrap.Modal('#finalizeDialog', {});
+            myModal.show();
+        }
 
+        function calcReturn() {
+            //let sum = payInptSum.val();
+            //sum = sum.replace(',', '.');
+            //const sumNum = parseFloat(sum);
+            let cash = payInptCash.val();
+            cash = cash.replace(',', '.');
+            const cashNum = parseFloat(cash);
+            payInptReturn.val((cashNum - sum).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }));
+        }
+
+        function finalize() {
+            const postObject = { id: '@Model.Id', type: 2, sellings: table.data().toArray() };
             //Send the JSON array to Controller using AJAX.
             $.ajax({
                 type: "POST",
                 url: `@this.Url.Action(nameof(InvoicesController.AddSellingsAsync).RemoveAsyncPostfix())/@Model.Id`,
-                data: JSON.stringify(table.data().toArray()),
+                data: JSON.stringify(postObject),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (r) {

@@ -36,8 +36,6 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
         //new CultureInfo("fr-FR"),
         //new CultureInfo("en-GB")
     };
-    var cc = CultureInfo.CurrentCulture;
-    var cUIc = CultureInfo.CurrentUICulture;
     options.DefaultRequestCulture = new RequestCulture(culture: supportedCultures[0].Name, uiCulture: supportedCultures[0].Name);
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
