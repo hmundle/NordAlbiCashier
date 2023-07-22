@@ -1,0 +1,41 @@
+# Please refer https://aka.ms/HTTPSinContainer on how to setup an https developer certificate for your ASP .NET Core service.
+
+version: '3.4'
+
+networks:
+  dev:
+    driver: bridge 
+
+services:
+  nacmvc:
+    image: nac_service
+    depends_on:
+      - "nac_db"
+    container_name: nac_service
+    build:
+      context: .
+      dockerfile: Nac.Mvc/Dockerfile
+    ports:
+      - 5000:5000
+    environment:
+      - ConnectionString=host=nac_db;port=5435;database=NacDB;username=postgres;password=NacP@ssw0rd;Pooling=true;
+    networks:
+      - dev
+
+  nac_db:
+    image: postgres:14-alpine
+    container_name: nac_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=NacP@ssw0rd
+      - POSTGRES_DB=NacDB
+    ports:
+      - "5432:5432"
+    restart: always
+    volumes:
+      - customer_data:/var/lib/postgresql/data/ 
+    networks:
+      - dev
+
+volumes:
+  customer_data:
