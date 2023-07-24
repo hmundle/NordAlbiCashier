@@ -10,4 +10,8 @@ public partial class Invoice : BaseEntity
     [DisplayName("Bezahlart")]
     [Required]
     public PaymentType Type { get; set; } = PaymentType.Cash;
+
+    [DisplayName("Kommentar")]
+    [Required]
+    public String Comment { get; set; } = string.Empty;
 }

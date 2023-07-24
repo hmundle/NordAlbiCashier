@@ -25,4 +25,13 @@ public partial class Product : BaseEntity
 
     [DisplayName("Sonderpreis")]
     public double? PriceReduced { get; set; } = null;
+
+    [DisplayName("Kommentar")]
+    [Required]
+    public String Comment { get; set; } = string.Empty;
+
+    [DisplayName("Geliefert")]
+    public int Delivered { get; set; } = 0;
+
+
 }

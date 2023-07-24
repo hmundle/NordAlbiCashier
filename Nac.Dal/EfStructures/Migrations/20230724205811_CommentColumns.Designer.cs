@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Nac.Dal.EfStructures;
 using Nac.Models.Entities;
@@ -9,12 +10,14 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Nac.Dal.Migrations
+namespace Nac.Dal.EfStructures.Migrations
 {
     [DbContext(typeof(NacDbContext))]
-    partial class NacDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230724205811_CommentColumns")]
+    partial class CommentColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
