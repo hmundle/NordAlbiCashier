@@ -10,11 +10,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Nac.Dal.EfStructures.Migrations
+namespace Nac.Dal.Migrations
 {
     [DbContext(typeof(NacDbContext))]
-    [Migration("20230724205811_CommentColumns")]
-    partial class CommentColumns
+    [Migration("20230724221343_CommentColumn")]
+    partial class CommentColumn
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,6 +26,7 @@ namespace Nac.Dal.EfStructures.Migrations
 
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "payment_type", new[] { "undefined", "pending", "cash", "card", "pay_pal" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "product_category", new[] { "undefined", "code", "quantity", "price", "weight" });
+            NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "product_group", new[] { "undefined", "getraenke", "milchprodukte", "wurst", "brot", "trockennahrung", "kaffee_tee", "fruehstueck", "suessigkeiten", "obst", "gemuese", "dosen_glaeser_tetra", "hygiene_reinigung", "sonstiges", "specials", "pfand" });
             NpgsqlModelBuilderExtensions.HasPostgresEnum(modelBuilder, "sync_status", new[] { "local", "server" });
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
@@ -38,7 +39,6 @@ namespace Nac.Dal.EfStructures.Migrations
                         .HasDefaultValueSql("gen_random_uuid()");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("comment");
 
@@ -96,7 +96,6 @@ namespace Nac.Dal.EfStructures.Migrations
                         .HasColumnName("category");
 
                     b.Property<string>("Comment")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("comment");
 
@@ -109,6 +108,10 @@ namespace Nac.Dal.EfStructures.Migrations
                     b.Property<int>("Delivered")
                         .HasColumnType("integer")
                         .HasColumnName("delivered");
+
+                    b.Property<ProductGroup?>("Group")
+                        .HasColumnType("product_group")
+                        .HasColumnName("group");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean")

@@ -20,6 +20,8 @@ public static class ControllerHelper
         = Enum.GetNames(typeof(PaymentType)).Select(x => new DataTableSearchPaneContent { Label = x, Value = x });
     public static IEnumerable<DataTableSearchPaneContent> SyncStatusValues { get; }
         = Enum.GetNames(typeof(SyncStatus)).Select(x => new DataTableSearchPaneContent { Label = x, Value = x });
+    public static IEnumerable<DataTableSearchPaneContent> ProductGroupValues { get; }
+        = Enum.GetNames(typeof(ProductGroup)).Select(x => new DataTableSearchPaneContent { Label = x, Value = x });
 
     public static SelectList ProductCategorySelectionList()
     => new(Enum.GetNames(typeof(ProductCategory)).Where(c => c != nameof(ProductCategory.Undefined)));
@@ -27,6 +29,8 @@ public static class ControllerHelper
     => new(Enum.GetNames(typeof(PaymentType)));
     public static SelectList SyncStatusSelectionList()
     => new(Enum.GetNames(typeof(SyncStatus)));
+    public static SelectList ProductGroupSelectionList()
+    => new(Enum.GetNames(typeof(ProductGroup)).Where(c => c != nameof(ProductGroup.Undefined)));
 
     public class DataTablesRequest
     {

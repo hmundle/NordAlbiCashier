@@ -14,6 +14,7 @@ public partial class NacDbContext : /*Identity*/DbContext
         dataSourceBuilder.MapEnum<SyncStatus>("sync_status");
         dataSourceBuilder.MapEnum<PaymentType>("payment_type");
         dataSourceBuilder.MapEnum<ProductCategory>("product_category");
+        dataSourceBuilder.MapEnum<ProductGroup>("product_group");
 
         return dataSourceBuilder.Build();
     }
@@ -97,6 +98,7 @@ public partial class NacDbContext : /*Identity*/DbContext
             .HasPostgresEnum<SyncStatus>()
             .HasPostgresEnum<PaymentType>()
             .HasPostgresEnum<ProductCategory>()
+            .HasPostgresEnum<ProductGroup>()
             ;
 
         modelBuilder

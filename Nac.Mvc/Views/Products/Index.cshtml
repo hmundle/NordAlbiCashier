@@ -32,6 +32,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.PriceReduced)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Group)
+            </th>
         </tr>
     </thead>
 </table>
@@ -42,7 +45,7 @@
         //let columnSearchBuilderDate = [11];
         //let columnSearchBuilderNum = [9, 10];
         let columnsSearchPanesEnabled = [
-            3,
+            3, 6, 
         @*{ id: 3, header: '@Html.DisplayNameForInnerType((L0QualityControl q) => q.QC01_L0Browse)' },
         //{ id: 4, header: '@Html.DisplayNameForInnerType((L0QualityControl q) => q.QC02_L0SipMeta)' },
         *@];
@@ -71,6 +74,7 @@
                 data: "priceReduced", name: "PriceReduced", orderable: false,
                 render: DataTable.render.number(null, null, 2, '€')
             },
+            { data: "group", name: "Group", orderable: true },
         ];
     </script>
 }

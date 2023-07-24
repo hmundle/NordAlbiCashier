@@ -37,3 +37,8 @@
     <input asp-for="Comment" class="form-control" />
     <span asp-validation-for="Comment" class="text-danger"></span>
 </div>
+<div>
+    <label asp-for="Group" class="col-form-label"></label>
+    <select asp-for="Group" class="form-control" asp-items="@ControllerHelper.ProductGroupSelectionList()" size="@ControllerHelper.ProductGroupSelectionList().Count()"></select>
+    <span asp-validation-for="Group" class="text-danger"></span>
+</div>

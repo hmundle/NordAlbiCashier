@@ -27,11 +27,12 @@ public partial class Product : BaseEntity
     public double? PriceReduced { get; set; } = null;
 
     [DisplayName("Kommentar")]
-    [Required]
-    public String Comment { get; set; } = string.Empty;
+    public String? Comment { get; set; } = null;
 
     [DisplayName("Geliefert")]
     public int Delivered { get; set; } = 0;
 
+    [DisplayName("Gruppe")]
+    public ProductGroup? Group { get; set; } = null;
 
 }

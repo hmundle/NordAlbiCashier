@@ -1,16 +1,26 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Nac.Models.Entities;
 
 #nullable disable
 
-namespace Nac.Dal.EfStructures.Migrations
+namespace Nac.Dal.Migrations
 {
     /// <inheritdoc />
-    public partial class CommentColumns : Migration
+    public partial class CommentColumn : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:Enum:payment_type", "undefined,pending,cash,card,pay_pal")
+                .Annotation("Npgsql:Enum:product_category", "undefined,code,quantity,price,weight")
+                .Annotation("Npgsql:Enum:product_group", "undefined,getraenke,milchprodukte,wurst,brot,trockennahrung,kaffee_tee,fruehstueck,suessigkeiten,obst,gemuese,dosen_glaeser_tetra,hygiene_reinigung,sonstiges,specials,pfand")
+                .Annotation("Npgsql:Enum:sync_status", "local,server")
+                .OldAnnotation("Npgsql:Enum:payment_type", "undefined,pending,cash,card,pay_pal")
+                .OldAnnotation("Npgsql:Enum:product_category", "undefined,code,quantity,price,weight")
+                .OldAnnotation("Npgsql:Enum:sync_status", "local,server");
+
             migrationBuilder.AlterColumn<DateTime>(
                 name: "created",
                 table: "users",
@@ -43,8 +53,7 @@ namespace Nac.Dal.EfStructures.Migrations
                 name: "comment",
                 table: "products",
                 type: "text",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "delivered",
@@ -52,6 +61,12 @@ namespace Nac.Dal.EfStructures.Migrations
                 type: "integer",
                 nullable: false,
                 defaultValue: 0);
+
+            migrationBuilder.AddColumn<ProductGroup>(
+                name: "group",
+                table: "products",
+                type: "product_group",
+                nullable: true);
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "created",
@@ -67,8 +82,7 @@ namespace Nac.Dal.EfStructures.Migrations
                 name: "comment",
                 table: "invoices",
                 type: "text",
-                nullable: false,
-                defaultValue: "");
+                nullable: true);
         }
 
         /// <inheritdoc />
@@ -83,8 +97,21 @@ namespace Nac.Dal.EfStructures.Migrations
                 table: "products");
 
             migrationBuilder.DropColumn(
+                name: "group",
+                table: "products");
+
+            migrationBuilder.DropColumn(
                 name: "comment",
                 table: "invoices");
+
+            migrationBuilder.AlterDatabase()
+                .Annotation("Npgsql:Enum:payment_type", "undefined,pending,cash,card,pay_pal")
+                .Annotation("Npgsql:Enum:product_category", "undefined,code,quantity,price,weight")
+                .Annotation("Npgsql:Enum:sync_status", "local,server")
+                .OldAnnotation("Npgsql:Enum:payment_type", "undefined,pending,cash,card,pay_pal")
+                .OldAnnotation("Npgsql:Enum:product_category", "undefined,code,quantity,price,weight")
+                .OldAnnotation("Npgsql:Enum:product_group", "undefined,getraenke,milchprodukte,wurst,brot,trockennahrung,kaffee_tee,fruehstueck,suessigkeiten,obst,gemuese,dosen_glaeser_tetra,hygiene_reinigung,sonstiges,specials,pfand")
+                .OldAnnotation("Npgsql:Enum:sync_status", "local,server");
 
             migrationBuilder.AlterColumn<DateTime>(
                 name: "created",

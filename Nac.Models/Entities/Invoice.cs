@@ -12,6 +12,5 @@ public partial class Invoice : BaseEntity
     public PaymentType Type { get; set; } = PaymentType.Cash;
 
     [DisplayName("Kommentar")]
-    [Required]
-    public String Comment { get; set; } = string.Empty;
+    public String? Comment { get; set; } = null;
 }
