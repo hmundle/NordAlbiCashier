@@ -23,7 +23,11 @@ Shortcut:
 - `docker compose up -d` to create and start app and database  
 - `docker compose down` to shutdown and remove services and network
 
-- create the DB structure, either with bundle or with `dotnet ef` commands
+- create the migration bundle: 
+  `dotnet ef migrations bundle --force --self-contained --verbose -o ..\..\efbundle.exe`
+  execute  
+  `./efbundle -v --connection "Host=localhost;Username=postgres;Password=NacP@ssw0rd;Database=NacDB;Include Error Detail=true"`
+- OR: create the DB structure, either with bundle or with `dotnet ef` commands
 - fill database with SQL insert files
 
 
