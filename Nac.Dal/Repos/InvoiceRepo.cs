@@ -14,6 +14,7 @@ public class InvoiceRepo : BaseEntityRepo<Invoice>, IInvoiceRepo
     : base(options)
     {
     }
+    public override IQueryable<Invoice> GetAll() => Table.Include(i => i.Sellings).OrderBy(i => i.Created).Reverse();
 
     public override Task<Invoice?> FindAsNoTrackingAsync(Guid id)
     {

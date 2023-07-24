@@ -7,8 +7,9 @@
         <tr>
             <th>@Html.DisplayNameFor(model => model.Id)</th>
             <th>@Html.DisplayNameFor(model => model.Type)</th>
-            @*            <th>@Html.DisplayNameFor(model => model.Sellings)</th>
-            *@
+            <th>Produkte</th>
+            <th>Preis</th>
+            <th>@Html.DisplayNameFor(model => model.Comment)</th>
             <th>@Html.DisplayNameFor(model => model.Created)</th>
             <th>@Html.DisplayNameFor(model => model.Modified)</th>
             <th></th>
@@ -20,8 +21,9 @@
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.Id)</td>
                 <td>@Html.DisplayFor(modelItem => item.Type)</td>
-                @*                <td>@Html.DisplayFor(modelItem => item.Sellings.Count())</td>
-            *@
+                <td>@item.Sellings.Count()</td>
+                <td>@item.Sellings.Sum(s => s.FinalPrice)</td>
+                <td>@Html.DisplayFor(modelItem => item.Comment)</td>
                 <td>@Html.DisplayFor(modelItem => item.Created)</td>
                 <td>@Html.DisplayFor(modelItem => item.Modified)</td>
                 <td>
