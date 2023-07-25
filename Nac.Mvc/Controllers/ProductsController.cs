@@ -18,6 +18,7 @@ public class ProductsController : BaseCrudController<Product, ProductsController
     public class ProductSearchModel
     {
         public List<ProductCategory> CategoryOrFilter { get; set; } = new();
+        public List<ProductGroup> GroupOrFilter { get; set; } = new();
     }
 
     private static IQueryable<Product> AddFiltersToQuery(ProductSearchModel searchModel, IQueryable<Product> query)
@@ -25,6 +26,10 @@ public class ProductsController : BaseCrudController<Product, ProductsController
         if (searchModel.CategoryOrFilter.Count > 0)
         {
             query = query.Where(x => searchModel.CategoryOrFilter.Contains(x.Category));
+        }
+        if (searchModel.GroupOrFilter.Count > 0)
+        {
+            query = query.Where(x => x.Group != null && searchModel.GroupOrFilter.Contains(x.Group.Value));
         }
         return query;
     }
@@ -61,6 +66,7 @@ public class ProductsController : BaseCrudController<Product, ProductsController
         ProductSearchModel searchModel = new()
         {
             CategoryOrFilter = ControllerHelper.ExtractFilterEnum<ProductCategory>(Request, "category"),
+            GroupOrFilter = ControllerHelper.ExtractFilterEnum<ProductGroup>(Request, "group"),
         };
 
         // search builder request
@@ -98,6 +104,7 @@ public class ProductsController : BaseCrudController<Product, ProductsController
                 options = new
                 {
                     category = ControllerHelper.ProductCategoryValues,
+                    group = ControllerHelper.ProductGroupValues,
                 }
             }
         };
