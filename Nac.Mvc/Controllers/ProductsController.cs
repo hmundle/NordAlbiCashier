@@ -49,6 +49,9 @@ public class ProductsController : BaseCrudController<Product, ProductsController
                 case "name":
                     query = ControllerHelper.QueryForStringProperty(condition, query, "Name");
                     break;
+                case "created":
+                    query = ControllerHelper.QueryForDateTimeProperty(condition, query, "Created");
+                    break;
             }
         }
         return query;

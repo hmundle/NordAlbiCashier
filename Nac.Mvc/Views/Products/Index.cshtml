@@ -35,6 +35,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Group)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Created)
+            </th>
         </tr>
     </thead>
 </table>
@@ -42,7 +45,7 @@
 @section Scripts{
     <script>
         let columnSearchBuilderSearch = [1, 2];
-        //let columnSearchBuilderDate = [11];
+        let columnSearchBuilderDate = [7];
         //let columnSearchBuilderNum = [9, 10];
         let columnsSearchPanesEnabled = [
             3, 6, 
@@ -75,6 +78,7 @@
                 render: DataTable.render.number(null, null, 2, '€')
             },
             { data: "group", name: "Group", orderable: true },
+            { data: "created", name: "Created", orderable: true },
         ];
     </script>
 }
