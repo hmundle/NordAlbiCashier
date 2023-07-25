@@ -78,7 +78,7 @@
             };
             // dynamically add some datatables.net properties
             config.columns = columnsDefinition;
-            if (typeof columnSearchBuilderDate !== 'undefined') {
+            if (typeof columnsSearchPanesEnabled !== 'undefined') {
                 config.buttons[0].config.columns
                     // convert the objects to integer
                     = columnsSearchPanesEnabled.map(e => {
