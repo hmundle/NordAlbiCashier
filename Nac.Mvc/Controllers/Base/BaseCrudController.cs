@@ -57,6 +57,7 @@ where TController : class
     {
         if (ModelState.IsValid)
         {
+            entity.Operator = User.Identity?.Name ?? "unknown";
             await MainRepo.AddAsync(entity);
             return RedirectToAction(nameof(DetailsAsync).RemoveAsyncPostfix(), new { id = entity.Id });
         }
@@ -97,6 +98,7 @@ where TController : class
             entity.Created = DateTime.SpecifyKind(entity.Created!.Value, DateTimeKind.Utc);
             // set the modified data
             entity.Modified = DateTime.UtcNow;
+            entity.Operator = User.Identity?.Name ?? "unknown";
             await MainRepo.UpdateAsync(entity);
             return RedirectToAction(nameof(DetailsAsync).RemoveAsyncPostfix(), new { id });
         }

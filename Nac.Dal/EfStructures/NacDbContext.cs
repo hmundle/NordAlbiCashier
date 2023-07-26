@@ -160,18 +160,28 @@ public partial class NacDbContext : /*Identity*/DbContext
             entity.HasQueryFilter(e => e.IsDeleted == false);
             entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.Created).HasDefaultValueSql("now()");
+            entity.Property(e => e.Operator).HasDefaultValue("unknown");
         });
         modelBuilder.Entity<Selling>(entity =>
         {
             entity.HasQueryFilter(e => e.IsDeleted == false);
             entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.Created).HasDefaultValueSql("now()");
+            entity.Property(e => e.Operator).HasDefaultValue("unknown");
         });
         modelBuilder.Entity<Invoice>(entity =>
         {
             entity.HasQueryFilter(e => e.IsDeleted == false);
             entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
             entity.Property(e => e.Created).HasDefaultValueSql("now()");
+            entity.Property(e => e.Operator).HasDefaultValue("unknown");
+        });
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.HasQueryFilter(e => e.IsDeleted == false);
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.Created).HasDefaultValueSql("now()");
+            entity.Property(e => e.Operator).HasDefaultValue("unknown");
         });
     }
 

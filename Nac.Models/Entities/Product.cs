@@ -13,7 +13,9 @@ public partial class Product : BaseEntity
     public ProductCategory Category { get; set; } = ProductCategory.Code;
 
     [DisplayName("Bar Code")]
-    public String? BarCode { get; set; } = null;
+    [Required]
+    [MinLength(1)]
+    public String BarCode { get; set; } = string.Empty;
 
     [DisplayName("Beschreibung")]
     [Required]
