@@ -1,18 +1,15 @@
 ﻿@model IEnumerable<Product>
-@* @{
-    ViewData["Title"] = "Index";
-}
-*@ @{
+@{
     var myObjectName = typeof(Product).Name;
     ViewData["Title"] = "Index " + myObjectName;
     ViewData["UseDatatables"] = true;
 }
 
-<h1>Produkte</h1>
+<h3>
+    <span class="pe-2">Produkte</span> 
+    <item-create></item-create>
+</h3>
 
-<p>
-    <item-create>sdf</item-create>
-</p>
 <table id="myDataTable" class="table table-striped nowrap" style="width:100%">
     <thead>
         <tr>
@@ -60,7 +57,7 @@
                     if (type === 'display') {
                         return AddCrudButtons(data, [
                             { uriBase: '@this.Url.Action("Details")', icon: 'info-circle' },
-                            { uriBase: '@this.Url.Action("Edit")', icon: 'edit' }
+                            { uriBase: '@this.Url.Action("Edit")', icon: 'edit' },
                         ]);
                     }
                     return data;
