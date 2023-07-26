@@ -17,8 +17,9 @@ public class InvoicesController : BaseCrudController<Invoice, InvoicesController
     {
         var invoice = new Invoice()
         {
-            Type = PaymentType.Pending
-        };
+            Type = PaymentType.Pending,
+            Operator = User.Identity?.Name ?? "unknown"
+    };
         await MainRepo.AddAsync(invoice);
         // switch to next payment type
         invoice.Type = PaymentType.Cash;
@@ -42,6 +43,13 @@ public class InvoicesController : BaseCrudController<Invoice, InvoicesController
         entity.Type = pay.Type;
         // set the modified data
         entity.Modified = DateTime.UtcNow;
+        entity.Operator = User.Identity?.Name ?? "unknown";
+        foreach (var s in pay.Sellings)
+        {
+            s.Operator = entity.Operator;
+            s.Created = entity.Modified;
+            s.Modified = null;
+        }
         await MainRepo.UpdateAsync(entity);
 
         await sellingRepo.AddRangeAsync(pay.Sellings);
