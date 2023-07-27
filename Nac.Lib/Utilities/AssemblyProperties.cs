@@ -18,6 +18,17 @@ public static class AssemblyProperties
         return $"{GetAppNamePrivate(assemblyName)}_v{GetVersionPrivate(assemblyName)}";
     }
 
+    public static string GetProduct()
+    {
+        Assembly currentAssem = Assembly.GetEntryAssembly()!;
+        object[] attribs = currentAssem.GetCustomAttributes(typeof(AssemblyProductAttribute), true);
+        if (attribs.Length > 0)
+        {
+            return ((AssemblyProductAttribute)attribs[0]).Product;
+        }
+        return "unknown";
+    }
+
     public static string GetCompany()
     {
         Assembly currentAssem = Assembly.GetEntryAssembly()!;
