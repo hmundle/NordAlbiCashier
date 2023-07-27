@@ -14,4 +14,9 @@ public class UserRepo : BaseEntityRepo<User>, IUserRepo
     : base(options)
     {
     }
+
+    public IQueryable<User> GetAllUsers()
+    {
+        return GetAll().OrderBy(u => u.Name);
+    }
 }

@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Nac.Dal.Repos.Base.IRepo;
+using Nac.Dal.Repos.Interfaces;
 
 namespace Nac.Mvc.Controllers.Base;
 
@@ -11,13 +12,16 @@ where TController : class
 {
     protected readonly IAppLogging<TController> AppLoggingInstance;
     protected readonly IIdRepo<TEntity> MainRepo;
+    protected readonly IUserRepo UserRepo;
 
     protected BaseCrudController(
         IAppLogging<TController> appLogging,
-        IIdRepo<TEntity> mainRepo)
+        IIdRepo<TEntity> mainRepo,
+        IUserRepo userRepo)
     {
         AppLoggingInstance = appLogging;
         MainRepo = mainRepo;
+        UserRepo = userRepo;
     }
 
     protected async Task<TEntity?> GetOneEntityAsync(Guid? id)
@@ -48,7 +52,7 @@ where TController : class
     public virtual async Task<IActionResult> CreateAsync()
     {
         // ViewData["LookupValues"] = await GetLookupValuesAsync();
-        return View();
+        return await Task.FromResult(View());
     }
 
     [HttpPost]

@@ -8,8 +8,8 @@ public class SellingsController : BaseCrudController<Selling, SellingsController
 {
 
 
-    public SellingsController(IAppLogging<SellingsController> appLogging, ISellingRepo mainRepo) 
-    : base(appLogging, mainRepo)
+    public SellingsController(IAppLogging<SellingsController> appLogging, ISellingRepo mainRepo, IUserRepo userRepo) 
+    : base(appLogging, mainRepo, userRepo)
     {
     }
 

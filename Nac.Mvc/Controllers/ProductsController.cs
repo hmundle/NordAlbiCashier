@@ -10,8 +10,8 @@ public class ProductsController : BaseCrudController<Product, ProductsController
 {
     //private readonly IMakeDataService _lookupDataService;
 
-    public ProductsController(IAppLogging<ProductsController> appLogging, IProductRepo mainRepo) 
-    : base(appLogging, mainRepo)
+    public ProductsController(IAppLogging<ProductsController> appLogging, IProductRepo mainRepo, IUserRepo userRepo) 
+    : base(appLogging, mainRepo, userRepo)
     {
     }
 

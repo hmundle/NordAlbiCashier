@@ -11,6 +11,7 @@ public abstract class BaseEntity
     [Required]
     [MaxLength(50)]
     [MinLength(1)]
+    [DisplayName("Kasse")]
     public string Operator { get; set; } = "unknown";
 
     [JsonConverter(typeof(UtcDateTimeConverter))]

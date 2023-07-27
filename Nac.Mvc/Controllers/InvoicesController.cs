@@ -7,8 +7,8 @@ namespace Nac.Mvc.Controllers;
 
 public class InvoicesController : BaseCrudController<Invoice, InvoicesController>
 {
-    public InvoicesController(IAppLogging<InvoicesController> appLogging, IInvoiceRepo mainRepo)
-    : base(appLogging, mainRepo)
+    public InvoicesController(IAppLogging<InvoicesController> appLogging, IInvoiceRepo mainRepo, IUserRepo userRepo)
+    : base(appLogging, mainRepo, userRepo)
     {
     }
 

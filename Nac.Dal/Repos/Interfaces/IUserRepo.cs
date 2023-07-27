@@ -4,4 +4,5 @@ namespace Nac.Dal.Repos.Interfaces;
 
 public interface IUserRepo : IIdRepo<User>
 {
+    IQueryable<User> GetAllUsers();
 }
