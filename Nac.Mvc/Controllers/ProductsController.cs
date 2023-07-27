@@ -17,8 +17,8 @@ public class ProductsController : BaseCrudController<Product, ProductsController
 
     public class ProductSearchModel
     {
-        public List<ProductCategory> CategoryOrFilter { get; set; } = new();
-        public List<ProductGroup> GroupOrFilter { get; set; } = new();
+        public IList<ProductCategory> CategoryOrFilter { get; set; }
+        public IList<ProductGroup> GroupOrFilter { get; set; }
     }
 
     private static IQueryable<Product> AddFiltersToQuery(ProductSearchModel searchModel, IQueryable<Product> query)
@@ -35,7 +35,7 @@ public class ProductsController : BaseCrudController<Product, ProductsController
     }
 
     private static IQueryable<Product> AddConditionsToQuery(
-        List<ControllerHelper.DataTablesSearchBuilderCondition> conditions, IQueryable<Product> query)
+        IEnumerable<ControllerHelper.DataTablesSearchBuilderCondition> conditions, IQueryable<Product> query)
     {
         foreach (var condition in conditions)
         {
@@ -130,7 +130,7 @@ public class ProductsController : BaseCrudController<Product, ProductsController
     [HttpGet]
     public override async Task<IActionResult> CreateAsync()
     {
-        return View(new Product());
+        return await Task.FromResult(View(new Product()));
     }
 
     //[HttpPost]

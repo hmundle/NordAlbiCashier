@@ -8,8 +8,6 @@
 }
 <h2>Rechnung erstellen</h2>
 
-
-
 <div class="d-flex flex-row">
     <div class="p-2">
         <div class="input-group">
@@ -49,9 +47,6 @@
 </table>
 
 <div asp-validation-summary="All" class="text-danger"></div>
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-    Launch demo modal
-</button>
 
 <!-- Modal -->
 <div class="modal fade" id="finalizeDialog" tabindex="-1" aria-labelledby="finalizeDialogLabel" aria-hidden="true">
@@ -229,7 +224,7 @@
             // show sum
             sum = sumUpAllPrices();
             const sumString = sum.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
-            sumField.html(`Summe: EUR ${sumString}`);
+            sumField.html(`Summe: ${sumString}`);
             payInptSum.val(sumString);
 
             // Clear the TextBoxes.

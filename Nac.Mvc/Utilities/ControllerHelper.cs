@@ -68,7 +68,7 @@ public static class ControllerHelper
         };
     }
 
-    public static List<TEnum> ExtractFilterEnum<TEnum>(HttpRequest request, string field) where TEnum : struct
+    public static IList<TEnum> ExtractFilterEnum<TEnum>(HttpRequest request, string field) where TEnum : struct
     {
         List<TEnum> enumList = new();
         for (int i = 0; i < MAX_REQUEST_SEARCH_PANE_LENGTH; i++)
@@ -87,7 +87,23 @@ public static class ControllerHelper
         return enumList;
     }
 
-    public static List<DataTablesSearchBuilderCondition> ExtractSearchBuilderConditions(HttpRequest request)
+    public static IList<string> ExtractFilterString(HttpRequest request, string field)
+    {
+        List<string> stringList = new();
+        for (int i = 0; i < MAX_REQUEST_SEARCH_PANE_LENGTH; i++)
+        {
+            string? strValue = request.Form["searchPanes[" + field + "][" + i + "]"].FirstOrDefault();
+            if (strValue == null)
+            {
+                break;
+            }
+            stringList.Add(strValue);
+        }
+
+        return stringList;
+    }
+
+    public static IList<DataTablesSearchBuilderCondition> ExtractSearchBuilderConditions(HttpRequest request)
     {
         List<DataTablesSearchBuilderCondition> list = new();
         for (int i = 0; i < MAX_REQUEST_SEARCH_PANE_LENGTH; i++)

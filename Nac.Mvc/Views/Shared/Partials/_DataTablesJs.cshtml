@@ -73,7 +73,7 @@
                 serverSide: true,
                 filter: true,
                 pageLength: 50,
-                lengthMenu: [5, 10, 20, 50, 100],
+                lengthMenu: [5, 10, 20, 50, 100, 500],
                 columns: [] // will be set later
             };
             // dynamically add some datatables.net properties
@@ -168,6 +168,11 @@
 
             $(document).ready(function () {
                 table = $('#myDataTable').DataTable(config);
+                table.on('draw.dt', function () {
+                    if (typeof onTableRender === 'function') {
+                        onTableRender();
+                    }
+                });
             });
 
             GetSelectedIds = function () {

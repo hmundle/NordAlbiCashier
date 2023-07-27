@@ -1,6 +1,85 @@
 ﻿@model IEnumerable<Invoice>
 @{
-    ViewData["Title"] = "Index";
+    var myObjectName = typeof(Invoice).Name;
+    ViewData["Title"] = "Index " + myObjectName;
+    ViewData["UseDatatables"] = true;
 }
-<h1>Rechnungen</h1>
-<partial name="Partials/_InvoiceListPartial" model="@Model" />
+
+<h3>
+    <span class="pe-2">Rechnungen</span>
+    <item-create></item-create>
+    <span id="sum" class=" px-2 py-1 mx-3 bg-primary text-light fw-bold lead">
+        Summe:
+    </span>
+
+</h3>
+
+<table id="myDataTable" class="table table-striped nowrap" style="width:100%">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Type)</th>
+            <th>Produkte</th>
+            <th>Preis</th>
+            <th>@Html.DisplayNameFor(model => model.Comment)</th>
+            <th>@Html.DisplayNameFor(model => model.Operator)</th>
+            <th>@Html.DisplayNameFor(model => model.Created)</th>
+            <th>@Html.DisplayNameFor(model => model.Modified)</th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            sumField = $("#sum");
+        });
+
+        function sumUpAllPrices() {
+            const initialValue = 0;
+            return table.data().reduce(
+                (accumulator, currentValue) => accumulator + currentValue.sum,
+                initialValue
+            );
+        }
+
+        var onTableRender = function () {
+            const sum = sumUpAllPrices();
+            const sumString = sum.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+            sumField.html(`Summe: ${sumString}`);
+        }
+
+        let columnSearchBuilderSearch = [3];
+        let columnSearchBuilderDate = [5, 6];
+        //let columnSearchBuilderNum = [9, 10];
+        let columnsSearchPanesEnabled = [
+            0, 4
+        ];
+        //let enableRowSelection = true;
+        let columnsDefinition = [
+            { data: "type", name: "Type", orderable: true },
+            { data: "count", name: "Count", orderable: false },
+            {
+                data: "sum", name: "Sum", orderable: false,
+                render: DataTable.render.number(null, null, 2, '€')
+            },
+            { data: "comment", name: "Comment", orderable: true },
+            { data: "operator", name: "Operator", orderable: true },
+            { data: "created", name: "Created", orderable: true },
+            { data: "modified", name: "Modified", orderable: true },
+            {
+                data: "id", name: "CRUD", orderable: false,
+                render: function (data, type) {
+                    if (type === 'display') {
+                        return AddCrudButtons(data, [
+                            { uriBase: '@this.Url.Action("Details")', icon: 'info-circle' },
+                            { uriBase: '@this.Url.Action("Edit")', icon: 'edit' },
+                            { uriBase: '@this.Url.Action("Delete")', icon: 'trash' },
+                        ]);
+                    }
+                    return data;
+                }
+            },
+        ];
+    </script>
+}
