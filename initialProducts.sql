@@ -505,4 +505,5 @@ INSERT INTO public.products
 , ('Eier 1 Stück Freiland'                       ,  0.40, 'Ei einyeln Freiland'               , 'sonstiges'::product_group::product_group, 'quantity'::product_category::product_category,gen_random_uuid(),NULL,'import','local'::sync_status::sync_status,false)
 , ('Eier 10 Stück Freiland'                      ,  3.90, 'Eier 10er Pack Freiland'           , 'sonstiges'::product_group::product_group, 'code'::product_category::product_category,gen_random_uuid(),NULL,'import','local'::sync_status::sync_status,false)
 , ('Anzahlung Fleischbestellung fuer 08.08.2022' , -5.00, 'Fleischbestellung fuer 08.08.2022' , 'wurst'::product_group::product_group, 'code'::product_category::product_category,gen_random_uuid(),NULL,'import','local'::sync_status::sync_status,false)
+, ('Handeingabe'                                 ,  0.00, 'Handeingabe'                       , 'sonstiges'::product_group::product_group, 'price'::product_category::product_category,gen_random_uuid(),NULL,'import','local'::sync_status::sync_status,false)
 ;
