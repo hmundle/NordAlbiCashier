@@ -4,6 +4,10 @@
     {
         <script>
             var table;
+            if (typeof rowOrder === 'undefined') {
+                rowOrder = [0, 'asc'];
+            }
+
             let config = {
                 columnDefs: [], // will be set later
                 buttons: [
@@ -67,7 +71,7 @@
                     url: "@this.Url.Action("GetList")",
                     type: "POST",
                 },
-                order: [[1, 'asc']],
+                order: [rowOrder],
                 stateSave: true,
                 processing: true,
                 serverSide: true,

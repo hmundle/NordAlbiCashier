@@ -41,16 +41,17 @@
 
 @section Scripts{
     <script>
-        let columnSearchBuilderSearch = [1, 2];
-        let columnSearchBuilderDate = [7];
-        //let columnSearchBuilderNum = [9, 10];
-        let columnsSearchPanesEnabled = [
+        const rowOrder = [7, 'desc'];
+        const columnSearchBuilderSearch = [1, 2];
+        const columnSearchBuilderDate = [7];
+        //const columnSearchBuilderNum = [9, 10];
+        const columnsSearchPanesEnabled = [
             3, 6, 
         @*{ id: 3, header: '@Html.DisplayNameForInnerType((L0QualityControl q) => q.QC01_L0Browse)' },
         //{ id: 4, header: '@Html.DisplayNameForInnerType((L0QualityControl q) => q.QC02_L0SipMeta)' },
         *@];
-        //let enableRowSelection = true;
-        let columnsDefinition = [
+        //const enableRowSelection = true;
+        const columnsDefinition = [
             {
                 data: "id", name: "CRUD", orderable: false,
                 render: function (data, type) {

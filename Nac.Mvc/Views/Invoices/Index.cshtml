@@ -49,14 +49,15 @@
             sumField.html(`Summe: ${sumString}`);
         }
 
-        let columnSearchBuilderSearch = [3];
-        let columnSearchBuilderDate = [5, 6];
-        //let columnSearchBuilderNum = [9, 10];
-        let columnsSearchPanesEnabled = [
+        const rowOrder = [5, 'desc'];
+        const columnSearchBuilderSearch = [3];
+        const columnSearchBuilderDate = [5, 6];
+        //const columnSearchBuilderNum = [9, 10];
+        const columnsSearchPanesEnabled = [
             0, 4
         ];
-        //let enableRowSelection = true;
-        let columnsDefinition = [
+        //const enableRowSelection = true;
+        const columnsDefinition = [
             { data: "type", name: "Type", orderable: true },
             { data: "count", name: "Count", orderable: false },
             {
