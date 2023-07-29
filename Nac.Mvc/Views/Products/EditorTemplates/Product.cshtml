@@ -3,6 +3,9 @@
 <div asp-validation-summary="All" class="text-danger"></div>
 
 <div>
+    <label class="col-form-label">Hinweis: Bei Kategorie 'Weight' muss der Kilogramm-Preis eingetragen werden!</label>
+</div>
+<div>
     <label asp-for="Category" class="col-form-label"></label>
     <select asp-for="Category" autofocus class="form-control" asp-items="@ControllerHelper.ProductCategorySelectionList()" size="@ControllerHelper.ProductCategorySelectionList().Count()"></select>
     <span asp-validation-for="Category" class="text-danger"></span>
