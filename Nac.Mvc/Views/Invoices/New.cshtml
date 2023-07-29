@@ -26,6 +26,9 @@
     <div class="p-2">
         <button id="btnPay" type="button" class="btn btn-primary">Bezahlen</button>
     </div>
+    <div class="p-2">
+        <button id="btnClear" type="button" class="btn btn-secondary">Alles löschen</button>
+    </div>
 </div>
 
 
@@ -137,10 +140,14 @@
                     info: false,
                     ordering: true,
                     paging: false,
+                    searching: false,
                     order: [[0, 'desc']],
                     columns: columnsDefinition
                 }
             );
+            table.on('draw.dt', function () {
+                newCodeInput.focus();
+            });
             btnAdd = $("#btnAdd");
             newCodeInput = $("#newCode");
             sumField = $("#sum");
@@ -152,6 +159,7 @@
 
             $("body").on("click", "#btnAdd", addNewRow);
             $("body").on("click", "#btnPay", payment);
+            $("body").on("click", "#btnClear", clearAll);
             $("body").on("keypress", "#finalizeDialog", captureKeyPressCash);
             $("body").on("keypress", "#newCode", captureKeyPressCode);
             $("body").on("click", "#btnPaid", finalize);
@@ -168,9 +176,18 @@
                 event.preventDefault();
                 btnAdd.click();
             }
-            if (event.code === 'NumpadSubtract') {
-                event.preventDefault();
-                payment();
+            else {
+                switch (event.code) {
+                    case 'NumpadSubtract':
+                    case 'NumpadAdd':
+                        event.preventDefault();
+                        payment();
+                        break;
+                    case 'NumpadMultiply':
+                        event.preventDefault();
+                        clearAll();
+                        break;
+                }
             }
         }
 
@@ -394,6 +411,12 @@
                     alert(thrownError);
                 }
             });
+        }
+
+        function clearAll() {
+            if (confirm(`Sollen alle Einkäufe aus dieser Tabelle entfernt werden?\nDas kann nicht rückgängig gemacht werden?`)) {
+                table.clear().draw();
+            }
         }
     </script>
 }
