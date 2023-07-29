@@ -265,7 +265,7 @@
             let multiplier = 1;
             do {
                 do {
-                    const val = prompt(`Wieviele '${result.name}'?`);
+                    let val = prompt(`Wieviele '${result.name}'?`);
                     if (val === null) {
                         multiplier = 0;
                     }
@@ -287,6 +287,34 @@
                 return true;
             }
             alert(`Anzahl '${multiplier}' ist nicht plausibel!\nZum Abbrechen '${minQuantity}' eintragen und dann aus der Liste löschen.`)
+            return false;
+        }
+        function doWeight(result) {
+            let weight = 0;
+            do {
+                do {
+                    let val = prompt(`'${result.name}' wiegt in GRAMM?`);
+                    if (val === null) {
+                        weight = 0;
+                    }
+                    else {
+                        if (!regexInteger.test(val)) {
+                            alert(`'${val}' ist keine ganze Zahl, Preisabgabe in GRAMM!`);
+                            val = null;
+                        }
+                        weight = parseInt(val);
+                    }
+                }
+                while (isNaN(weight));
+            }
+            while (!plausiWeight(weight));
+            return weight;
+        }
+        function plausiWeight(weight) {
+            if (minWeight <= weight && weight <= maxWeight) {
+                return true;
+            }
+            alert(`Gewicht '${weight}'GRAMM ist nicht plausibel!\nFür hohes Gewicht, mehrere Einträge machen.\nZum Abbrechen '${minWeight}' eintragen und dann aus der Liste löschen.`)
             return false;
         }
         function doPrice(result) {
@@ -318,34 +346,6 @@
                 return true;
             }
             alert(`Betrag '${price}' ist nicht plausibel!\nZum Abbrechen '${minManualPrice}' eintragen und dann aus der Liste löschen.`)
-            return false;
-        }
-        function doWeight(result) {
-            let weight = 0;
-            do {
-                do {
-                    let val = prompt(`'${result.name}' wiegt in GRAMM?`);
-                    if (val === null) {
-                        weight = 0;
-                    }
-                    else {
-                        if (!regexInteger.test(val)) {
-                            alert(`'${val}' ist keine ganze Zahl, Preisabgabe in GRAMM!`);
-                            val = null;
-                        }
-                        weight = parseInt(val);
-                    }
-                }
-                while (isNaN(weight));
-            }
-            while (!plausiWeight(weight));
-            return weight;
-        }
-        function plausiWeight(weight) {
-            if (minWeight <= weight && weight <= maxWeight) {
-                return true;
-            }
-            alert(`Gewicht '${weight}'GRAMM ist nicht plausibel!\nFür hohes Gewicht, mehrere Einträge machen.\nZum Abbrechen '${minWeight}' eintragen und dann aus der Liste löschen.`)
             return false;
         }
 
