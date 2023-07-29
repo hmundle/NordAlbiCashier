@@ -86,6 +86,15 @@
 
 @section Scripts{
     <script type="text/javascript">
+        const minQuantity = 0;
+        const maxQuantity = 12;
+        const minWeight = 0;
+        const maxWeight = 2000;
+        const minManualPrice = 0;
+        const maxManualPrice = 200;
+        const regexInteger = new RegExp('^\\d+$');
+        const regexFloat = new RegExp('^\\d+,?\\d{0,2}$');
+
         let table;
         let idCounter = 1;
         let sum = 0.0;
@@ -238,30 +247,89 @@
         function doQuantity(result) {
             let multiplier = 1;
             do {
-                const val = prompt(`Wieviele '${result.name}'?`);
-                multiplier = parseInt(val);
+                do {
+                    const val = prompt(`Wieviele '${result.name}'?`);
+                    if (val === null) {
+                        multiplier = 0;
+                    }
+                    else {
+                        if (!regexInteger.test(val)) {
+                            alert(`'${val}' ist keine ganze Zahl!`);
+                            val = null;
+                        }
+                        multiplier = parseInt(val);
+                    }
+                }
+                while (isNaN(multiplier));
             }
-            while (isNaN(multiplier));
+            while (!plausiQuantity(multiplier));
             return multiplier;
+        }
+        function plausiQuantity(multiplier) {
+            if (minQuantity <= multiplier && multiplier <= maxQuantity) {
+                return true;
+            }
+            alert(`Anzahl '${multiplier}' ist nicht plausibel!\nZum Abbrechen '${minQuantity}' eintragen und dann aus der Liste löschen.`)
+            return false;
         }
         function doPrice(result) {
             let price = 0.0;
             do {
-                let val = prompt(`'${result.name}' kostet?`);
-                val = val.replace(',', '.');
-                price = parseFloat(val);
+                do {
+                    let val = prompt(`'${result.name}' kostet?`);
+                    if (val === null) {
+                        price = 0;
+                    }
+                    else {
+                        if (!regexFloat.test(val)) {
+                            alert(`'${val}' ist keine Zahl!`);
+                            price = NaN;
+                        }
+                        else {
+                            val = val.replace(',', '.');
+                            price = parseFloat(val);
+                        }
+                    }
+                }
+                while (isNaN(price));
             }
-            while (isNaN(price));
+            while (!plausiPrice(price));
             return price;
+        }
+        function plausiPrice(price) {
+            if (minManualPrice <= price && price <= maxManualPrice) {
+                return true;
+            }
+            alert(`Betrag '${price}' ist nicht plausibel!\nZum Abbrechen '${minManualPrice}' eintragen und dann aus der Liste löschen.`)
+            return false;
         }
         function doWeight(result) {
             let weight = 0;
             do {
-                let val = prompt(`'${result.name}' wiegt in GRAMM?`);
-                weight = parseInt(val);
+                do {
+                    let val = prompt(`'${result.name}' wiegt in GRAMM?`);
+                    if (val === null) {
+                        weight = 0;
+                    }
+                    else {
+                        if (!regexInteger.test(val)) {
+                            alert(`'${val}' ist keine ganze Zahl, Preisabgabe in GRAMM!`);
+                            val = null;
+                        }
+                        weight = parseInt(val);
+                    }
+                }
+                while (isNaN(weight));
             }
-            while (isNaN(weight));
+            while (!plausiWeight(weight));
             return weight;
+        }
+        function plausiWeight(weight) {
+            if (minWeight <= weight && weight <= maxWeight) {
+                return true;
+            }
+            alert(`Gewicht '${weight}'GRAMM ist nicht plausibel!\nFür hohes Gewicht, mehrere Einträge machen.\nZum Abbrechen '${minWeight}' eintragen und dann aus der Liste löschen.`)
+            return false;
         }
 
         function sumUpAllPrices() {
@@ -318,7 +386,7 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (r) {
-                    alert(r + " record(s) inserted.");
+                    //alert(r + " record(s) inserted.");
                     window.location.href = '@this.Url.Action(nameof(InvoicesController.NewAsync).RemoveAsyncPostfix())';
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
