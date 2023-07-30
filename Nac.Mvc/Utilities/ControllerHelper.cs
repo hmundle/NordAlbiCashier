@@ -26,7 +26,7 @@ public static class ControllerHelper
     public static SelectList ProductCategorySelectionList()
     => new(Enum.GetNames(typeof(ProductCategory)).Where(c => c != nameof(ProductCategory.Undefined)));
     public static SelectList PaymentTypeSelectionList()
-    => new(Enum.GetNames(typeof(PaymentType)));
+    => new(Enum.GetNames(typeof(PaymentType)).Where(c => c != nameof(PaymentType.Undefined)));
     public static SelectList SyncStatusSelectionList()
     => new(Enum.GetNames(typeof(SyncStatus)));
     public static SelectList ProductGroupSelectionList()

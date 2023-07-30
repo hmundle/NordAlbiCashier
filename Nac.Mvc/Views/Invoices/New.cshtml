@@ -93,10 +93,10 @@
         const maxQuantity = 12;
         const minWeight = 0;
         const maxWeight = 2000;
-        const minManualPrice = 0;
+        const minManualPrice = -50;
         const maxManualPrice = 200;
         const regexInteger = new RegExp('^\\d+$');
-        const regexFloat = new RegExp('^\\d+,?\\d{0,2}$');
+        const regexFloat = new RegExp('^[+-]?\\d+,?\\d{0,2}$');
 
         let table;
         let idCounter = 1;
@@ -199,9 +199,6 @@
         }
 
         function addNewRow() {
-            //Reference the Name and Country TextBoxes.
-            //var newCode = newCodeInput;
-
             // get product
             $.get(
                 `@this.Url.Action(nameof(ProductsController.GetDetailsDataAsync).RemoveAsyncPostfix(), nameof(ProductsController).RemoveController())/${newCodeInput.val()}`,
@@ -286,7 +283,7 @@
             if (minQuantity <= multiplier && multiplier <= maxQuantity) {
                 return true;
             }
-            alert(`Anzahl '${multiplier}' ist nicht plausibel!\nZum Abbrechen '${minQuantity}' eintragen und dann aus der Liste löschen.`)
+            alert(`Anzahl '${multiplier}' ist nicht plausibel!\nZum Abbrechen '0' eintragen und dann aus der Liste löschen.`)
             return false;
         }
         function doWeight(result) {
@@ -314,7 +311,7 @@
             if (minWeight <= weight && weight <= maxWeight) {
                 return true;
             }
-            alert(`Gewicht '${weight}'GRAMM ist nicht plausibel!\nFür hohes Gewicht, mehrere Einträge machen.\nZum Abbrechen '${minWeight}' eintragen und dann aus der Liste löschen.`)
+            alert(`Gewicht '${weight}'GRAMM ist nicht plausibel!\nFür hohes Gewicht, mehrere Einträge machen.\nZum Abbrechen '0' eintragen und dann aus der Liste löschen.`)
             return false;
         }
         function doPrice(result) {
@@ -345,7 +342,7 @@
             if (minManualPrice <= price && price <= maxManualPrice) {
                 return true;
             }
-            alert(`Betrag '${price}' ist nicht plausibel!\nZum Abbrechen '${minManualPrice}' eintragen und dann aus der Liste löschen.`)
+            alert(`Betrag '${price}' ist nicht plausibel!\nZum Abbrechen '0' eintragen und dann aus der Liste löschen.`)
             return false;
         }
 
