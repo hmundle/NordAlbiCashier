@@ -46,6 +46,7 @@ public partial class NacDbContext : /*Identity*/DbContext
     public virtual DbSet<Invoice>? Invoices { get; set; }
 
     public virtual DbSet<CashStatus>? CashStatus { get; set; }
+    public virtual DbSet<CashFlow>? CashFlow { get; set; }
 
     public virtual DbSet<User>? Users { get; set; }
 
@@ -179,6 +180,13 @@ public partial class NacDbContext : /*Identity*/DbContext
             entity.Property(e => e.Operator).HasDefaultValue("unknown");
         });
         modelBuilder.Entity<CashStatus>(entity =>
+        {
+            entity.HasQueryFilter(e => e.IsDeleted == false);
+            entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");
+            entity.Property(e => e.Created).HasDefaultValueSql("now()");
+            entity.Property(e => e.Operator).HasDefaultValue("unknown");
+        });
+        modelBuilder.Entity<CashFlow>(entity =>
         {
             entity.HasQueryFilter(e => e.IsDeleted == false);
             entity.Property(e => e.Id).HasDefaultValueSql("gen_random_uuid()");

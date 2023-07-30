@@ -1,0 +1,108 @@
+﻿@model IEnumerable<CashFlow>
+
+@using (Html.BeginForm(null, null, FormMethod.Get))
+{
+    <p>
+        Kasse:
+        @Html.DropDownList("till", ViewData["AllUsers"] as SelectList)
+        <input type="submit" value="Search" />
+    </p>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Till)</th>
+            <th>@Html.DisplayNameFor(model => model.Type)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+
+            <th>@Html.DisplayNameFor(model => model._500)</th>
+            <th>@Html.DisplayNameFor(model => model._200)</th>
+            <th>@Html.DisplayNameFor(model => model._100)</th>
+            <th>@Html.DisplayNameFor(model => model._50)</th>
+            <th>@Html.DisplayNameFor(model => model._20)</th>
+            <th>@Html.DisplayNameFor(model => model._10)</th>
+            <th>@Html.DisplayNameFor(model => model._5)</th>
+            <th>@Html.DisplayNameFor(model => model._2)</th>
+            <th>@Html.DisplayNameFor(model => model._1)</th>
+            <th>@Html.DisplayNameFor(model => model._050)</th>
+            <th>@Html.DisplayNameFor(model => model._020)</th>
+            <th>@Html.DisplayNameFor(model => model._010)</th>
+            <th>@Html.DisplayNameFor(model => model._005)</th>
+            <th>@Html.DisplayNameFor(model => model._002)</th>
+            <th>@Html.DisplayNameFor(model => model._001)</th>
+
+            <th>Summe</th>
+
+            <th>Operator</th>
+            <th>@Html.DisplayNameFor(model => model.Created)</th>
+            <th>@Html.DisplayNameFor(model => model.Modified)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Till)</td>
+                <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+
+                <td class="text-end">@Html.DisplayFor(modelItem => item._500)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._200)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._100)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._50)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._20)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._10)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._5)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._2)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._1)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._050)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._020)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._010)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._005)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._002)</td>
+                <td class="text-end">@Html.DisplayFor(modelItem => item._001)</td>
+
+                <td>@item.GetSum().ToString("C")</td>
+
+                <td>@Html.DisplayFor(modelItem => item.Operator)</td>
+                <td>@Html.DisplayFor(modelItem => item.Created)</td>
+                <td>@Html.DisplayFor(modelItem => item.Modified)</td>
+                <td>
+                    <item-edit item-id="@item.Id"></item-edit> |
+                    <item-details item-id="@item.Id"></item-details> |
+                    <item-delete item-id="@item.Id"></item-delete>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+
+                <td class="text-end">@Math.Round(item._500 / 500, 6)</td>
+                <td class="text-end">@Math.Round(item._200 / 200, 6)</td>
+                <td class="text-end">@Math.Round(item._100 / 100, 6)</td>
+                <td class="text-end">@Math.Round(item._50 / 50, 6)</td>
+                <td class="text-end">@Math.Round(item._20 / 20, 6)</td>
+                <td class="text-end">@Math.Round(item._10 / 10, 6)</td>
+                <td class="text-end">@Math.Round(item._5 / 5, 6)</td>
+                <td class="text-end">@Math.Round(item._2 / 2, 6)</td>
+                <td class="text-end">@Math.Round(item._1 / 1, 6)</td>
+                <td class="text-end">@Math.Round(item._050 / 0.5, 6)</td>
+                <td class="text-end">@Math.Round(item._020 / 0.2, 6)</td>
+                <td class="text-end">@Math.Round(item._010 / 0.1, 6)</td>
+                <td class="text-end">@Math.Round(item._005 / 0.05, 6)</td>
+                <td class="text-end">@Math.Round(item._002 / 0.02, 6)</td>
+                <td class="text-end">@Math.Round(item._001 / 0.01, 6)</td>
+
+                <td>&nbsp;</td>
+
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -15,7 +15,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link fw-bolder" asp-area="" asp-controller="Invoices" asp-action="New">Kasse</a>
+                    <a class="nav-link fw-bolder" asp-area="" asp-controller="Invoices" asp-action="New">Kunde</a>
                 </li>
 
                 <li class="nav-item">
@@ -34,8 +34,18 @@
                     <a class="nav-link fw-bolder" asp-area="" asp-controller="Invoices" asp-action="Index">Rechnungen</a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link fw-bolder" asp-area="" asp-controller="CashStatus" asp-action="Index">Kassensturz</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle fw-bolder" href="#" id="navmenuMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Kasse
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navmenuMenuLink">
+                        <li>
+                            <a class="dropdown-item fw-bolder" asp-area="" asp-controller="CashStatus" asp-action="Index">Kassensturz</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item fw-bolder" asp-area="" asp-controller="CashFlow" asp-action="Index">Entnahme/Einlage</a>
+                        </li>
+                    </ul>
                 </li>
 
                 <li class="nav-item">

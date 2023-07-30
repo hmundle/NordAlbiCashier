@@ -1,10 +1,11 @@
 ﻿using Nac.Models.Entities;
+using Nac.Models.Entities.Base;
 
 namespace Nac.Lib.Utilities;
 
 public static class ModelExtensions
 {
-    public static double GetSum(this CashStatus status)
+    public static double GetSum(this CashBase status)
     {
         return
             status._500
