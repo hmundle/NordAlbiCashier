@@ -1,4 +1,4 @@
-
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Nac.Dal.Repos.Base.IRepo;
 using Nac.Dal.Repos.Interfaces;
@@ -30,7 +30,7 @@ where TController : class
     [HttpGet]
     [Route("/[controller]")]
     [Route("/[controller]/[action]")]
-    public virtual async Task<IActionResult> IndexAsync()
+    public virtual async Task<IActionResult> IndexAsync() 
         => View(await MainRepo.GetAll().ToListAsync());
 
     [HttpGet("{id?}")]
@@ -51,8 +51,8 @@ where TController : class
     [HttpGet]
     public virtual async Task<IActionResult> CreateAsync()
     {
-        // ViewData["LookupValues"] = await GetLookupValuesAsync();
-        return await Task.FromResult(View());
+        ViewData["AllUsers"] = new SelectList(await UserRepo.GetAllUsers().Select(u => u.Name).ToListAsync());
+        return View();
     }
 
     [HttpPost]
@@ -83,7 +83,8 @@ where TController : class
             ViewData["Error"] = "Not Found";
             return View();
         }
-        // ViewData["LookupValues"] = await GetLookupValuesAsync();
+
+        ViewData["AllUsers"] = new SelectList(await UserRepo.GetAllUsers().Select(u => u.Name).ToListAsync());
         return View(entity);
     }
 

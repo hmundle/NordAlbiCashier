@@ -1,12 +1,14 @@
 ﻿@using Nac.Mvc.Utilities;
 @model CashStatus
+
 <div asp-validation-summary="All" class="text-danger"></div>
 
 <div>
     <label asp-for="Till" class="col-form-label"></label>
-    <input asp-for="Till" class="form-control" />
+    <select asp-for="Till" autofocus class="form-control" asp-items="@ViewData["AllUsers"] as SelectList" size="4"></select>
     <span asp-validation-for="Till" class="text-danger"></span>
 </div>
+
 <div>
     <label asp-for="Type" class="col-form-label"></label>
     <input asp-for="Type" class="form-control" />
