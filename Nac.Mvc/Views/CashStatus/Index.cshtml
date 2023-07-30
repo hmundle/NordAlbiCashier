@@ -1,0 +1,10 @@
+﻿@model IEnumerable<CashStatus>
+@{
+    ViewData["Title"] = "Index";
+}
+<h3>
+    <span class="pe-2">Kassenstand</span>
+    <item-create></item-create>
+</h3>
+
+<partial name="Partials/_CashStatusListPartial" model="@Model" />

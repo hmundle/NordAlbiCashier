@@ -1,0 +1,70 @@
+﻿@model IEnumerable<CashStatus>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Till)</th>
+            <th>@Html.DisplayNameFor(model => model.Type)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+
+            <th>@Html.DisplayNameFor(model => model._500)</th>
+            <th>@Html.DisplayNameFor(model => model._200)</th>
+            <th>@Html.DisplayNameFor(model => model._100)</th>
+            <th>@Html.DisplayNameFor(model => model._50)</th>
+            <th>@Html.DisplayNameFor(model => model._20)</th>
+            <th>@Html.DisplayNameFor(model => model._10)</th>
+            <th>@Html.DisplayNameFor(model => model._5)</th>
+            <th>@Html.DisplayNameFor(model => model._2)</th>
+            <th>@Html.DisplayNameFor(model => model._1)</th>
+            <th>@Html.DisplayNameFor(model => model._050)</th>
+            <th>@Html.DisplayNameFor(model => model._020)</th>
+            <th>@Html.DisplayNameFor(model => model._010)</th>
+            <th>@Html.DisplayNameFor(model => model._005)</th>
+            <th>@Html.DisplayNameFor(model => model._002)</th>
+            <th>@Html.DisplayNameFor(model => model._001)</th>
+
+            <th>Summe</th>
+
+            <th>@Html.DisplayNameFor(model => model.Operator)</th>
+            <th>@Html.DisplayNameFor(model => model.Created)</th>
+            <th>@Html.DisplayNameFor(model => model.Modified)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Till)</td>
+                <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                <td>@Html.DisplayFor(modelItem => item.Description)</td>
+
+                <td>@Html.DisplayFor(modelItem => item._500)</td>
+                <td>@Html.DisplayFor(modelItem => item._200)</td>
+                <td>@Html.DisplayFor(modelItem => item._100)</td>
+                <td>@Html.DisplayFor(modelItem => item._50)</td>
+                <td>@Html.DisplayFor(modelItem => item._20)</td>
+                <td>@Html.DisplayFor(modelItem => item._10)</td>
+                <td>@Html.DisplayFor(modelItem => item._5)</td>
+                <td>@Html.DisplayFor(modelItem => item._2)</td>
+                <td>@Html.DisplayFor(modelItem => item._1)</td>
+                <td>@Html.DisplayFor(modelItem => item._050)</td>
+                <td>@Html.DisplayFor(modelItem => item._020)</td>
+                <td>@Html.DisplayFor(modelItem => item._010)</td>
+                <td>@Html.DisplayFor(modelItem => item._005)</td>
+                <td>@Html.DisplayFor(modelItem => item._002)</td>
+                <td>@Html.DisplayFor(modelItem => item._001)</td>
+
+                <td>@item.GetSum().ToString("C")</td>
+
+                <td>@Html.DisplayFor(modelItem => item.Operator)</td>
+                <td>@Html.DisplayFor(modelItem => item.Created)</td>
+                <td>@Html.DisplayFor(modelItem => item.Modified)</td>
+                <td>
+                    <item-edit item-id="@item.Id"></item-edit> |
+                    <item-details item-id="@item.Id"></item-details> |
+                    <item-delete item-id="@item.Id"></item-delete>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

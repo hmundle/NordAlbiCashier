@@ -21,6 +21,7 @@ public static class DalConfiguration
         services.AddScoped<IProductRepo, ProductRepo>();
         services.AddScoped<ISellingRepo, SellingRepo>();
         services.AddScoped<IInvoiceRepo, InvoiceRepo>();
+        services.AddScoped<ICashStatusRepo, CashStatusRepo>();
 
         services.AddScoped<IUserRepo, UserRepo>();
 
