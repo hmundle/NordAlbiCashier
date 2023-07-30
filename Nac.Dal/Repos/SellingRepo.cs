@@ -17,17 +17,4 @@ public class SellingRepo : BaseEntityRepo<Selling>, ISellingRepo
     {
     }
 
-    // public virtual async Task<L0Product?> FindWithProcAsync(Guid? ProcId)
-    // {
-    //     var product = await Table
-    //         .Where(p => p.ProcId == ProcId)
-    //         .Include(p => p.L0Archivings)
-    //         .Include(p => p.L0Deliveries)
-    //         .Include(p => p.L0QualityControls)
-    //         .Include(p => p.L0Sips)
-    //         .Include(p => p.ProcErrorNavigation)
-    //         .FirstOrDefaultAsync();
-    //     return product;
-    // }
-
 }

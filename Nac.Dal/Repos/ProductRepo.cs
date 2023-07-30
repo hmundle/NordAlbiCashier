@@ -17,14 +17,4 @@ public class ProductRepo : BaseEntityRepo<Product>, IProductRepo
     {
     }
 
-    // public virtual async Task<TProduct?> FindWithProcAsync(Guid? ProcId)
-    // {
-    //     var product = await Table
-    //         .Where(p => p.ProcId == ProcId)
-    //         .Include(p => p.PassNavigation).ThenInclude(p => p!.TapeNavigation)
-    //         .Include(p => p.ProcErrorNavigation)
-    //         .FirstOrDefaultAsync();
-    //     return product;
-    // }
-
 }
