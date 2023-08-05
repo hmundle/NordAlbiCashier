@@ -67,7 +67,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Gesamtpreis:</label>
-                        <input type="text" class="form-control bg-warning" id="inptTotalPrice" disabled value="">
+                        <input type="text" class="form-control bg-warning fs-2" id="inptTotalPrice" disabled value="">
                     </div>
                     <div class="mb-3">
                         <label for="message-text" class="col-form-label">Bar-Betrag:</label>
@@ -192,7 +192,7 @@
         }
 
         function captureKeyPressCash(event) {
-            if (event.key === 'Enter') {
+            if (event.code === 'NumpadEnter') {
                 event.preventDefault();
                 btnPaid.click();
             }
