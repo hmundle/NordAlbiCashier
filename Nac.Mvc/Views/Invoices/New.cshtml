@@ -391,6 +391,10 @@
         }
 
         function finalize() {
+            if (!finalizeValidation()) {
+                return;
+            }
+
             const postObject = { id: '@Model.Id', type: 2, sellings: table.data().toArray() };
             //Send the JSON array to Controller using AJAX.
             $.ajax({
@@ -408,6 +412,23 @@
                     alert(thrownError);
                 }
             });
+        }
+
+        function finalizeValidation() {
+            // validate input
+            let cash = payInptCash.val();
+            cash = '0' + cash;
+            if (!regexFloat.test(cash)) {
+                alert(`Der Bar-Betrag Wert '${cash}' ist keine Zahl!`);
+                return false;
+            }
+            cash = cash.replace(',', '.');
+            const cashNum = parseFloat(cash);
+            if (isNaN(cashNum) || cashNum > 300) {
+                alert('Bar-Betrag Wert ist nicht plausibel! Versuche es nochmals.');
+                return false;
+            }
+            return true;
         }
 
         function clearAll() {
