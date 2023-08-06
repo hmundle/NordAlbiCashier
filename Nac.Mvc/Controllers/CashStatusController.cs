@@ -37,6 +37,7 @@ public class CashStatusController : BaseCrudController<CashStatus, CashStatusCon
         {
             query = query.Where(cs => cs.Till == till);
         }
+        query = query.OrderBy(cs => cs.Created).Reverse();
         return View(await query.ToListAsync());
     }
 

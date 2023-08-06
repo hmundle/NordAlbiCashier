@@ -34,8 +34,9 @@ public class CashFlowController : BaseCrudController<CashFlow, CashFlowControlle
         var query = MainRepo.GetAll();
         if (till != null)
         {
-            query = query.Where(cs => cs.Till == till);
+            query = query.Where(cf => cf.Till == till);
         }
+        query = query.OrderBy(cf => cf.Created).Reverse();
         return View(await query.ToListAsync());
     }
 
