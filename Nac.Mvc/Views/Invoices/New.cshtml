@@ -209,7 +209,7 @@
                 .fail(newProductFailed);
         }
 
-        function newProductReceived(result) {
+        async function newProductReceived(result) {
             // the result is currently a Product object and is going to be a Selling object,
             // therefore add the missing properties
             result.productId = result.id;
@@ -224,18 +224,18 @@
                     result.finalPrice = result.price;
                     break;
                 case 'Quantity':
-                    beep();
-                    result.quantity = doQuantity(result);
+                    await beep();
+                    result.quantity = await doQuantity(result);
                     result.finalPrice = result.quantity * result.price;
                     break;
                 case 'Price':
-                    beep();
-                    result.priceManual = doPrice(result);
+                    await beep();
+                    result.priceManual = await doPrice(result);
                     result.finalPrice = result.priceManual;
                     break;
                 case 'Weight':
-                    beep();
-                    result.weight = doWeight(result);
+                    await beep();
+                    result.weight = await doWeight(result);
                     result.finalPrice = result.weight / 1000.0 * result.price;
                     break;
                 default:
@@ -262,7 +262,7 @@
             alert('Produkt nicht gefunden!');
         }
 
-        function doQuantity(result) {
+        async function doQuantity(result) {
             let multiplier = 1;
             do {
                 do {
@@ -272,6 +272,7 @@
                     }
                     else {
                         if (!regexInteger.test(val)) {
+                            await beep();
                             alert(`'${val}' ist keine ganze Zahl!`);
                             val = null;
                         }
@@ -290,7 +291,7 @@
             alert(`Anzahl '${multiplier}' ist nicht plausibel!\nZum Abbrechen '0' eintragen und dann aus der Liste löschen.`)
             return false;
         }
-        function doWeight(result) {
+        async function doWeight(result) {
             let weight = 0;
             do {
                 do {
@@ -300,6 +301,7 @@
                     }
                     else {
                         if (!regexInteger.test(val)) {
+                            await beep();
                             alert(`'${val}' ist keine ganze Zahl, Preisabgabe in GRAMM!`);
                             val = null;
                         }
@@ -318,7 +320,7 @@
             alert(`Gewicht '${weight}'GRAMM ist nicht plausibel!\nFür hohes Gewicht, mehrere Einträge machen.\nZum Abbrechen '0' eintragen und dann aus der Liste löschen.`)
             return false;
         }
-        function doPrice(result) {
+        async function doPrice(result) {
             let price = 0.0;
             do {
                 do {
@@ -328,6 +330,7 @@
                     }
                     else {
                         if (!regexFloat.test(val)) {
+                            await beep();
                             alert(`'${val}' ist keine Zahl!`);
                             price = NaN;
                         }
@@ -394,8 +397,8 @@
             payInptReturn.val((cashNum - sum).toLocaleString('de-DE', { style: 'currency', currency: 'EUR' }));
         }
 
-        function finalize() {
-            if (!finalizeValidation()) {
+        async function finalize() {
+            if (!await finalizeValidation()) {
                 return;
             }
 
@@ -418,17 +421,19 @@
             });
         }
 
-        function finalizeValidation() {
+        async function finalizeValidation() {
             // validate input
             let cash = payInptCash.val();
             cash = '0' + cash;
             if (!regexFloat.test(cash)) {
+                await beep();
                 alert(`Der Bar-Betrag Wert '${cash}' ist keine Zahl!`);
                 return false;
             }
             cash = cash.replace(',', '.');
             const cashNum = parseFloat(cash);
             if (isNaN(cashNum) || cashNum > 300) {
+                await beep();
                 alert('Bar-Betrag Wert ist nicht plausibel! Versuche es nochmals.');
                 return false;
             }
