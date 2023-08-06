@@ -20,7 +20,7 @@
     </div>
     <div class="p-2">
         <span id="sum" class=" p-3 mx-3 text-bg-warning fw-bold lead">
-            Summe:
+            Summe: --
         </span>
     </div>
     <div class="p-2">
@@ -443,6 +443,7 @@
         function clearAll() {
             if (confirm(`Sollen alle Einkäufe aus dieser Tabelle entfernt werden?\nDas kann nicht rückgängig gemacht werden?`)) {
                 table.clear().draw();
+                sumField.html(`Summe: --`);
             }
         }
 
