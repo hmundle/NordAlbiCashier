@@ -170,6 +170,9 @@
             finalizeDialog[0].addEventListener('shown.bs.modal', () => {
                 payInptCash.focus()
             })
+            finalizeDialog[0].addEventListener('hidden.bs.modal', () => {
+                newCodeInput.focus();
+            })
 
         });
 
