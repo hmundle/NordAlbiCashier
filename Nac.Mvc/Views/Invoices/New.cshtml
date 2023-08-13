@@ -148,6 +148,7 @@
             );
             table.on('draw.dt', function () {
                 newCodeInput.focus();
+                showSum();
             });
             btnAdd = $("#btnAdd");
             newCodeInput = $("#newCode");
@@ -248,15 +249,12 @@
             ).draw(false);
             idCounter++;
 
-            // show sum
-            sum = sumUpAllPrices();
-            const sumString = sum.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
-            sumField.html(`Summe: ${sumString}`);
-            payInptSum.val(sumString);
+            // show sum implicit after redrawing table
 
             // Clear the TextBoxes.
             newCodeInput.val('');
         }
+
 
         function newProductFailed(r) {
             alert('Produkt nicht gefunden!');
@@ -359,6 +357,13 @@
                 (accumulator, currentValue) => accumulator + currentValue.finalPrice,
                 initialValue
             );
+        }
+
+        function showSum() {
+            sum = sumUpAllPrices();
+            const sumString = sum.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+            sumField.html(`Summe: ${sumString}`);
+            payInptSum.val(sumString);
         }
 
         function remove(rowIdx) {
