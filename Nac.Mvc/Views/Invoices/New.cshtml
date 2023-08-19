@@ -5,6 +5,9 @@
     var myObjectName = typeof(Invoice).Name;
     ViewData["Title"] = "New " + myObjectName;
     ViewData["UseDatatablesInsert"] = true;
+
+    // prepare the payment type select list
+    var paymentTypeSelectionList = new SelectList(ControllerHelper.PaymentTypeSelectionList().Items, PaymentType.Cash.ToString());
 }
 <h2>Rechnung erstellen</h2>
 
@@ -63,7 +66,7 @@
                 <form>
                     <div class="mb-3">
                         <label asp-for="Type" class="col-form-label"></label>
-                        <select asp-for="Type" class="form-control" asp-items="@ControllerHelper.PaymentTypeSelectionList()" size="@ControllerHelper.PaymentTypeSelectionList().Count()"></select>
+                        <select asp-for="Type" class="form-control" asp-items="@paymentTypeSelectionList" size="@paymentTypeSelectionList.Count()"></select>
                     </div>
                     <div class="mb-3">
                         <label for="recipient-name" class="col-form-label">Gesamtpreis:</label>
