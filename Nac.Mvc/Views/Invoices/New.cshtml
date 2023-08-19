@@ -233,7 +233,7 @@
             result.productId = result.id;
             // overwrite the Id, it has to be generated from DB for Selling object
             result.id = '00000000-0000-0000-0000-000000000000';
-            result.invoiceId = '@Model.Id';
+            // invoiceId will be overwritten on backend side
             result.quantity = 1;
             result.priceManual = 0.0;
             result.weight = 0;
@@ -423,11 +423,16 @@
                 return;
             }
 
-            const postObject = { id: '@Model.Id', type: 2, sellings: table.data().toArray() };
+            const postObject = {
+                invoice: {
+                    type: 2
+                },
+                sellings: table.data().toArray()
+            };
             //Send the JSON array to Controller using AJAX.
             $.ajax({
                 type: "POST",
-                url: `@this.Url.Action(nameof(InvoicesController.AddSellingsAsync).RemoveAsyncPostfix())/@Model.Id`,
+                url: `@this.Url.Action(nameof(InvoicesController.AddSellingsAsync).RemoveAsyncPostfix())`,
                 data: JSON.stringify(postObject),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",

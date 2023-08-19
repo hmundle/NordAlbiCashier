@@ -127,44 +127,33 @@ public class InvoicesController : BaseCrudController<Invoice, InvoicesController
     [HttpGet]
     public async Task<IActionResult> NewAsync()
     {
-        var invoice = new Invoice()
-        {
-            Type = PaymentType.Pending,
-            Operator = User.Identity?.Name ?? "unknown"
-        };
-        await MainRepo.AddAsync(invoice);
-        // switch to next payment type
-        invoice.Type = PaymentType.Cash;
-        return View(invoice);
+        return await Task.FromResult(View());
     }
 
-
-    [HttpPost("{id?}")]
+    [HttpPost]
     [Produces("application/json")]
-    public async Task<IActionResult> AddSellingsAsync(Guid? id, [FromBody] Pay pay, [FromServices] ISellingRepo sellingRepo)
+    public async Task<IActionResult> AddSellingsAsync([FromBody] Pay pay, [FromServices] ISellingRepo sellingRepo)
     {
-        if (id == null || pay == null)
+        if (pay == null || pay.Invoice == null)
         {
             return BadRequest();
         }
-        var entity = await MainRepo.FindAsync(id);
-        if (entity == null)
-        {
-            return BadRequest();
-        }
-        entity.Type = pay.Type;
-        // set the modified data
-        entity.Modified = DateTime.UtcNow;
-        entity.Operator = User.Identity?.Name ?? "unknown";
+        pay.Invoice.Operator = User.Identity?.Name ?? "unknown";
+
         foreach (var s in pay.Sellings)
         {
-            s.Operator = entity.Operator;
-            s.Created = entity.Modified;
+            s.Operator = pay.Invoice.Operator;
+            // clean up some content, which is supposed to be set freshly by the DB
+            // this was set due to the characteristics of the datatables.net, which
+            // data is send to this API. It contains values from the product table, with 
+            // the same column names.
+            s.Created = null;
             s.Modified = null;
+            s.xmin = 0;
         }
-        await MainRepo.UpdateAsync(entity);
+        pay.Invoice.Sellings = pay.Sellings;
 
-        await sellingRepo.AddRangeAsync(pay.Sellings);
+        await MainRepo.AddAsync(pay.Invoice);
 
         return Ok(pay.Sellings.Count());
     }

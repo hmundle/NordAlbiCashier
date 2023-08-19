@@ -5,9 +5,7 @@ namespace Nac.Mvc.Models;
 
 public class Pay
 {
-    public Guid Id { get; set; }
+    public Invoice? Invoice { get; set; }
 
     public IEnumerable<Selling> Sellings { get; set; } = new List<Selling>();
-
-    public PaymentType Type { get; set; } = PaymentType.Cash;
 }
