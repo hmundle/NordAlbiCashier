@@ -159,13 +159,13 @@
             btnPaid = $("#btnPaid");
             finalizeDialog = $("#finalizeDialog");
 
-            $("body").on("click", "#btnAdd", addNewRow);
-            $("body").on("click", "#btnPay", payment);
-            $("body").on("click", "#btnClear", clearAll);
-            $("body").on("keypress", "#finalizeDialog", captureKeyPressCash);
-            $("body").on("keypress", "#newCode", captureKeyPressCode);
-            $("body").on("click", "#btnPaid", finalize);
-            $("body").on("input", "#inptCashValue", calcReturn);
+            btnAdd.on("click", addNewRow);
+            $("#btnPay").on("click", payment);
+            $("#btnClear").on("click", clearAll);
+            finalizeDialog.on("keypress", captureKeyPressCash);
+            newCodeInput.on("keypress", captureKeyPressCode);
+            btnPaid.on("click", finalize);
+            payInptCash.on("input", calcReturn);
 
             finalizeDialog[0].addEventListener('shown.bs.modal', () => {
                 payInptCash.focus()
