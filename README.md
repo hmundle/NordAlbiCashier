@@ -12,7 +12,10 @@ Currently you only need this command:
 
 # build the docker image and push to docker hub
 `docker build -f .\Nac.Mvc\Dockerfile -t munhei/nac_service:latest .`
+`docker tag munhei/nac_service:latest munhei/nac_service:1.0.4`
 `docker image push munhei/nac_service`
+`docker image push munhei/nac_service:1.0.4`
+`docker image ls munhei/nac_service:*`
 
 # deployment in docker compose
 - `docker compose create` to create network and containers for the service
