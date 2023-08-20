@@ -80,6 +80,10 @@
                         <label for="inptReturn" class="col-form-label">Rückgeld:</label>
                         <input type="text" class="form-control bg-primary text-light fw-bold fs-2" id="inptReturn" disabled value="">
                     </div>
+                    <div class="mb-3">
+                        <label for="inptComment" class="col-form-label">Kommentar:</label>
+                        <input type="text" class="form-control" id="inptComment">
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -162,6 +166,8 @@
             sumField = $("#sum");
             payInptSum = $("#inptTotalPrice");
             payInptCash = $("#inptCashValue");
+            payInptType = $("#Type");
+            payInptComment = $("#inptComment");
             payInptReturn = $("#inptReturn");
             btnPaid = $("#btnPaid");
             finalizeDialog = $("#finalizeDialog");
@@ -428,7 +434,8 @@
 
             const postObject = {
                 invoice: {
-                    type: 2
+                    type: payInptType.val(),
+                    comment: payInptComment.val()
                 },
                 sellings: table.data().toArray()
             };
