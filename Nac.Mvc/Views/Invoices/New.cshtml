@@ -69,15 +69,15 @@
                         <select asp-for="Type" class="form-control" asp-items="@paymentTypeSelectionList" size="@paymentTypeSelectionList.Count()"></select>
                     </div>
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Gesamtpreis:</label>
+                        <label for="inptTotalPrice" class="col-form-label">Gesamtpreis:</label>
                         <input type="text" class="form-control bg-warning fs-2" id="inptTotalPrice" disabled value="">
                     </div>
                     <div class="mb-3">
-                        <label for="message-text" class="col-form-label">Bar-Betrag:</label>
+                        <label for="inptCashValue" class="col-form-label">Bar-Betrag:</label>
                         <input type="text" class="form-control" id="inptCashValue">
                     </div>
                     <div class="mb-3">
-                        <label for="recipient-name" class="col-form-label">Rückgeld:</label>
+                        <label for="inptReturn" class="col-form-label">Rückgeld:</label>
                         <input type="text" class="form-control bg-primary text-light fw-bold fs-2" id="inptReturn" disabled value="">
                     </div>
                 </form>
