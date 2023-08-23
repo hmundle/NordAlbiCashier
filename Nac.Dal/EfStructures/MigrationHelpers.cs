@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Nac.Dal.EfSteructures;
+namespace Nac.Dal.EfStructures;
 
 public static class MigrationHelpers
 {
@@ -23,13 +23,13 @@ public static class MigrationHelpers
             .OldAnnotation("Npgsql:Enum:ppas.system_sensor_type", "undefined,_1c_p,_1c_l,_1c_w,_1d_p,_1d_l,_1d_w");
     }
 
-    private static string FormatDeleteAllDataSql(String TableName)
+    private static string FormatDeleteAllDataSql(string TableName)
     {
         return $"DELETE FROM ppas.\"{TableName}\";";
     }
 
 
 
-    
+
 
 }
