@@ -57,6 +57,10 @@ public class ProductsController : BaseCrudController<Product, ProductsController
         return query;
     }
 
+    [Route("/[controller]")]
+    [Route("/[controller]/[action]")]
+    public override async Task<IActionResult> IndexAsync() => await Task.FromResult(View());
+
     [HttpPost]
     [Produces("application/json")]
     public async Task<IActionResult> GetListAsync()
