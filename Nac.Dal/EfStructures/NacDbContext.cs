@@ -1,6 +1,6 @@
-﻿using Npgsql;
-
-using Nac.Dal.Exceptions;
+﻿using Nac.Dal.Exceptions;
+using Nac.Models.EntitiesView;
+using Npgsql;
 using System.Data.Common;
 
 namespace Nac.Dal.EfStructures;
@@ -43,6 +43,7 @@ public partial class NacDbContext : /*Identity*/DbContext
 
     public virtual DbSet<Product>? Products { get; set; }
     public virtual DbSet<Selling>? Sellings { get; set; }
+    public virtual DbSet<SellingsAggregatedV> SellingsAggregatedV { get; set; } = null!;
     public virtual DbSet<Invoice>? Invoices { get; set; }
 
     public virtual DbSet<CashStatus>? CashStatus { get; set; }
@@ -204,6 +205,10 @@ public partial class NacDbContext : /*Identity*/DbContext
 
     private static void AddViewsToModel(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<SellingsAggregatedV>(entity =>
+        {
+            entity.ToView("sellings_aggr_v");
+        });
     }
 
 }

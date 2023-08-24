@@ -1,10 +1,80 @@
-﻿@model IEnumerable<Selling>
+﻿@model IEnumerable<SellingsAggregatedV>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Verkäufe aggregiert";
+    ViewData["UseDatatables"] = true;
 }
+
 <h3>
-    <span class="pe-2">Verkäufe</span>
-    <item-create></item-create>
+    <span class="pe-2">@ViewData["Title"]</span>
 </h3>
 
-<partial name="Partials/_SellingListPartial" model="@Model" />
+<table id="myDataTable" class="table table-striped nowrap" style="width:100%">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BarCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Group)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Count)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SumQuantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SumFinalPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SumPriceManual)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SumWeight)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SinglePrice)
+            </th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts{
+    <script>
+        const rowOrder = [5, 'desc'];
+        const columnSearchBuilderSearch = [0, 1];
+        //const columnSearchBuilderDate = [7];
+        //const columnSearchBuilderNum = [9, 10];
+        const columnsSearchPanesEnabled = [
+            2, 3,
+        ];
+        //const enableRowSelection = true;
+        const columnsDefinition = [
+            { data: "name", name: "Name", orderable: true },
+            { data: "barCode", name: "BarCode", orderable: true },
+            { data: "category", name: "Category", orderable: true },
+            { data: "group", name: "Group", orderable: true },
+            { data: "count", name: "Count", orderable: true },
+            { data: "sumQuantity", name: "SumQuantity", orderable: true },
+            {
+                data: "sumFinalPrice", name: "SumFinalPrice", orderable: true,
+                render: DataTable.render.number(null, null, 2, '€')
+            },
+            {
+                data: "sumPriceManual", name: "SumPriceManual", orderable: true,
+                render: DataTable.render.number(null, null, 2, '€')
+            },
+            { data: "sumWeight", name: "SumWeight", orderable: true },
+            {
+                data: "singlePrice", name: "singlePrice", orderable: true,
+                render: DataTable.render.number(null, null, 2, '€')
+            },
+        ];
+    </script>
+}
