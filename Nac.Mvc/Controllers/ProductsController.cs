@@ -17,8 +17,8 @@ public class ProductsController : BaseCrudController<Product, ProductsController
 
     public class ProductSearchModel
     {
-        public IList<ProductCategory> CategoryOrFilter { get; set; }
-        public IList<ProductGroup> GroupOrFilter { get; set; }
+        public IList<ProductCategory> CategoryOrFilter { get; set; } = null!;
+        public IList<ProductGroup> GroupOrFilter { get; set; } = null!;
     }
 
     private static IQueryable<Product> AddFiltersToQuery(ProductSearchModel searchModel, IQueryable<Product> query)

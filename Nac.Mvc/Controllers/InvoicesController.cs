@@ -18,8 +18,8 @@ public class InvoicesController : BaseCrudController<Invoice, InvoicesController
 
     public class InvoiceSearchModel
     {
-        public IList<PaymentType> PaymentOrFilter { get; set; }
-        public IList<string> OperatorOrFilter { get; set; }
+        public IList<PaymentType> PaymentOrFilter { get; set; } = null!;
+        public IList<string> OperatorOrFilter { get; set; } = null!;
     }
 
     private static IQueryable<Invoice> AddFiltersToQuery(InvoiceSearchModel searchModel, IQueryable<Invoice> query)
