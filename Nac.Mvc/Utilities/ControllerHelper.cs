@@ -133,7 +133,8 @@ public static class ControllerHelper
         DateOnly to = DateOnly.MinValue;
 
         // check for correct type and condition
-        if (condition.Type != "date" || condition.Condition != "between")
+        if (condition.Type != "date" 
+            || (condition.Condition != "between" && condition.Condition != "="))
         {
             return (from, to);
         }
@@ -271,6 +272,12 @@ public static class ControllerHelper
         //then convert these values to DateTime type to use them in query for filtering.
         var from = fromDateOnly.ToDateTime(new TimeOnly(), DateTimeKind.Utc);
         var to = toDateOnly.ToDateTime(new TimeOnly(), DateTimeKind.Utc);
+        if (condition.Condition == "=")
+        {
+            if (from == DateTime.MinValue)
+                return query;
+            to = from;
+        }
         if (to != DateTime.MinValue)
         {
             // for a valid end, we add 24h to get all products in that period as well

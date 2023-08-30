@@ -12,7 +12,7 @@ public class SellingsController : BaseCrudController<Selling, SellingsController
 {
     private readonly NacDbContext _context;
 
-    public SellingsController(IAppLogging<SellingsController> appLogging, ISellingRepo mainRepo, IUserRepo userRepo, NacDbContext context) 
+    public SellingsController(IAppLogging<SellingsController> appLogging, ISellingRepo mainRepo, IUserRepo userRepo, NacDbContext context)
     : base(appLogging, mainRepo, userRepo)
     {
         _context = context;
@@ -24,7 +24,7 @@ public class SellingsController : BaseCrudController<Selling, SellingsController
         public IList<ProductGroup> GroupOrFilter { get; set; } = null!;
     }
 
-    private static IQueryable<SellingsAggregatedV> AddFiltersToQuery(SellingSearchModel searchModel, IQueryable<SellingsAggregatedV> query)
+    private static IQueryable<SellingsV> AddFiltersToQuery(SellingSearchModel searchModel, IQueryable<SellingsV> query)
     {
         if (searchModel.CategoryOrFilter.Count > 0)
         {
@@ -37,8 +37,8 @@ public class SellingsController : BaseCrudController<Selling, SellingsController
         return query;
     }
 
-    private static IQueryable<SellingsAggregatedV> AddConditionsToQuery(
-        IEnumerable<ControllerHelper.DataTablesSearchBuilderCondition> conditions, IQueryable<SellingsAggregatedV> query)
+    private static IQueryable<SellingsV> AddConditionsToQuery(
+        IEnumerable<ControllerHelper.DataTablesSearchBuilderCondition> conditions, IQueryable<SellingsV> query)
     {
         foreach (var condition in conditions)
         {
@@ -51,6 +51,9 @@ public class SellingsController : BaseCrudController<Selling, SellingsController
                     break;
                 case "name":
                     query = ControllerHelper.QueryForStringProperty(condition, query, "Name");
+                    break;
+                case "newestCreated":
+                    query = ControllerHelper.QueryForDateTimeProperty(condition, query, "SellingCreated");
                     break;
             }
         }
@@ -67,7 +70,7 @@ public class SellingsController : BaseCrudController<Selling, SellingsController
     {
         var dataTablesRequest = ControllerHelper.ExtractDataTablesRequest(Request);
 
-        var query = _context.SellingsAggregatedV.AsQueryable();
+        var query = _context.SellingsV.AsQueryable();
 
         // search pane request
         SellingSearchModel searchModel = new()
@@ -85,20 +88,40 @@ public class SellingsController : BaseCrudController<Selling, SellingsController
         query = AddFiltersToQuery(searchModel, query);
         query = AddConditionsToQuery(listConditions, query);
 
+        var groupQuery = query.GroupBy(s => s.ProductId).Select(g => new SellingsAggregatedV
+        {
+            ProductId = g.Key,
+            BarCode = g.Max(s => s.BarCode) ?? "unknown",
+            Name = g.Max(s => s.Name) ?? "unknown",
+            Category = g.Max(s => s.Category),
+            Group = g.Max(s => s.Group),
+            BasePrice = g.Max(s => s.BasePrice),
+            BasePriceReduced = g.Max(s => s.BasePriceReduced),
+            SumQuantity = g.Sum(s => s.Quantity),
+            SumPriceManual = g.Sum(s => s.PriceManual),
+            SumWeight = g.Sum(s => s.Weight),
+            SumFinalPrice = g.Sum(s => s.FinalPrice),
+            Count = g.Count(),
+            NewestCreated = g.Max(s => s.SellingCreated),
+            NewestModified = g.Max(s => s.SellingModified)
+        }
+        );
+        query = null;
+
         // get total count of records after search
-        dataTablesRequest.FilterRecord = await query.CountAsync();
+        dataTablesRequest.FilterRecord = await groupQuery.CountAsync();
 
         // sort data
         if (!string.IsNullOrEmpty(dataTablesRequest.SortColumn))
         {
-            query = query.OrderBy(x => EF.Property<object>(x, dataTablesRequest.SortColumn));
+            groupQuery = groupQuery.OrderBy(x => EF.Property<object>(x, dataTablesRequest.SortColumn));
             if (!dataTablesRequest.SortColumnDirectionIsAsc)
             {
-                query = query.Reverse();
+                groupQuery = groupQuery.Reverse();
             }
         }
         // pagination
-        var matList = await query.Skip(dataTablesRequest.Skip).Take(dataTablesRequest.PageSize).ToListAsync();
+        var matList = await groupQuery.Skip(dataTablesRequest.Skip).Take(dataTablesRequest.PageSize).ToListAsync();
 
         var returnObj = new
         {

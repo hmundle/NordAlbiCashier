@@ -43,7 +43,7 @@ public partial class NacDbContext : /*Identity*/DbContext
 
     public virtual DbSet<Product>? Products { get; set; }
     public virtual DbSet<Selling>? Sellings { get; set; }
-    public virtual DbSet<SellingsAggregatedV> SellingsAggregatedV { get; set; } = null!;
+    public virtual DbSet<SellingsV> SellingsV { get; set; } = null!;
     public virtual DbSet<Invoice>? Invoices { get; set; }
 
     public virtual DbSet<CashStatus>? CashStatus { get; set; }
@@ -205,9 +205,9 @@ public partial class NacDbContext : /*Identity*/DbContext
 
     private static void AddViewsToModel(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<SellingsAggregatedV>(entity =>
+        modelBuilder.Entity<SellingsV>(entity =>
         {
-            entity.ToView("sellings_aggr_v");
+            entity.ToView("sellings_v");
         });
     }
 

@@ -39,7 +39,10 @@
                 @Html.DisplayNameFor(model => model.SumWeight)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SinglePrice)
+                @Html.DisplayNameFor(model => model.BasePrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NewestCreated)
             </th>
         </tr>
     </thead>
@@ -49,7 +52,7 @@
     <script>
         const rowOrder = [5, 'desc'];
         const columnSearchBuilderSearch = [0, 1];
-        //const columnSearchBuilderDate = [7];
+        const columnSearchBuilderDate = [10];
         //const columnSearchBuilderNum = [9, 10];
         const columnsSearchPanesEnabled = [
             2, 3,
@@ -72,9 +75,10 @@
             },
             { data: "sumWeight", name: "SumWeight", orderable: true },
             {
-                data: "singlePrice", name: "singlePrice", orderable: true,
+                data: "basePrice", name: "BasePrice", orderable: true,
                 render: DataTable.render.number(null, null, 2, '€')
             },
+            { data: "newestCreated", name: "NewestCreated", orderable: false },
         ];
     </script>
 }

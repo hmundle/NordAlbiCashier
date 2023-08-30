@@ -4,8 +4,11 @@ using Nac.Models.Utilities;
 namespace Nac.Models.EntitiesView;
 
 [Keyless]
-public partial class SellingsAggregatedV
+public partial class SellingsV
 {
+    [DisplayName("ID")]
+    public Guid? SellingId { get; set; }
+
     [DisplayName("Produkt")]
     public Guid? ProductId { get; set; }
 
@@ -27,26 +30,21 @@ public partial class SellingsAggregatedV
     [DisplayName("Grundsonderpreis")]
     public double? BasePriceReduced { get; set; } = null;
 
-    [DisplayName("Gesamtanzahl")]
-    public int SumQuantity { get; set; } = 1;
+    [DisplayName("Anzahl")]
+    public int Quantity { get; set; } = 1;
 
-    [DisplayName("Gesamt-Preiseingabe")]
-    public double SumPriceManual { get; set; } = 0.0;
+    [DisplayName("Preiseingabe")]
+    public double PriceManual { get; set; } = 0.0;
 
-    [DisplayName("Gesamtgewicht")]
-    public double SumWeight { get; set; } = 0.0;
+    [DisplayName("Gewicht")]
+    public double Weight { get; set; } = 0.0;
 
-    [DisplayName("Gesamt-Endpreis")]
-    public double SumFinalPrice { get; set; } = 0.0;
+    [DisplayName("Endpreis")]
+    public double FinalPrice { get; set; } = 0.0;
 
-    [DisplayName("Anzahl Einkäufe")]
-    public int Count { get; set; } = 0;
-
-    [DisplayName("Letzter Verkauf")]
     [JsonConverter(typeof(UtcDateTimeConverter))]
-    public DateTime? NewestCreated { get; set; }
+    public DateTime? SellingCreated { get; set; }
 
-    [DisplayName("Jüngste Änderung")]
     [JsonConverter(typeof(UtcDateTimeConverter))]
-    public DateTime? NewestModified { get; set; }
+    public DateTime? SellingModified { get; set; }
 }
