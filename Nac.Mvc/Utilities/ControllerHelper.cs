@@ -252,11 +252,11 @@ public static class ControllerHelper
         {
             query = query.Where(x => EF.Property<DateOnly>(x!, propertyName) >= from && EF.Property<DateOnly>(x!, propertyName) <= to);
         }
-        if (from != DateOnly.MinValue)
+        else if (from != DateOnly.MinValue)
         {
             query = query.Where(x => EF.Property<DateOnly>(x!, propertyName) >= from);
         }
-        if (to != DateOnly.MinValue)
+        else if (to != DateOnly.MinValue)
         {
             query = query.Where(x => EF.Property<DateOnly>(x!, propertyName) <= to);
         }
@@ -280,11 +280,11 @@ public static class ControllerHelper
         {
             query = query.Where(x => EF.Property<DateTime>(x!, propertyName) >= from && EF.Property<DateTime>(x!, propertyName) < to);
         }
-        if (from != DateTime.MinValue)
+        else if (from != DateTime.MinValue)
         {
             query = query.Where(x => EF.Property<DateTime>(x!, propertyName) >= from);
         }
-        if (to != DateTime.MinValue)
+        else if (to != DateTime.MinValue)
         {
             query = query.Where(x => EF.Property<DateTime>(x!, propertyName) < to);
         }
