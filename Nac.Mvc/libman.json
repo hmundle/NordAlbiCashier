@@ -139,6 +139,11 @@
       "provider": "jsdelivr",
       "library": "datatables.net-datetime@1.4.0",
       "destination": "wwwroot/lib/datatables.net-datetime/"
+    },
+    {
+      "provider": "jsdelivr",
+      "library": "jszip@3.10.1",
+      "destination": "wwwroot/lib/jszip/"
     }
   ]
 }

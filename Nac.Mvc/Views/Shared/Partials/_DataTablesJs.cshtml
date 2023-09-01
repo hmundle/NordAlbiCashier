@@ -63,6 +63,14 @@
                             table.searchBuilder.rebuild(); //the search results will be cleared for searchBuilder.
                             table.searchPanes.clearSelections(); //the search results will be cleared for searchPanes.
                         }
+                    },
+                    'spacer',
+                    {
+                        extend: 'collection',
+                        text: 'Export',
+                        buttons: [
+                            'copy', 'excel', 'csv'
+                        ]
                     }
                 ],
                 dom: 'Brplti',
