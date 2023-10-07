@@ -4,6 +4,11 @@
     {
         <script>
             var table;
+            const searchPanesButtonIdx = 0;
+            const searchPanesButtonLabel = 'Typ Suche ';
+            const searchBuilderButtonIdx = 1;
+            const searchBuilderButtonLabel = 'Erweiterte Suche ';
+
             if (typeof rowOrder === 'undefined') {
                 rowOrder = [0, 'asc'];
             }
@@ -12,54 +17,24 @@
                 columnDefs: [], // will be set later
                 buttons: [
                     {
-                        extend: 'searchPanes',
-                        config: {
-                            layout: 'auto',
-                            columns: [], // will be set later
-                            viewCount: false,
-                            controls: false,
-                            collapse: false
+                        text: searchPanesButtonLabel,
+                        action: function (e, dt, node, config) {
+                            table.searchBuilder.container().hide();
+                            table.searchPanes.container().toggle();
                         }
                     },
                     {
-                        extend: 'searchBuilder',
-                        config: {
-                            columns: [], // will be set later
-                            depthLimit: 1,
-                            conditions: {
-                                date: {
-                                    '!=': null,
-                                    'null': null,
-                                    '!null': null,
-                                    '<': null,
-                                    '<=': null,
-                                    '>': null,
-                                    '>=': null,
-                                    '!between': null,
-                                },
-                                string: {
-                                    '=': null,
-                                    '!=': null,
-                                    'null': null,
-                                    '!null': null,
-                                    'starts': null,
-                                    '!starts': null,
-                                    'ends': null,
-                                    '!ends': null,
-                                    '!contains': null,
-                                },
-                                num: {
-                                    '!=': null,
-                                    'null': null,
-                                    '!null': null,
-                                    '!between': null,
-                                },
-                            }
-                        },
+                        text: searchBuilderButtonLabel,
+                        action: function (e, dt, node, config) {
+                            table.searchPanes.container().hide();
+                            table.searchBuilder.container().toggle();
+                        }
                     },
                     {
                         text: 'Suchfilter löschen',
                         action: function (e, dt, node, config) {
+                            table.searchBuilder.container().hide();
+                            table.searchPanes.container().hide();
                             table.searchBuilder.rebuild(); //the search results will be cleared for searchBuilder.
                             table.searchPanes.clearSelections(); //the search results will be cleared for searchPanes.
                         }
@@ -73,7 +48,47 @@
                         ]
                     }
                 ],
-                dom: 'Brplti',
+                searchPanes: {
+                    layout: 'auto',
+                    columns: [], // will be set later
+                    viewCount: false,
+                    controls: false,
+                    collapse: false
+                },
+                searchBuilder: {
+                    columns: [], // will be set later
+                    depthLimit: 1,
+                    conditions: {
+                        date: {
+                            '!=': null,
+                            'null': null,
+                            '!null': null,
+                            '<': null,
+                            '<=': null,
+                            '>': null,
+                            '>=': null,
+                            '!between': null,
+                        },
+                        string: {
+                            '=': null,
+                            '!=': null,
+                            'null': null,
+                            '!null': null,
+                            'starts': null,
+                            '!starts': null,
+                            'ends': null,
+                            '!ends': null,
+                            '!contains': null,
+                        },
+                        num: {
+                            '!=': null,
+                            'null': null,
+                            '!null': null,
+                            '!between': null,
+                        },
+                    }
+                },
+                dom: 'BPQrplti',
                 ajax: {
                     url: "@this.Url.Action("GetList")",
                     type: "POST",
@@ -90,7 +105,7 @@
             // dynamically add some datatables.net properties
             config.columns = columnsDefinition;
             if (typeof columnsSearchPanesEnabled !== 'undefined') {
-                config.buttons[0].config.columns
+                config.searchPanes.columns
                     // convert the objects to integer
                     = columnsSearchPanesEnabled.map(e => {
                         if (Number.isInteger(e)) {
@@ -125,7 +140,7 @@
             }
             if (typeof columnSearchBuilderDate !== 'undefined') {
                 columnSearchBuilderDate.forEach(e => {
-                    config.buttons[1].config.columns.push(e);
+                    config.searchBuilder.columns.push(e);
                     config.columnDefs.push(
                         {
                             type: "date",
@@ -139,7 +154,7 @@
             }
             if (typeof columnSearchBuilderNum !== 'undefined') {
                 columnSearchBuilderNum.forEach(e => {
-                    config.buttons[1].config.columns.push(e);
+                    config.searchBuilder.columns.push(e);
                     config.columnDefs.push(
                         {
                             type: "num",
@@ -153,7 +168,7 @@
             }
             if (typeof columnSearchBuilderSearch !== 'undefined') {
                 columnSearchBuilderSearch.forEach(e => {
-                    config.buttons[1].config.columns.push(e);
+                    config.searchBuilder.columns.push(e);
                     config.columnDefs.push(
                         {
                             type: "string",
@@ -179,11 +194,18 @@
 
             $(document).ready(function () {
                 table = $('#myDataTable').DataTable(config);
-                table.on('draw.dt', function () {
+                table.on('draw', function (e, s) {
                     if (typeof onTableRender === 'function') {
                         onTableRender();
                     }
+
+                    const lenSearchPanes = $('.dtsp-searchPanes tr.selected').length;
+                    table.buttons([searchPanesButtonIdx]).text(searchPanesButtonLabel + (lenSearchPanes === 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;' : `(${lenSearchPanes})`));
+                    const lenSearchBuilder = $('.dtsb-criteria').length;
+                    table.buttons([searchBuilderButtonIdx]).text(searchBuilderButtonLabel + (lenSearchBuilder === 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;' : `(${lenSearchBuilder})`));
                 });
+                table.searchBuilder.container().hide();
+                table.searchPanes.container().hide();
             });
 
             GetSelectedIds = function () {
