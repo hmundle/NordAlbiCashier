@@ -8,6 +8,7 @@
             const searchPanesButtonLabel = 'Typ Suche ';
             const searchBuilderButtonIdx = 1;
             const searchBuilderButtonLabel = 'Erweiterte Suche ';
+            const slideDuration = 500;
 
             if (typeof rowOrder === 'undefined') {
                 rowOrder = [0, 'asc'];
@@ -19,24 +20,24 @@
                     {
                         text: searchPanesButtonLabel,
                         action: function (e, dt, node, config) {
-                            table.searchBuilder.container().hide();
-                            table.searchPanes.container().toggle();
+                            table.searchBuilder.container().slideUp(slideDuration);
+                            table.searchPanes.container().slideToggle(slideDuration);
                         }
                     },
                     {
                         text: searchBuilderButtonLabel,
                         action: function (e, dt, node, config) {
-                            table.searchPanes.container().hide();
-                            table.searchBuilder.container().toggle();
+                            table.searchPanes.container().slideUp(slideDuration);
+                            table.searchBuilder.container().slideToggle(slideDuration);
                         }
                     },
                     {
                         text: 'Suchfilter löschen',
                         action: function (e, dt, node, config) {
-                            table.searchBuilder.container().hide();
-                            table.searchPanes.container().hide();
-                            table.searchBuilder.rebuild(); //the search results will be cleared for searchBuilder.
+                            table.searchPanes.container().slideUp(slideDuration);
+                            table.searchBuilder.container().slideUp(slideDuration);
                             table.searchPanes.clearSelections(); //the search results will be cleared for searchPanes.
+                            table.searchBuilder.rebuild(); //the search results will be cleared for searchBuilder.
                         }
                     },
                     'spacer',
@@ -204,8 +205,8 @@
                     const lenSearchBuilder = $('.dtsb-criteria').length;
                     table.buttons([searchBuilderButtonIdx]).text(searchBuilderButtonLabel + (lenSearchBuilder === 0 ? '&nbsp;&nbsp;&nbsp;&nbsp;' : `(${lenSearchBuilder})`));
                 });
-                table.searchBuilder.container().hide();
                 table.searchPanes.container().hide();
+                table.searchBuilder.container().hide();
             });
 
             GetSelectedIds = function () {
