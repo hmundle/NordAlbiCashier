@@ -42,7 +42,7 @@ public partial class SellingsAggregatedV
     [DisplayName("Anzahl Einkäufe")]
     public int Count { get; set; } = 0;
 
-    [DisplayName("Letzter Verkauf")]
+    [DisplayName("Datum")]
     [JsonConverter(typeof(UtcDateTimeConverter))]
     public DateTime? NewestCreated { get; set; }
 
