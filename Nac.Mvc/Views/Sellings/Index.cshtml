@@ -6,6 +6,9 @@
 
 <h3>
     <span class="pe-2">@ViewData["Title"]</span>
+    <span id="sum" class=" px-2 py-1 mx-3 bg-primary text-light fw-bold lead">
+        Summe:
+    </span>
 </h3>
 
 <table id="myDataTable" class="table table-striped nowrap" style="width:100%">
@@ -50,6 +53,24 @@
 
 @section Scripts{
     <script>
+        $(document).ready(function () {
+            sumField = $("#sum");
+        });
+
+        function sumUpAllPrices() {
+            const initialValue = 0;
+            return table.data().reduce(
+                (accumulator, currentValue) => accumulator + currentValue.sumFinalPrice,
+                initialValue
+            );
+        }
+
+        var onTableRender = function () {
+            const sum = sumUpAllPrices();
+            const sumString = sum.toLocaleString('de-DE', { style: 'currency', currency: 'EUR' });
+            sumField.html(`Summe: ${sumString}`);
+        }
+
         const rowOrder = [5, 'desc'];
         const columnSearchBuilderSearch = [0, 1];
         const columnSearchBuilderDate = [10];
