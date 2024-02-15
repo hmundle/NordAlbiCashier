@@ -1,17 +1,20 @@
 :root {
-    /*--nac-default-color: var(--bs-green);*/
-    --nac-default-color: #198754;
-    --nac-default-color-shade15: #157347;
-    --nac-default-color-shade20: #146c43;
-    --nac-default-color-shade25: #13653f;
-    /*--nac-default-color-rgb: var(--bs-green-rgb);*/
     --nac-default-color-rgb: 25, 135, 84;
+    --nac-default-color-shade15-rgb: 21, 115, 71;
+    --nac-default-color-shade20-rgb: 20, 108, 67;
+    --nac-default-color-shade25-rgb: 19, 101, 63;
+    --nac-default-color: rgb(var(--nac-default-color-rgb));
+    --nac-default-color-shade15: rgb(var(--nac-default-color-shade15-rgb));
+    --nac-default-color-shade20: rgb(var(--nac-default-color-shade20-rgb));
+    --nac-default-color-shade25: rgb(var(--nac-default-color-shade25-rgb));
     --bs-body-font-size: 0.95rem;
     font-size: var(--bs-body-font-size);
     --bs-primary: var(--nac-default-color);
     --bs-primary-rgb: var(--nac-default-color-rgb);
     --bs-link-color: var(--nac-default-color);
+    --bs-link-color-rgb: var(--nac-default-color-rgb);
     --bs-link-hover-color: var(--nac-default-color-shade20);
+    --bs-link-hover-color-rgb: var(--nac-default-color-shade20-rgb);
     --dt-row-selected: var(--nac-default-color-rgb);
     --dt-row-selected-link: 209, 231, 221; /* 80% lighter */
 }
