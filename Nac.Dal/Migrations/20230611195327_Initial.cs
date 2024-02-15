@@ -196,6 +196,9 @@ namespace Nac.Dal.Migrations
 
             migrationBuilder.DropTable(
                 name: "products");
+
+            // tooling does not cleanup Postgres Enum Types properly, therefore do it by hand
+            MigrationHelpers.DropAllDbTypes(migrationBuilder);
         }
     }
 }
