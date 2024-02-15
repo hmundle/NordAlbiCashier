@@ -53,7 +53,7 @@ public static class LoggingConfiguration
 
         // read log settings from config file
         var config = c;
-        var logSettings = config.GetSection(nameof(AppLoggingSettings)).Get<AppLoggingSettings>();
+        var logSettings = config.GetSection(nameof(AppLoggingSettings)).Get<AppLoggingSettings>()!;
         var connectionStringName = logSettings.DbServer.ConnectionStringName;
         var connectionString = config.GetConnectionString(connectionStringName);
         var tableName = logSettings.DbServer.TableName;
