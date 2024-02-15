@@ -107,12 +107,12 @@
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-select@1.6.2",
+      "library": "datatables.net-select@1.7.0",
       "destination": "wwwroot/lib/datatables.net-select/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-select-bs5@1.6.2",
+      "library": "datatables.net-select-bs5@1.7.0",
       "destination": "wwwroot/lib/datatables.net-select-bs5/"
     },
     {
@@ -127,17 +127,17 @@
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-searchbuilder@1.4.2",
+      "library": "datatables.net-searchbuilder@1.5.0",
       "destination": "wwwroot/lib/datatables.net-searchbuilder/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-searchbuilder-bs5@1.4.2",
+      "library": "datatables.net-searchbuilder-bs5@1.5.0",
       "destination": "wwwroot/lib/datatables.net-searchbuilder-bs5/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-datetime@1.4.1",
+      "library": "datatables.net-datetime@1.5.0",
       "destination": "wwwroot/lib/datatables.net-datetime/"
     },
     {
