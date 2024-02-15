@@ -5,9 +5,13 @@
 
 <environment include="Development">
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/fontawesome.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/solid.css" asp-append-version="true" />
 </environment>
 <environment exclude="Development">
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/fontawesome.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/solid.min.css" asp-append-version="true" />
 </environment>
 @{
     if (ViewData["UseDatatables"] as bool? == true || ViewData["UseDatatablesInsert"] as bool? == true)
@@ -30,6 +34,5 @@
         </environment>
     }
 }
-<link rel="stylesheet" href="~/lib/font-awesome/css/all.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 <link rel="stylesheet" href="~/Nac.Mvc.styles.css" asp-append-version="true" />
