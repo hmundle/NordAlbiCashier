@@ -34,7 +34,7 @@ public static class SampleDataInitializer
         {
             var entity = context.Model.FindEntityType(entityName);
             var tableName = entity!.GetTableName();
-            var schemaName = entity!.GetSchema();
+            var schemaName = entity!.GetSchema() ?? "public";
             await context.Database.ExecuteSqlRawAsync($"DELETE FROM {schemaName}.{tableName}");
         }
     }
