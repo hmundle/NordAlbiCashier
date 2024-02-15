@@ -127,12 +127,12 @@
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-searchbuilder@1.6.0",
+      "library": "datatables.net-searchbuilder@1.5.0",
       "destination": "wwwroot/lib/datatables.net-searchbuilder/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-searchbuilder-bs5@1.6.0",
+      "library": "datatables.net-searchbuilder-bs5@1.5.0",
       "destination": "wwwroot/lib/datatables.net-searchbuilder-bs5/"
     },
     {
