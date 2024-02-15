@@ -13,7 +13,7 @@ public class ItemDeleteTagHelper : ItemLinkTagHelperBase
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        //<a asp-action="Delete" asp-route-id="@item.Id" class="text-danger">Delete <i class="fas fa-trash"></i></a>
+        //<a asp-action="Delete" asp-route-id="@item.Id" class="text-danger">Delete <i class="fa-solid fa-trash"></i></a>
         BuildContent(output, "Delete", "text-danger", "", "Löschen", "trash");
     }
 }

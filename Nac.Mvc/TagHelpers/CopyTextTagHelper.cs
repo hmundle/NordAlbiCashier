@@ -16,7 +16,7 @@ public class CopyTextTagHelper : TagHelper
         output.Attributes.SetAttribute("href", target);
         output.Attributes.Add("class", cssClassName + " px-2");
         output.Attributes.Add("title", "Copy content into clipboard");
-        output.Content.AppendHtml($@"{displayText} <i class=""fas fa-{fontAwesomeName}""></i>");
+        output.Content.AppendHtml($@"{displayText} <i class=""fa-solid fa-{fontAwesomeName}""></i>");
     }
 
     public override void Process(TagHelperContext context, TagHelperOutput output)

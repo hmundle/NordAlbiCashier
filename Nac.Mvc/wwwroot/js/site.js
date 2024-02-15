@@ -1,7 +1,7 @@
 ﻿AddCrudButtons = function (data, buttons) {
     let htmlOutput = "";
     buttons.forEach(b => {
-        htmlOutput += '<a class="px-1" href="' + b.uriBase + '/' + data + '"><i class="lead fas fa-' + b.icon + '"></i></a>'
+        htmlOutput += '<a class="px-1" href="' + b.uriBase + '/' + data + '"><i class="lead fa-solid fa-' + b.icon + '"></i></a>'
     });
     return htmlOutput;
 }

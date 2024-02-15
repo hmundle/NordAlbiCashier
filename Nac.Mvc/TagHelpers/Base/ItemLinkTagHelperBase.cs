@@ -33,7 +33,7 @@ public abstract class ItemLinkTagHelperBase : TagHelper
         output.Attributes.SetAttribute("href", target);
         output.Attributes.Add("class", cssClassName + " px-2");
         output.Attributes.Add("title", tooltip);
-        output.Content.AppendHtml($@"{displayText} <i class=""lead fas fa-{fontAwesomeName}""></i>");
+        output.Content.AppendHtml($@"{displayText} <i class=""lead fa-solid fa-{fontAwesomeName}""></i>");
     }
 
 }
