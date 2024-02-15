@@ -53,8 +53,8 @@ public static class SampleDataInitializer
     {
         var entities = new[]
         {
-            typeof(Invoice).FullName,
             typeof(Selling).FullName,
+            typeof(Invoice).FullName,
             typeof(Product).FullName,
         };
         await ClearDataAsync(context, entities!);
