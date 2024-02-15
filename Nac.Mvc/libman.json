@@ -78,12 +78,12 @@
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net@1.13.4",
+      "library": "datatables.net@1.13.10",
       "destination": "wwwroot/lib/datatables.net/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-bs5@1.13.4",
+      "library": "datatables.net-bs5@1.13.10",
       "destination": "wwwroot/lib/datatables.net-bs5/"
     },
     {
@@ -137,7 +137,7 @@
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-datetime@1.4.0",
+      "library": "datatables.net-datetime@1.4.1",
       "destination": "wwwroot/lib/datatables.net-datetime/"
     },
     {
