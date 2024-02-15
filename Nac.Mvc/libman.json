@@ -88,7 +88,7 @@
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-searchpanes@2.1.2",
+      "library": "datatables.net-searchpanes@2.2.0",
       "destination": "wwwroot/lib/datatables.net-searchpanes/",
       "files": [
         "js/dataTables.searchPanes.js",
@@ -102,7 +102,7 @@
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-searchpanes-bs5@2.1.2",
+      "library": "datatables.net-searchpanes-bs5@2.2.0",
       "destination": "wwwroot/lib/datatables.net-searchpanes-bs5/"
     },
     {
@@ -117,22 +117,22 @@
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-buttons@2.3.6",
+      "library": "datatables.net-buttons@2.4.2",
       "destination": "wwwroot/lib/datatables.net-buttons/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-buttons-bs5@2.3.6",
+      "library": "datatables.net-buttons-bs5@2.4.2",
       "destination": "wwwroot/lib/datatables.net-buttons-bs5/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-searchbuilder@1.5.0",
+      "library": "datatables.net-searchbuilder@1.6.0",
       "destination": "wwwroot/lib/datatables.net-searchbuilder/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-searchbuilder-bs5@1.5.0",
+      "library": "datatables.net-searchbuilder-bs5@1.6.0",
       "destination": "wwwroot/lib/datatables.net-searchbuilder-bs5/"
     },
     {
