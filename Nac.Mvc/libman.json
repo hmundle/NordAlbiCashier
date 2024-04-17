@@ -25,7 +25,7 @@
       ]
     },
     {
-      "library": "jquery-validation-unobtrusive@3.2.12",
+      "library": "jquery-validation-unobtrusive@3.2.4",
       "destination": "wwwroot/lib/jquery-validation-unobtrusive",
       "files": [
         "jquery.validate.unobtrusive.js",
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "library": "bootstrap@5.3.2",
+      "library": "bootstrap@5.3.3",
       "destination": "wwwroot/lib/bootstrap",
       "files": [
         "css/bootstrap.css",
@@ -51,7 +51,7 @@
       ]
     },
     {
-      "library": "font-awesome@6.5.1",
+      "library": "font-awesome@6.5.2",
       "destination": "wwwroot/lib/font-awesome/",
       "files": [
         "css/fontawesome.css",
@@ -64,12 +64,12 @@
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net@1.13.10",
+      "library": "datatables.net@1.13.11",
       "destination": "wwwroot/lib/datatables.net/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-bs5@1.13.10",
+      "library": "datatables.net-bs5@1.13.11",
       "destination": "wwwroot/lib/datatables.net-bs5/"
     },
     {
@@ -93,37 +93,37 @@
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-select@1.7.0",
+      "library": "datatables.net-select@1.7.1",
       "destination": "wwwroot/lib/datatables.net-select/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-select-bs5@1.7.0",
+      "library": "datatables.net-select-bs5@1.7.1",
       "destination": "wwwroot/lib/datatables.net-select-bs5/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-buttons@2.4.2",
+      "library": "datatables.net-buttons@2.4.3",
       "destination": "wwwroot/lib/datatables.net-buttons/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-buttons-bs5@2.4.2",
+      "library": "datatables.net-buttons-bs5@2.4.3",
       "destination": "wwwroot/lib/datatables.net-buttons-bs5/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-searchbuilder@1.7.0",
+      "library": "datatables.net-searchbuilder@1.7.1",
       "destination": "wwwroot/lib/datatables.net-searchbuilder/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-searchbuilder-bs5@1.7.0",
+      "library": "datatables.net-searchbuilder-bs5@1.7.1",
       "destination": "wwwroot/lib/datatables.net-searchbuilder-bs5/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-datetime@1.5.0",
+      "library": "datatables.net-datetime@1.5.2",
       "destination": "wwwroot/lib/datatables.net-datetime/"
     },
     {
