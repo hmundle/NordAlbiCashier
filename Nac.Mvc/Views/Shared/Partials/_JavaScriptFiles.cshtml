@@ -14,7 +14,7 @@
     if (ViewData["UseDatatables"] as bool? == true || ViewData["UseDatatablesInsert"] as bool? == true)
     {
         <environment include="Development">
-            <script src="~/lib/datatables.net/js/jquery.dataTables.js"></script>
+            <script src="~/lib/datatables.net/js/dataTables.js"></script>
             <script src="~/lib/datatables.net-searchpanes/js/dataTables.searchPanes.js"></script>
             <script src="~/lib/datatables.net-select/js/dataTables.select.js"></script>
             <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.js"></script>
@@ -31,7 +31,7 @@
 
         </environment>
         <environment exclude="Development">
-            <script src="~/lib/datatables.net/js/jquery.dataTables.min.js"></script>
+            <script src="~/lib/datatables.net/js/dataTables.min.js"></script>
             <script src="~/lib/datatables.net-searchpanes/js/dataTables.searchPanes.min.js"></script>
             <script src="~/lib/datatables.net-select/js/dataTables.select.min.js"></script>
             <script src="~/lib/datatables.net-buttons/js/dataTables.buttons.min.js"></script>

@@ -90,7 +90,15 @@
                         },
                     }
                 },
-                dom: 'BPQrplti',
+                layout: {
+                    top2Start: 'buttons',
+                    top2End: 'paging',
+                    top: ['searchPanes', 'searchBuilder'],
+                    topStart: null,
+                    topEnd: null,
+                    bottomStart: 'info',
+                    bottomEnd: 'pageLength',
+                },
                 ajax: {
                     url: "@this.Url.Action("GetList")",
                     type: "POST",
