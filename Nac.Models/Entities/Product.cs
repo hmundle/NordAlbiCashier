@@ -37,4 +37,7 @@ public partial class Product : BaseEntity
     [DisplayName("Gruppe")]
     public ProductGroup? Group { get; set; } = null;
 
+    [Required]
+    [DisplayName("Aktiv")]
+    public bool IsActive { get; set; } = false;
 }

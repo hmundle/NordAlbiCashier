@@ -122,7 +122,7 @@ public class ProductsController : BaseCrudController<Product, ProductsController
     [Produces("application/json")]
     public async Task<IActionResult> GetDetailsDataAsync(string? barCode)
     {
-        var product = await MainRepo.GetAll().FirstOrDefaultAsync(product => product.BarCode == barCode);
+        var product = await MainRepo.GetAll().FirstOrDefaultAsync(product => product.BarCode == barCode && product.IsActive);
         if(product == null)
         {
             return BadRequest();
