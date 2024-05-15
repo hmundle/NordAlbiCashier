@@ -114,6 +114,9 @@
             };
             // dynamically add some datatables.net properties
             config.columns = columnsDefinition;
+            if (typeof createdRowCallback === 'function') {
+                config.createdRow = createdRowCallback;
+            }
             if (typeof columnsSearchPanesEnabled !== 'undefined') {
                 config.searchPanes.columns
                     // convert the objects to integer
