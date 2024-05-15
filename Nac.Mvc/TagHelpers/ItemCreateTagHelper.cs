@@ -13,6 +13,6 @@ public class ItemCreateTagHelper : ItemLinkTagHelperBase
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        BuildContent(output, "Create", "text-success", "", "Neu", "plus");
+        BuildContent(output, "Create", "text-success", "", "Neu", "circle-plus");
     }
 }
