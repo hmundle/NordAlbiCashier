@@ -17,6 +17,7 @@ Currently you only need this command:
 `cd ..`  
 `docker build -f .\Nac.Mvc\Dockerfile -t munhei/nac_service:latest .`  
 `docker tag munhei/nac_service:latest munhei/nac_service:2.1.1`  
+`docker login`
 `docker image push munhei/nac_service`  
 `docker image push munhei/nac_service:2.1.1`  
 `docker image ls munhei/nac_service:*`  
