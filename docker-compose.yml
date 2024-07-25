@@ -8,7 +8,7 @@ networks:
 
 services:
   nacmvc:
-    image: munhei/nac_service:2.1.1
+    image: munhei/nac_service:2.1.2
     depends_on:
       - "nac_db"
     container_name: nac_service
