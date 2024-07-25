@@ -481,5 +481,6 @@ $RECYCLE.BIN/
 ##
 
 **/_publish/*
+**/_images/*
 **/efbundle*
 **/wwwroot/lib/*
