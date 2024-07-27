@@ -64,12 +64,12 @@
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net@2.1.2",
+      "library": "datatables.net@2.0.8",
       "destination": "wwwroot/lib/datatables.net/"
     },
     {
       "provider": "jsdelivr",
-      "library": "datatables.net-bs5@2.1.2",
+      "library": "datatables.net-bs5@2.0.8",
       "destination": "wwwroot/lib/datatables.net-bs5/"
     },
     {
