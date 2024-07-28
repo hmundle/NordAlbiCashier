@@ -282,7 +282,8 @@
         }
 
 
-        function newProductFailed(r) {
+        async function newProductFailed(r) {
+            await beep();
             alert('Produkt nicht gefunden!');
         }
 
