@@ -154,7 +154,10 @@
                     paging: false,
                     searching: false,
                     order: [[0, 'desc']],
-                    columns: columnsDefinition
+                    columns: columnsDefinition,
+                    layout: {
+                        bottomEnd: 'buttons',
+                    }
                 }
             );
             table.on('draw.dt', function () {
