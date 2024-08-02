@@ -13,6 +13,9 @@
             if (typeof rowOrder === 'undefined') {
                 rowOrder = [0, 'asc'];
             }
+            if (typeof pageLength === 'undefined') {
+                pageLength = 50;
+            }
 
             let config = {
                 columnDefs: [], // will be set later
@@ -108,8 +111,8 @@
                 processing: true,
                 serverSide: true,
                 filter: true,
-                pageLength: 50,
-                lengthMenu: [5, 10, 20, 50, 100, 500, 1000, 5000],
+                pageLength: pageLength,
+                lengthMenu: [5, 10, 20, 50, 100, { label: 'All', value: 10000 }],
                 columns: [] // will be set later
             };
             // dynamically add some datatables.net properties
