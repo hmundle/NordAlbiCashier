@@ -16,12 +16,12 @@ Currently you only need this command:
 `libman restore`  
 `cd ..`  
 `docker build -f .\Nac.Mvc\Dockerfile -t munhei/nac_service:latest .`  
-`docker tag munhei/nac_service:latest munhei/nac_service:2.1.5`  
-`docker image save -o _images/nac_service_2.1.5.tar munhei/nac_service:2.1.5`  
-`docker image load -i _images/nac_service_2.1.5.tar`  
+`docker tag munhei/nac_service:latest munhei/nac_service:2.1.6`  
+`docker image save -o _images/nac_service_2.1.6.tar munhei/nac_service:2.1.6`  
+`docker image load -i _images/nac_service_2.1.6.tar`  
 `docker login`
 `docker image push munhei/nac_service`  
-`docker image push munhei/nac_service:2.1.5`  
+`docker image push munhei/nac_service:2.1.6`  
 `docker image ls munhei/nac_service:*`  
 
 # deployment in docker compose
