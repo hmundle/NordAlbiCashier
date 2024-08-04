@@ -47,7 +47,6 @@
             <th>@Html.DisplayNameForInnerType((Product p) => p.Name)</th>
             <th>@Html.DisplayNameForInnerType((Product p) => p.BarCode)</th>
             <th>@Html.DisplayNameForInnerType((Product p) => p.Category)</th>
-            <th>@Html.DisplayNameForInnerType((Product p) => p.PriceReduced)</th>
         </tr>
     </thead>
 </table>
@@ -140,10 +139,6 @@
             { data: "name", name: "Name", orderable: false },
             { data: "barCode", name: "BarCode", orderable: false },
             { data: "category", name: "Category", orderable: false },
-            {
-                data: "priceReduced", name: "PriceReduced", orderable: false,
-                render: DataTable.render.number(null, null, 2, '€')
-            },
         ];
 
         $(document).ready(function () {
