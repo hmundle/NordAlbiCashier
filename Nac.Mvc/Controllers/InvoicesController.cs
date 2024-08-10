@@ -157,4 +157,29 @@ public class InvoicesController : BaseCrudController<Invoice, InvoicesController
 
         return Ok(pay.Sellings.Count());
     }
+
+    [HttpGet("{id?}")]
+    public override async Task<IActionResult> DeleteAsync(Guid? id)
+    {
+        if (!id.HasValue)
+        {
+            ViewData["Error"] = "Bad Request";
+            return View();
+        }
+        var entity = await GetOneEntityAsync(id.Value);
+        if (entity == null)
+        {
+            ViewData["Error"] = "Not Found";
+            return View();
+        }
+        entity.Modified = DateTime.UtcNow;
+        entity.IsDeleted = true;
+        foreach (var s in entity.Sellings)
+        {
+            s.Modified = DateTime.UtcNow;
+            s.IsDeleted = true;
+        }
+        await MainRepo.UpdateAsync(entity, persist: true);
+        return RedirectToAction(nameof(IndexAsync).RemoveAsyncPostfix());
+    }
 }
