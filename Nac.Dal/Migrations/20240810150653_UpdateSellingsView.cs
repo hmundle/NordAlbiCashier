@@ -5,18 +5,18 @@
 namespace Nac.Dal.Migrations
 {
     /// <inheritdoc />
-    public partial class AddSellingsView : Migration
+    public partial class UpdateSellingsView : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            MigrationHelpersViews.UpSellingsViewV1(migrationBuilder);
+            MigrationHelpersViews.UpSellingsViewV2(migrationBuilder);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            MigrationHelpersViews.DownSellingsViewV1(migrationBuilder);
+            MigrationHelpersViews.DownSellingsViewV2(migrationBuilder);
         }
     }
 }
