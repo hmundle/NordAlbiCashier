@@ -117,7 +117,7 @@ public class InvoicesController : BaseCrudController<Invoice, InvoicesController
                 options = new
                 {
                     type = ControllerHelper.PaymentTypeValues,
-                    @operator = UserRepo.GetAllUsers().Select(u => new DataTableSearchPaneContent { Label = u.Name, Value = u.Name }).ToList(),
+                    @operator = await UserRepo.GetAllUsers().OperatorValues().ToListAsync(),
                 }
             }
         };

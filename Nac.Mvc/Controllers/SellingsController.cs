@@ -22,6 +22,7 @@ public class SellingsController : BaseCrudController<Selling, SellingsController
     {
         public IList<ProductCategory> CategoryOrFilter { get; set; } = null!;
         public IList<ProductGroup> GroupOrFilter { get; set; } = null!;
+        public IList<string> OperatorOrFilter { get; set; } = null!;
     }
 
     private static IQueryable<SellingsV> AddFiltersToQuery(SellingSearchModel searchModel, IQueryable<SellingsV> query)
@@ -33,6 +34,10 @@ public class SellingsController : BaseCrudController<Selling, SellingsController
         if (searchModel.GroupOrFilter.Count > 0)
         {
             query = query.Where(x => x.Group != null && searchModel.GroupOrFilter.Contains(x.Group.Value));
+        }
+        if (searchModel.OperatorOrFilter.Count > 0)
+        {
+            query = query.Where(x => searchModel.OperatorOrFilter.Contains(x.Operator));
         }
         return query;
     }
@@ -77,6 +82,7 @@ public class SellingsController : BaseCrudController<Selling, SellingsController
         {
             CategoryOrFilter = ControllerHelper.ExtractFilterEnum<ProductCategory>(Request, "category"),
             GroupOrFilter = ControllerHelper.ExtractFilterEnum<ProductGroup>(Request, "group"),
+            OperatorOrFilter = ControllerHelper.ExtractFilterString(Request, "operator"),
         };
 
         // search builder request
@@ -103,7 +109,8 @@ public class SellingsController : BaseCrudController<Selling, SellingsController
             SumFinalPrice = g.Sum(s => s.FinalPrice),
             Count = g.Count(),
             NewestCreated = g.Max(s => s.SellingCreated),
-            NewestModified = g.Max(s => s.SellingModified)
+            NewestModified = g.Max(s => s.SellingModified),
+            Operator = g.Max(s => s.Operator)
         }
         );
         query = null;
@@ -135,6 +142,7 @@ public class SellingsController : BaseCrudController<Selling, SellingsController
                 {
                     category = ControllerHelper.ProductCategoryValues,
                     group = ControllerHelper.ProductGroupValues,
+                    @operator = await UserRepo.GetAllUsers().OperatorValues().ToListAsync(),
                 }
             }
         };

@@ -22,6 +22,8 @@ public static class ControllerHelper
         = Enum.GetNames(typeof(SyncStatus)).Select(x => new DataTableSearchPaneContent { Label = x, Value = x });
     public static IEnumerable<DataTableSearchPaneContent> ProductGroupValues { get; }
         = Enum.GetNames(typeof(ProductGroup)).Select(x => new DataTableSearchPaneContent { Label = x, Value = x });
+    public static IQueryable<DataTableSearchPaneContent> OperatorValues(this IQueryable<User> users)
+        => users.Select(x => new DataTableSearchPaneContent { Label = x.Name, Value = x.Name });
 
     public static SelectList ProductCategorySelectionList()
     => new(Enum.GetNames(typeof(ProductCategory)).Where(c => c != nameof(ProductCategory.Undefined)));

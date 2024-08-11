@@ -49,4 +49,7 @@ public partial class SellingsAggregatedV
     [DisplayName("Jüngste Änderung")]
     [JsonConverter(typeof(UtcDateTimeConverter))]
     public DateTime? NewestModified { get; set; }
+
+    [DisplayName("Kasse")]
+    public string? Operator { get; set; } = "unknown";
 }

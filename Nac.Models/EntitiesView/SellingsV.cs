@@ -47,4 +47,7 @@ public partial class SellingsV
 
     [JsonConverter(typeof(UtcDateTimeConverter))]
     public DateTime? SellingModified { get; set; }
+
+    [DisplayName("Kasse")]
+    public string Operator { get; set; } = "unknown";
 }

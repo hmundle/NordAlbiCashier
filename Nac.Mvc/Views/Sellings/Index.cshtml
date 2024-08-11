@@ -47,6 +47,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.NewestCreated)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Operator)
+            </th>
         </tr>
     </thead>
 </table>
@@ -77,7 +80,7 @@
         const columnSearchBuilderDate = [10];
         //const columnSearchBuilderNum = [9, 10];
         const columnsSearchPanesEnabled = [
-            2, 3,
+            3, 11
         ];
         //const enableRowSelection = true;
         const columnsDefinition = [
@@ -101,6 +104,7 @@
                 render: DataTable.render.number(null, null, 2, '€')
             },
             { data: "newestCreated", name: "NewestCreated", orderable: false },
+            { data: "operator", name: "Operator", orderable: false, visible: false },
         ];
     </script>
 }
