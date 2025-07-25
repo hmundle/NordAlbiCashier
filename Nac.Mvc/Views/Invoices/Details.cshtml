@@ -1,8 +1,8 @@
 ﻿@model Invoice
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Verkaufsaufstellung";
 }
-<h1>Details for @Model.Id</h1>
+<h1>@ViewData["Title"]</h1>
 @Html.DisplayForModel()
 <div>
     <item-edit item-id="@Model.Id"></item-edit>

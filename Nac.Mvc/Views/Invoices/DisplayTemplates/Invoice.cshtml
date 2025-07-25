@@ -48,24 +48,24 @@
 <table class="table">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.Id)</th>
+            @* <th>@Html.DisplayNameFor(model => model.Id)</th> *@
             <th>@Html.DisplayNameForInnerType((Selling s) => s.FinalPrice)</th>
             <th>@Html.DisplayNameForInnerType((Product p) => p.Name)</th>
             <th>@Html.DisplayNameForInnerType((Product p) => p.BarCode)</th>
             <th>@Html.DisplayNameForInnerType((Product p) => p.Category)</th>
-            <th>@Html.DisplayNameForInnerType((Product p) => p.Price)</th>
+            @* <th>@Html.DisplayNameForInnerType((Product p) => p.Price)</th> *@
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.Sellings)
         {
             <tr>
-                <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                @* <td>@Html.DisplayFor(modelItem => item.Id)</td> *@
                 <td>@item.FinalPrice.ToString("C2")</td>
                 <td>@Html.DisplayFor(modelItem => item.ProductNavigation!.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.ProductNavigation!.BarCode)</td>
                 <td>@Html.DisplayFor(modelItem => item.ProductNavigation!.Category)</td>
-                <td>@item.ProductNavigation!.Price.ToString("C2")</td>
+                @* <td>@item.ProductNavigation!.Price.ToString("C2")</td> *@
             </tr>
         }
     </tbody>
