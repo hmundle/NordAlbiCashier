@@ -31,7 +31,7 @@ public abstract class ItemLinkTagHelperBase : TagHelper
         ? UrlHelper.Action(actionName, ItemControllerName, new { id = ItemId })
         : UrlHelper.Action(actionName, ItemControllerName);
         output.Attributes.SetAttribute("href", target);
-        output.Attributes.Add("class", cssClassName + " px-2");
+        output.Attributes.Add("class", cssClassName + " px-2 d-print-none");
         output.Attributes.Add("title", tooltip);
         output.Content.AppendHtml($@"{displayText} <i class=""lead fa-solid fa-{fontAwesomeName}""></i>");
     }
