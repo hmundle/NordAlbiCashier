@@ -4,7 +4,7 @@ networks:
 
 services:
   nacmvc:
-    image: munhei/nac_service:2.1.7
+    image: munhei/nac_service:2.2.0
     container_name: nac_service
     ports:
       - 5000:5000

@@ -1,11 +1,17 @@
 <Project>
   <PropertyGroup>
+    <Copyright>Copyright © 2023-2025</Copyright>
+    <!-- Version Management -->
+    <VersionPrefix>2.2.0</VersionPrefix>
+
+    <!-- Auto-generated versions -->
+    <Version>$(VersionPrefix)</Version>
+    <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
+    <FileVersion>$(VersionPrefix).0</FileVersion>
+    <InformationalVersion>$(Version)</InformationalVersion>
+
     <Authors>NordAlbi Team</Authors>
     <Company>NordAlbi@Zeltstadt</Company>    
-    <Copyright>Copyright © 2023-2024</Copyright>
     <Product>NordAlbi</Product>
-	<Version>2.1.6</Version>
-	<AssemblyVersion>2.1.6.0</AssemblyVersion>
-	<FileVersion>2.1.6.0</FileVersion>
   </PropertyGroup>
 </Project>
