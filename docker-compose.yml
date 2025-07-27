@@ -9,13 +9,14 @@ networks:
 services:
   nacmvc:
     image: munhei/nac_service:2.1.7
-    depends_on:
-      - "nac_db"
     container_name: nac_service
     ports:
       - 5000:5000
     networks:
       - dev
+    depends_on:
+      nac_db:
+        condition: service_healthy
 
   nac_db:
     image: postgres:14-alpine
@@ -31,6 +32,12 @@ services:
       - customer_data:/var/lib/postgresql/data/ 
     networks:
       - dev
+    healthcheck:
+      test: ["CMD-SHELL", "su -c pg_isready postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 volumes:
   customer_data:
