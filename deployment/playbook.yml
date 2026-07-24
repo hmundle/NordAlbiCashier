@@ -29,12 +29,58 @@
         # delete unused images/containers, which are not new, and log to journal (searchable with `sudo journalctl -rt cron-podman-prune`)
         job: "/usr/bin/podman system prune --all --filter 'until=168h' --force 2>&1 | systemd-cat -t cron-podman-prune"
 
+    # 1. Define the persistent volume for PostgreSQL
+    - name: Create Quadlet volume for Postgres data
+      containers.podman.podman_volume:
+        name: nac_db_data
+        state: quadlet
+
+    # 2. Define the custom bridge network
+    - name: Create Quadlet network
+      containers.podman.podman_network:
+        name: nac-net
+        state: quadlet
+
+    # 3. Define the PostgreSQL Database Container
+    - name: Container for NAC Database
+      containers.podman.podman_container:
+        name: nac_db
+        image: "docker.io/library/postgres:14-alpine"
+        state: quadlet
+        network:
+          - nac-net.network
+        volume:
+          - "nac_db_data:/var/lib/postgresql/data/"
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_USER: "{{ db_user | default('postgres') }}"
+          POSTGRES_PASSWORD: "{{ db_password }}"
+          POSTGRES_DB: "{{ db_name | default('NacDB') }}"
+        healthcheck: "su -c pg_isready postgres"
+        healthcheck_interval: 10s
+        healthcheck_timeout: 5s
+        healthcheck_retries: 5
+        healthcheck_start_period: 30s
+        quadlet_options:
+          - |
+            [Unit]
+            Description=NAC PostgreSQL Database
+            [Service]
+            Restart=always
+            [Install]
+            WantedBy=default.target
+      notify: Enable NAC db service
+
+    # 4. Define the Main Application Container
     - name: Container for NAC service
       containers.podman.podman_container:
         name: nac
         image: "docker.io/munhei/nac_service:{{ nac_image_tag | default('latest') }}"
         state: quadlet
         pull: always
+        network:
+          - nac-net.network
         healthcheck: "curl http://localhost:5000/system/hc --fail" # --fail forces to restart, as soon as request return any error HTTP code
         healthcheck_failure_action: kill # systemd starts container again, if configured in [Service] to do so
         healthcheck_start_period: 30s
@@ -42,12 +88,15 @@
         env:
           ASPNETCORE_ENVIRONMENT: "{{ aspnetcore_environment | default('Production') }}"
           ASPNETCORE_HTTP_PORTS: "5000"
+          ConnectionStrings__DefaultConnection: "Host=nac_db;Port=5432;Database={{ db_name | default('NacDB') }};Username={{ db_user | default('postgres') }};Password={{ db_password }}"
         ports:
           - "5000:5000"
         quadlet_options:
           - |
             [Unit]
-            After=network-online.target
+            Description=NAC Web Application
+            After=network-online.target nac_db.service
+            Requires=nac_db.service
             [Service]
             Restart=always
             [Install]
@@ -55,22 +104,36 @@
         # After= is required to successfully pull for the image
         # Restart= is required to start the container after crash, failing health check etc.
         # WantedBy=default.target is required to start automatically after boot
-      notify: Enable NAC service
+      notify: Enable NAC app service
 
-    - name: Ensure NAC quadlet file is readable by all users
+    # 5. Ensure generated Quadlet files are readable
+    - name: Ensure all Quadlet files are readable
       ansible.builtin.file:
-        path: /etc/containers/systemd/nac.container
+        path: "/etc/containers/systemd/{{ item }}"
         mode: '0644'
         owner: root
         group: root
+      loop:
+        - nac.container
+        - nac_db.container
+        - nac_db_data.volume
+        - nac-net.network
 
     - name: Prune everything
       containers.podman.podman_prune:
-          system: true
+        system: true
 
   handlers:
-    - name: Enable NAC service
+    - name: Enable NAC db service
+      ansible.builtin.systemd_service:
+        name: nac_db
+        state: restarted
+        daemon_reload: true
+        enabled: true
+
+    - name: Enable NAC app service
       ansible.builtin.systemd_service:
         name: nac
         state: restarted
         daemon_reload: true
+        enabled: true
