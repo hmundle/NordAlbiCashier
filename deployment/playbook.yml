@@ -1,0 +1,76 @@
+---
+- name: OS Update for Ubuntu 26.04 Hosts
+  hosts: nac_servers
+  become: true # Escalates to sudo to run apt commands
+
+  tasks:
+    - name: Update apt cache and upgrade all packages
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: full
+        autoremove: yes
+        autoclean: yes
+
+    - name: Install some extra tools
+      ansible.builtin.package:
+        name:
+          - tree
+        state: present
+
+    - name: Install Podman
+      ansible.builtin.apt:
+        name: podman
+        state: present
+
+    - name: Prune podman's unused data (images) weekly
+      ansible.builtin.cron:
+        name: "podman system prune"
+        special_time: weekly
+        # delete unused images/containers, which are not new, and log to journal (searchable with `sudo journalctl -rt cron-podman-prune`)
+        job: "/usr/bin/podman system prune --all --filter 'until=168h' --force 2>&1 | systemd-cat -t cron-podman-prune"
+
+    - name: Container for NAC service
+      containers.podman.podman_container:
+        name: nac
+        image: "docker.io/munhei/nac_service:{{ nac_image_tag | default('latest') }}"
+        state: quadlet
+        pull: always
+        healthcheck: "curl http://localhost:5000/system/hc --fail" # --fail forces to restart, as soon as request return any error HTTP code
+        healthcheck_failure_action: kill # systemd starts container again, if configured in [Service] to do so
+        healthcheck_start_period: 30s
+        read_only: true
+        env:
+          ASPNETCORE_ENVIRONMENT: "{{ aspnetcore_environment | default('Production') }}"
+          ASPNETCORE_HTTP_PORTS: "5000"
+        ports:
+          - "5000:5000"
+        quadlet_options:
+          - |
+            [Unit]
+            After=network-online.target
+            [Service]
+            Restart=always
+            [Install]
+            WantedBy=default.target
+        # After= is required to successfully pull for the image
+        # Restart= is required to start the container after crash, failing health check etc.
+        # WantedBy=default.target is required to start automatically after boot
+      notify: Enable NAC service
+
+    - name: Ensure NAC quadlet file is readable by all users
+      ansible.builtin.file:
+        path: /etc/containers/systemd/nac.container
+        mode: '0644'
+        owner: root
+        group: root
+
+    - name: Prune everything
+      containers.podman.podman_prune:
+          system: true
+
+  handlers:
+    - name: Enable NAC service
+      ansible.builtin.systemd_service:
+        name: nac
+        state: restarted
+        daemon_reload: true
