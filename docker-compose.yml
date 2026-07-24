@@ -4,7 +4,7 @@ networks:
 
 services:
   nacmvc:
-    image: munhei/nac_service:3.0.0
+    image: docker.io/munhei/nac_service:3.0.0
     container_name: nac_service
     ports:
       - 5000:5000
@@ -16,7 +16,7 @@ services:
         condition: service_healthy
 
   nac_db:
-    image: postgres:14-alpine
+    image: docker.io/library/postgres:14-alpine
     container_name: nac_db
     environment:
       - POSTGRES_USER=postgres
