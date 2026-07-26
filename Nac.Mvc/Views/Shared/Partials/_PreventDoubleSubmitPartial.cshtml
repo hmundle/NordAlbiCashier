@@ -1,0 +1,31 @@
+﻿<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.body.addEventListener('submit', function (e) {
+            const form = e.target;
+            if (form.tagName !== 'FORM') return;
+
+            // Check jQuery unobtrusive validation if present
+            if (typeof $ !== 'undefined') {
+                const $form = $(form);
+                if ($form.length && $form.data('validator') && !$form.valid()) {
+                    return; // Stop if form fails validation
+                }
+            }
+
+            // Prevent duplicate submit events
+            if (form.dataset.submitting === 'true') {
+                console.log('Submitting the second time - skipping!');
+                e.preventDefault();
+                return;
+            }
+
+            // Mark as submitting and disable button(s)
+            form.dataset.submitting = 'true';
+
+            const submitButtons = form.querySelectorAll('button[type="submit"], input[type="submit"]');
+            submitButtons.forEach(btn => {
+                btn.disabled = true;
+            });
+        });
+    });
+</script>
