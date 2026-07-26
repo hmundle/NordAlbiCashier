@@ -8,7 +8,7 @@ public partial class Invoice : BaseEntity
     public IEnumerable<Selling> Sellings { get; set; } = new List<Selling>();
 
     [DisplayName("Bezahlart")]
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     public PaymentType Type { get; set; } = PaymentType.Cash;
 
     [DisplayName("Kommentar")]

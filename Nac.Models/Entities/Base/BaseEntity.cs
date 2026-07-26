@@ -4,11 +4,11 @@ namespace Nac.Models.Entities.Base;
 
 public abstract class BaseEntity
 {
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     [Key]
     public Guid Id { get; set; }
 
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     [MaxLength(50)]
     [MinLength(1)]
     [DisplayName("Kasse")]
@@ -20,7 +20,7 @@ public abstract class BaseEntity
     [JsonConverter(typeof(UtcDateTimeConverter))]
     public DateTime? Modified { get; set; }
 
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     [DisplayName("Is Synchronized")]
     public SyncStatus IsSychronized { get; set; } = SyncStatus.Local;
 
@@ -29,7 +29,7 @@ public abstract class BaseEntity
     [Column("xmin", TypeName = "xid")]
     public uint xmin { get; set; }
 
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     [DisplayName("Is Deleted")]
     public bool IsDeleted { get; set; } = false;
 

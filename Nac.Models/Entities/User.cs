@@ -4,7 +4,7 @@
 [Index(nameof(Created), IsUnique = false)]
 public partial class User : BaseEntity
 {
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     [MaxLength(50)]
     [MinLength(3)]
     public string Name { get; set; } = "";

@@ -20,19 +20,19 @@ public partial class Selling : BaseEntity
 
     // columns
     [DisplayName("Anzahl")]
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     public int Quantity { get; set; } = 1;
 
     [DisplayName("Preiseingabe")]
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     public double PriceManual { get; set; } = 0.0;
 
     [DisplayName("Gewicht")]
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     public double Weight { get; set; } = 0.0;
 
     [DisplayName("Endpreis")]
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     public double FinalPrice { get; set; } = 0.0;
 
 }

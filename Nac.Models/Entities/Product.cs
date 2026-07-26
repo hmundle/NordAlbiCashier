@@ -13,7 +13,7 @@ public partial class Product : BaseEntity
     public ProductCategory Category { get; set; } = ProductCategory.Code;
 
     [DisplayName("Bar Code")]
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     [MinLength(1)]
     public String BarCode { get; set; } = string.Empty;
 
@@ -22,7 +22,7 @@ public partial class Product : BaseEntity
     public String Name { get; set; } = string.Empty;
 
     [DisplayName("Preis")]
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     public double Price { get; set; } = 0.0;
 
     [DisplayName("Sonderpreis")]
@@ -37,7 +37,7 @@ public partial class Product : BaseEntity
     [DisplayName("Gruppe")]
     public ProductGroup? Group { get; set; } = null;
 
-    [Required]
+    [Required(AllowEmptyStrings = true)]
     [DisplayName("Aktiv")]
     public bool IsActive { get; set; } = false;
 }
