@@ -54,10 +54,6 @@ public static class LoggingConfiguration
         // read log settings from config file
         var config = c;
         var logSettings = config.GetSection(nameof(AppLoggingSettings)).Get<AppLoggingSettings>()!;
-        var connectionStringName = logSettings.DbServer.ConnectionStringName;
-        var connectionString = config.GetConnectionString(connectionStringName);
-        var tableName = logSettings.DbServer.TableName;
-        var schema = logSettings.DbServer.Schema;
         string restrictedToMinimumLevel = logSettings.General.RestrictedToMinimumLevel;
         if (!Enum.TryParse<LogEventLevel>(restrictedToMinimumLevel, out var logLevel))
         {
@@ -68,28 +64,45 @@ public static class LoggingConfiguration
             .MinimumLevel.Is(logLevel)
             .Enrich.FromLogContext()
             .Enrich.With(new PropertyEnricher("ApplicationName", config.GetValue<string>("ApplicationName")))
-            .Enrich.WithMachineName()
-            .WriteTo.File(
-                path: e.IsDevelopment()
-                    ? logSettings.File.SubPathAndFileName
-                    : logSettings.File.FullLogPathAndFileName, // "ErrorLog.txt",
-                rollingInterval: RollingInterval.Day,
-                restrictedToMinimumLevel: logLevel,
-                outputTemplate: _outputTemplate)
-            .WriteTo.Console(restrictedToMinimumLevel: logLevel)
-            .WriteTo.PostgreSQL(
-                connectionString: connectionString!,
-                tableName: tableName,
-                columnOptions: _columnOptions,
-                needAutoCreateTable: true,
-                schemaName: "logging",
-                useCopy: true,
-                queueLimit: 3_000,
-                batchSizeLimit: 40,
-                period: new TimeSpan(0, 0, 10),
-                restrictedToMinimumLevel: logLevel,
-                failureCallback: e => Console.WriteLine($"Sink error: {e.Message}"),
-                formatProvider: null);
+            .Enrich.WithMachineName();
+
+
+        if (!string.IsNullOrWhiteSpace(logSettings.File?.FileName))
+        {
+            log = log
+                .WriteTo.File(
+                    path: e.IsDevelopment()
+                        ? logSettings.File.SubPathAndFileName
+                        : logSettings.File.FullLogPathAndFileName,
+                    rollingInterval: RollingInterval.Day,
+                    restrictedToMinimumLevel: logLevel,
+                    outputTemplate: _outputTemplate,
+                    shared: true); // Important for multi-threaded access
+        }
+        log = log
+            .WriteTo.Console(restrictedToMinimumLevel: logLevel);
+        if (!string.IsNullOrWhiteSpace(logSettings.DbServer?.ConnectionStringName)
+            && !string.IsNullOrWhiteSpace(logSettings.DbServer?.TableName))
+        {
+            var connectionStringName = logSettings.DbServer.ConnectionStringName;
+            var connectionString = config.GetConnectionString(connectionStringName);
+            var tableName = logSettings.DbServer.TableName;
+
+            log = log
+                .WriteTo.PostgreSQL(
+                    connectionString: connectionString!,
+                    tableName: tableName,
+                    columnOptions: _columnOptions,
+                    needAutoCreateTable: true,
+                    schemaName: "logging",
+                    useCopy: true,
+                    queueLimit: 3_000,
+                    batchSizeLimit: 40,
+                    period: new TimeSpan(0, 0, 10),
+                    restrictedToMinimumLevel: logLevel,
+                    failureCallback: e => Console.WriteLine($"Serilog sink error: {e.Message}"),
+                    formatProvider: null);
+        }
         l.AddSerilog(log.CreateLogger(), false);
     }
 

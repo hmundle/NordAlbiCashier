@@ -1,55 +1,41 @@
-﻿using Nac.Dal.Exceptions;
+﻿using Microsoft.Extensions.Logging;
+using Nac.Dal.Exceptions;
 using Nac.Models.EntitiesView;
-using Npgsql;
-using System.Data.Common;
 
 namespace Nac.Dal.EfStructures;
 
 public partial class NacDbContext : /*Identity*/DbContext
 {
-    public static DbDataSource BuildDataSource(string connectionString)
-    {
-        // Create a data source with the configuration you want:
-        var dataSourceBuilder = new NpgsqlDataSourceBuilder(connectionString);
-        dataSourceBuilder.MapEnum<SyncStatus>("sync_status");
-        dataSourceBuilder.MapEnum<PaymentType>("payment_type");
-        dataSourceBuilder.MapEnum<ProductCategory>("product_category");
-        dataSourceBuilder.MapEnum<ProductGroup>("product_group");
-
-        return dataSourceBuilder.Build();
-    }
-
-    public NacDbContext(DbContextOptions<NacDbContext> options)
+    public NacDbContext(DbContextOptions<NacDbContext> options, ILogger<NacDbContext>? logger = null)
         : base(options)
     {
         base.SavingChanges += (sender, args) =>
         {
-            //Console.WriteLine($"Saving changes for {((PpasDbContext)sender!).Database.GetConnectionString()}");
-            Console.WriteLine($"Saving changes for context type {((NacDbContext)sender!)}");
+            logger?.LogInformation("sss Saving changes in context {ContextId}", ContextId);
         };
         base.SavedChanges += (sender, args) =>
         {
-            //Console.WriteLine($"Saved {args!.EntitiesSavedCount} changes for {((PpasDbContext)sender!).Database.GetConnectionString()}");
-            Console.WriteLine($"Saved {args!.EntitiesSavedCount} changes for context type {((NacDbContext)sender!)}");
+            logger?.LogInformation("sss Saved {EntitiesSavedCount} changes in context {ContextId}",
+                args!.EntitiesSavedCount, ContextId);
         };
         base.SaveChangesFailed += (sender, args) =>
         {
-            Console.WriteLine($"An exception occurred! {args.Exception.Message} entities");
+            logger?.LogError(args.Exception, "sss An exception occurred saving entities in context {ContextId}", ContextId);
         };
 
         //ChangeTracker.Tracked += ChangeTracker_Tracked;
         //ChangeTracker.StateChanged += ChangeTracker_StateChanged;
     }
 
-    public virtual DbSet<Product>? Products { get; set; }
-    public virtual DbSet<Selling>? Sellings { get; set; }
+    public virtual DbSet<Product> Products { get; set; }
+    public virtual DbSet<Selling> Sellings { get; set; }
     public virtual DbSet<SellingsV> SellingsV { get; set; } = null!;
-    public virtual DbSet<Invoice>? Invoices { get; set; }
+    public virtual DbSet<Invoice> Invoices { get; set; }
 
-    public virtual DbSet<CashStatus>? CashStatus { get; set; }
-    public virtual DbSet<CashFlow>? CashFlow { get; set; }
+    public virtual DbSet<CashStatus> CashStatus { get; set; }
+    public virtual DbSet<CashFlow> CashFlow { get; set; }
 
-    public virtual DbSet<User>? Users { get; set; }
+    public virtual DbSet<User> Users { get; set; }
 
     public DbSet<SeriLogEntry>? LogEntries { get; set; }
 

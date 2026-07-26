@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
+using Nac.Dal.Configuration;
 
 namespace Nac.Dal.EfStructures;
 
@@ -8,11 +9,8 @@ public class NacDbContextFactory : IDesignTimeDbContextFactory<NacDbContext>
     {
         var optionsBuilder = new DbContextOptionsBuilder<NacDbContext>();
         var connectionString = @"Host=localhost;Username=postgres;Password=NacP@ssw0rd;Database=NacDB";
-        /*using*/
-        var dataSource = NacDbContext.BuildDataSource(connectionString);
-        optionsBuilder.UseNpgsql(dataSource, x => x.MigrationsHistoryTable("ef_migrations_history", "migration"))
-            .UseSnakeCaseNamingConvention();
-        optionsBuilder.UseValidationCheckConstraints();
+        DalConfiguration.ConfigureDbOptions(connectionString, optionsBuilder);
+
         Console.WriteLine($"The connection string is: {connectionString}");
         return new NacDbContext(optionsBuilder.Options);
     }
