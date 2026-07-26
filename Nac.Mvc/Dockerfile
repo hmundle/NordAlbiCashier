@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
 EXPOSE 5000
 
@@ -9,13 +9,15 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends curl \
     && rm -rf /var/lib/apt/lists/*
     
-# Creates a non-root user with an explicit UID and adds permission to access the /app folder
-# For more info, please refer to https://aka.ms/vscode-docker-dotnet-configure-containers
-RUN adduser -u 5678 --disabled-password --gecos "" appuser && chown -R appuser /app
-USER appuser
+# Switch to the default non-root user provided by the .NET image
+USER $APP_UID
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
+COPY ["Nac.Models/Nac.Models.csproj", "Nac.Models/"]
+COPY ["Nac.Lib/Nac.Lib.csproj", "Nac.Lib/"]
+COPY ["Nac.Dal/Nac.Dal.csproj", "Nac.Dal/"]
+COPY ["Nac.Services/Nac.Services.csproj", "Nac.Services/"]
 COPY ["Nac.Mvc/Nac.Mvc.csproj", "Nac.Mvc/"]
 RUN dotnet restore "Nac.Mvc/Nac.Mvc.csproj"
 COPY . .
