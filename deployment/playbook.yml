@@ -45,7 +45,7 @@
     - name: Container for NAC Database
       containers.podman.podman_container:
         name: nac_db
-        image: "docker.io/library/postgres:14-alpine"
+        image: "docker.io/library/postgres:17-alpine"
         state: quadlet
         network:
           - nac-net.network
