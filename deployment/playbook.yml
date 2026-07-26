@@ -81,7 +81,7 @@
         pull: always
         network:
           - nac-net.network
-        healthcheck: "curl http://localhost:5000/system/hc --fail" # --fail forces to restart, as soon as request return any error HTTP code
+        healthcheck: "curl http://localhost:5000/Home/Index --fail" # --fail forces to restart, as soon as request return any error HTTP code
         healthcheck_failure_action: kill # systemd starts container again, if configured in [Service] to do so
         healthcheck_start_period: 30s
         read_only: true
@@ -118,10 +118,6 @@
         - nac_db.container
         - nac_db_data.volume
         - nac-net.network
-
-    - name: Prune everything
-      containers.podman.podman_prune:
-        system: true
 
   handlers:
     - name: Enable NAC db service
