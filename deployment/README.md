@@ -32,7 +32,6 @@ Host nordalbi03
 
 ```
 
-
 4. Remove the access rights for the group and for others from config and private key file, e.g. with  
    `chmod go-rwx $HOME/.ssh/config $HOME/.ssh/id_v2*`
 5. Test your ssh configuration. You should be able to login to the
@@ -62,6 +61,7 @@ sudo visudo
 ```
 
 and attach to the end:
+
 ```
 nordalbi ALL=(ALL) NOPASSWD: ALL
 ```
@@ -83,6 +83,7 @@ pipx install --include-deps ansible
 ```
 
 4. test ansible
+
 ```bash
 ANSIBLE_CONFIG=./ansible.cfg ansible nac_servers -m ping
 ```

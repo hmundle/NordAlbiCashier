@@ -22,7 +22,7 @@
 
     - name: Prune everything
       containers.podman.podman_prune:
-          system: true
+        system: true
 
     - name: Prune podman's unused data (images) weekly
       ansible.builtin.cron:
@@ -128,7 +128,7 @@
       when: db_role == 'primary'
       changed_when: false
 
-# 5. Define Main Application Container (Runs on both hosts)
+    # 5. Define Main Application Container (Runs on both hosts)
     - name: Container for NAC service
       containers.podman.podman_container:
         name: nac
@@ -162,14 +162,11 @@
         # WantedBy=default.target is required to start automatically after boot
       notify: Reload systemd and restart Quadlet services
 
-
-
-
     # 5. Ensure generated Quadlet files are readable
     - name: Ensure all Quadlet files are readable
       ansible.builtin.file:
         path: "/etc/containers/systemd/{{ item }}"
-        mode: '0644'
+        mode: "0644"
         owner: root
         group: root
       loop:
