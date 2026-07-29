@@ -49,6 +49,17 @@
       ansible.builtin.set_fact:
         primary_host: "{{ groups['nac_servers'] | map('extract', hostvars) | selectattr('db_role', 'equalto', 'primary') | map(attribute='inventory_hostname') | first }}"
 
+    # Resolve the standby's current IP from Ansible facts, so the pg_hba.conf
+    # replication rule on the primary always matches reality - even if the
+    # standby's IP changes (new network/DHCP lease/etc.), just re-run the play.
+    - name: Determine standby host name from inventory
+      ansible.builtin.set_fact:
+        standby_host: "{{ groups['nac_servers'] | map('extract', hostvars) | selectattr('db_role', 'equalto', 'standby') | map(attribute='inventory_hostname') | first }}"
+
+    - name: Determine standby host IP address
+      ansible.builtin.set_fact:
+        standby_ip: "{{ hostvars[standby_host]['ansible_default_ipv4']['address'] }}"
+
     # 2. PostgreSQL Configuration Options
     # Primary setup: Enable replication settings and custom startup command
     - name: Set DB environment & options for Primary (Host 1)
@@ -119,6 +130,29 @@
            END IF;
          END $$;"
       when: db_role == 'primary'
+      changed_when: false
+
+    # Allow the standby to actually connect for replication. The rule uses
+    # the standby's current IP (resolved above via Ansible facts) instead of
+    # a hardcoded address, so it stays correct even if the standby moves to
+    # a different network - just re-run the playbook.
+    - name: Check if replication rule for standby already present in pg_hba.conf
+      ansible.builtin.command: >
+        podman exec nac_db grep -qF "host replication {{ db_repl_user }} {{ standby_ip }}/32" /var/lib/postgresql/data/pg_hba.conf
+      register: hba_rule_check
+      failed_when: false
+      changed_when: false
+      when: db_role == 'primary'
+
+    - name: Add replication rule for standby to pg_hba.conf
+      ansible.builtin.command: >
+        podman exec nac_db bash -c 'echo "host replication {{ db_repl_user }} {{ standby_ip }}/32 scram-sha-256" >> /var/lib/postgresql/data/pg_hba.conf'
+      when: db_role == 'primary' and hba_rule_check.rc != 0
+
+    - name: Reload PostgreSQL configuration to apply pg_hba.conf changes
+      ansible.builtin.command: >
+        podman exec nac_db psql -U {{ db_user }} -c "SELECT pg_reload_conf();"
+      when: db_role == 'primary' and hba_rule_check.rc != 0
       changed_when: false
 
     # 5. Define Main Application Container (Runs on both hosts)
