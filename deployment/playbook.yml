@@ -11,16 +11,18 @@
         autoremove: yes
         autoclean: yes
 
-    - name: Install some extra tools
-      ansible.builtin.package:
+    - name: Ensure Podman and extra tools are installed
+      ansible.builtin.apt:
         name:
+          - podman
+          - curl
           - tree
         state: present
+        update_cache: yes
 
-    - name: Install Podman
-      ansible.builtin.apt:
-        name: podman
-        state: present
+    - name: Prune everything
+      containers.podman.podman_prune:
+          system: true
 
     - name: Prune podman's unused data (images) weekly
       ansible.builtin.cron:
@@ -29,19 +31,49 @@
         # delete unused images/containers, which are not new, and log to journal (searchable with `sudo journalctl -rt cron-podman-prune`)
         job: "/usr/bin/podman system prune --all --filter 'until=168h' --force 2>&1 | systemd-cat -t cron-podman-prune"
 
-    # 1. Define the persistent volume for PostgreSQL
-    - name: Create Quadlet volume for Postgres data
-      containers.podman.podman_volume:
-        name: nac_db_data
-        state: quadlet
-
-    # 2. Define the custom bridge network
+    # 1. Quadlet Infrastructure (Network and Volumes)
     - name: Create Quadlet network
       containers.podman.podman_network:
         name: nac-net
         state: quadlet
 
-    # 3. Define the PostgreSQL Database Container
+    - name: Create Quadlet volume for Postgres data
+      containers.podman.podman_volume:
+        name: nac_db_data
+        state: quadlet
+
+    # 2. PostgreSQL Configuration Options
+    # Primary setup: Enable replication settings and custom startup command
+    - name: Set DB environment & options for Primary (Host 1)
+      ansible.builtin.set_fact:
+        pg_env:
+          POSTGRES_USER: "{{ db_user }}"
+          POSTGRES_PASSWORD: "{{ db_password }}"
+          POSTGRES_DB: "{{ db_name }}"
+        pg_exec_cmd: >-
+          postgres
+          -c wal_level=replica
+          -c max_wal_senders=10
+          -c max_replication_slots=10
+          -c hot_standby=on
+      when: db_role == 'primary'
+
+    # Standby setup: Connects to Primary via pg_basebackup on first boot
+    - name: Set DB environment & options for Standby (Host 2)
+      ansible.builtin.set_fact:
+        pg_env:
+          POSTGRES_PASSWORD: "{{ db_password }}"
+        pg_exec_cmd: >-
+          bash -c "
+          if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then
+            rm -rf /var/lib/postgresql/data/* &&
+            PGPASSWORD='{{ db_repl_password }}' pg_basebackup -h {{ primary_host_ip }} -p 5432 -U {{ db_repl_user }} -D /var/lib/postgresql/data -Fp -Xs -R;
+          fi;
+          exec postgres;
+          "
+      when: db_role == 'standby'
+
+    # 3. Define PostgreSQL Database Quadlet Container
     - name: Container for NAC Database
       containers.podman.podman_container:
         name: nac_db
@@ -53,11 +85,9 @@
           - "nac_db_data:/var/lib/postgresql/data/"
         ports:
           - "5432:5432"
-        env:
-          POSTGRES_USER: "{{ db_user | default('postgres') }}"
-          POSTGRES_PASSWORD: "{{ db_password }}"
-          POSTGRES_DB: "{{ db_name | default('NacDB') }}"
-        healthcheck: "su -c pg_isready postgres"
+        env: "{{ pg_env }}"
+        command: "{{ pg_exec_cmd }}"
+        healthcheck: "su -c 'pg_isready -U {{ db_user }}' postgres"
         healthcheck_interval: 10s
         healthcheck_timeout: 5s
         healthcheck_retries: 5
@@ -65,14 +95,26 @@
         quadlet_options:
           - |
             [Unit]
-            Description=NAC PostgreSQL Database
+            Description=NAC PostgreSQL Database ({{ db_role }})
             [Service]
             Restart=always
             [Install]
             WantedBy=default.target
-      notify: Enable NAC db service
+      notify: Reload systemd and restart Quadlet services
 
-    # 4. Define the Main Application Container
+    # 4. Create Replication User and Rules on Primary
+    - name: Setup Replication User on Primary
+      ansible.builtin.command: >
+        podman exec nac_db psql -U {{ db_user }} -d {{ db_name }} -c
+        "DO $$ BEGIN
+           IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = '{{ db_repl_user }}') THEN
+             CREATE ROLE {{ db_repl_user }} WITH REPLICATION LOGIN PASSWORD '{{ db_repl_password }}';
+           END IF;
+         END $$;"
+      when: db_role == 'primary'
+      changed_when: false
+
+# 5. Define Main Application Container (Runs on both hosts)
     - name: Container for NAC service
       containers.podman.podman_container:
         name: nac
@@ -88,7 +130,7 @@
         env:
           ASPNETCORE_ENVIRONMENT: "{{ aspnetcore_environment | default('Production') }}"
           ASPNETCORE_HTTP_PORTS: "5000"
-          ConnectionStrings__DefaultConnection: "Host=nac_db;Port=5432;Database={{ db_name | default('NacDB') }};Username={{ db_user | default('postgres') }};Password={{ db_password }}"
+          ConnectionStrings__DefaultConnection: "Host=nac_db;Port=5432;Database={{ db_name }};Username={{ db_user }};Password={{ db_password }}"
         ports:
           - "5000:5000"
         quadlet_options:
@@ -104,7 +146,10 @@
         # After= is required to successfully pull for the image
         # Restart= is required to start the container after crash, failing health check etc.
         # WantedBy=default.target is required to start automatically after boot
-      notify: Enable NAC app service
+      notify: Reload systemd and restart Quadlet services
+
+
+
 
     # 5. Ensure generated Quadlet files are readable
     - name: Ensure all Quadlet files are readable
@@ -120,16 +165,12 @@
         - nac-net.network
 
   handlers:
-    - name: Enable NAC db service
+    - name: Reload systemd and restart Quadlet services
       ansible.builtin.systemd_service:
-        name: nac_db
+        name: "{{ item }}"
         state: restarted
         daemon_reload: true
         enabled: true
-
-    - name: Enable NAC app service
-      ansible.builtin.systemd_service:
-        name: nac
-        state: restarted
-        daemon_reload: true
-        enabled: true
+      loop:
+        - nac_db
+        - nac
