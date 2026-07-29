@@ -160,7 +160,6 @@
         # After= is required to successfully pull for the image
         # Restart= is required to start the container after crash, failing health check etc.
         # WantedBy=default.target is required to start automatically after boot
-      notify: Reload systemd and restart Quadlet services
 
     # 5. Ensure generated Quadlet files are readable
     - name: Ensure all Quadlet files are readable
@@ -175,6 +174,15 @@
         - nac_db_data.volume
         - nac-net.network
 
+    - name: Reload NAC services
+      ansible.builtin.systemd_service:
+        name: "{{ item }}"
+        state: restarted
+        daemon_reload: true
+        enabled: true
+      loop:
+        - nac
+
   handlers:
     - name: Reload systemd and restart Quadlet services
       ansible.builtin.systemd_service:
@@ -184,4 +192,3 @@
         enabled: true
       loop:
         - nac_db
-        - nac
