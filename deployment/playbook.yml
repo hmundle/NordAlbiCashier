@@ -42,6 +42,13 @@
         name: nac_db_data
         state: quadlet
 
+    # Resolve the primary's inventory hostname from db_role.
+    # Requires that hosts can resolve each other's hostnames
+    # (DNS or /etc/hosts).
+    - name: Determine primary host name from inventory
+      ansible.builtin.set_fact:
+        primary_host: "{{ groups['nac_servers'] | map('extract', hostvars) | selectattr('db_role', 'equalto', 'primary') | map(attribute='inventory_hostname') | first }}"
+
     # 2. PostgreSQL Configuration Options
     # Primary setup: Enable replication settings and custom startup command
     - name: Set DB environment & options for Primary (Host 1)
@@ -67,7 +74,7 @@
           bash -c "
           if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then
             rm -rf /var/lib/postgresql/data/* &&
-            PGPASSWORD='{{ db_repl_password }}' pg_basebackup -h {{ primary_host_ip }} -p 5432 -U {{ db_repl_user }} -D /var/lib/postgresql/data -Fp -Xs -R;
+            PGPASSWORD='{{ db_repl_password }}' pg_basebackup -h {{ primary_host }} -p 5432 -U {{ db_repl_user }} -D /var/lib/postgresql/data -Fp -Xs -R;
           fi;
           exec postgres;
           "
@@ -101,6 +108,13 @@
             [Install]
             WantedBy=default.target
       notify: Reload systemd and restart Quadlet services
+
+    # Handlers only run at the end of the play by default, but the next task
+    # needs `nac_db` to already be up and running (podman exec into it).
+    # Flushing here forces the "Reload systemd and restart Quadlet services"
+    # handler to run now instead of after the whole play finishes.
+    - name: Flush handlers so nac_db is running before we exec into it
+      ansible.builtin.meta: flush_handlers
 
     # 4. Create Replication User and Rules on Primary
     - name: Setup Replication User on Primary
