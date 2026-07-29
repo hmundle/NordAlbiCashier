@@ -169,3 +169,32 @@ ansible-vault rekey $BASE_PATH/common-vault.yaml
 
 - Create Ansible common vault password  
   Generate with Password Depot -> Lowercase, Numbers, Uppercase, Length: 32, exclude characters: oO0LlI1,´`'"
+
+# Manual failover procedure (host 1 primary → host 2 promoted) (written by AI)
+
+**1. Confirm host 1 is actually down** (not just a network blip) — avoid a split-brain where both nodes think they're primary.
+
+**2. Promote the standby database on host 2:**
+
+```bash
+podman exec nac_db psql -U postgres -c "SELECT pg_promote();"
+```
+
+This ends the standby's recovery mode and makes it a normal read-write primary. Verify with:
+
+```bash
+podman exec nac_db psql -U postgres -c "SELECT pg_is_in_recovery();"
+```
+
+should return `f`.
+
+**3. Point clients at host 2** — update DNS/load balancer/reverse proxy so the app URL clients use resolves to host 2 instead of host 1. (The app on host 2 already connects to its local `nac_db`, so no app-side reconfiguration needed — it just needs to start receiving writes, which `pg_promote()` now allows.)
+
+**4. When host 1 comes back**, it must **not** simply rejoin as if nothing happened — its data has diverged from the new primary (host 2) during the outage. Options:
+
+- Wipe host 1's `nac_db_data` volume and re-run the playbook's standby setup (`pg_basebackup -R` from host 2) to resync it as the new standby, or
+- Use `pg_rewind` against the new primary if you want to avoid a full re-copy.
+
+**5. Decide long-term roles** — either keep host 2 as primary going forward (update `db_role` in `hosts.ini` for both hosts and re-run the playbook so quadlet unit descriptions/labels reflect it), or fail back to host 1 once it's resynced as standby, by repeating steps 2–4 in reverse during a maintenance window.
+
+**Note:** this is a fully manual process — nothing in the current setup detects host 1 going down, and there's no automatic client redirect. If failover speed matters, this whole flow (detection, promotion, DNS/proxy switch) is exactly what tools like Patroni or repmgr automate; worth keeping in mind even if you're going manual for now.
