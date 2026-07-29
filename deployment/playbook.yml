@@ -20,9 +20,9 @@
         state: present
         update_cache: yes
 
-    - name: Prune everything
-      containers.podman.podman_prune:
-        system: true
+    # - name: Prune everything
+    #   containers.podman.podman_prune:
+    #     system: true
 
     - name: Prune podman's unused data (images) weekly
       ansible.builtin.cron:
@@ -34,7 +34,7 @@
     # 1. Quadlet Infrastructure (Network and Volumes)
     - name: Create Quadlet network
       containers.podman.podman_network:
-        name: nac-net
+        name: nac
         state: quadlet
 
     - name: Create Quadlet volume for Postgres data
@@ -70,14 +70,7 @@
       ansible.builtin.set_fact:
         pg_env:
           POSTGRES_PASSWORD: "{{ db_password }}"
-        pg_exec_cmd: >-
-          bash -c "
-          if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then
-            rm -rf /var/lib/postgresql/data/* &&
-            PGPASSWORD='{{ db_repl_password }}' pg_basebackup -h {{ primary_host }} -p 5432 -U {{ db_repl_user }} -D /var/lib/postgresql/data -Fp -Xs -R;
-          fi;
-          exec postgres;
-          "
+        pg_exec_cmd: 'bash -c "if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then rm -rf /var/lib/postgresql/data/* && PGPASSWORD=\"{{ db_repl_password }}\" pg_basebackup -h {{ primary_host }} -p 5432 -U {{ db_repl_user }} -D /var/lib/postgresql/data -Fp -Xs -R; fi; exec gosu postgres postgres;"'
       when: db_role == 'standby'
 
     # 3. Define PostgreSQL Database Quadlet Container
@@ -87,7 +80,7 @@
         image: "docker.io/library/postgres:17-alpine"
         state: quadlet
         network:
-          - nac-net.network
+          - nac.network
         volume:
           - "nac_db_data:/var/lib/postgresql/data/"
         ports:
@@ -136,7 +129,7 @@
         state: quadlet
         pull: always
         network:
-          - nac-net.network
+          - nac.network
         healthcheck: "curl http://localhost:5000/Home/Index --fail" # --fail forces to restart, as soon as request return any error HTTP code
         healthcheck_failure_action: kill # systemd starts container again, if configured in [Service] to do so
         healthcheck_start_period: 30s
@@ -172,7 +165,7 @@
         - nac.container
         - nac_db.container
         - nac_db_data.volume
-        - nac-net.network
+        - nac.network
 
     - name: Reload NAC services
       ansible.builtin.systemd_service:
