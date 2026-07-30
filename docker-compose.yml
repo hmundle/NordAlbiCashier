@@ -1,10 +1,10 @@
 networks:
   dev:
-    driver: bridge 
+    driver: bridge
 
 services:
   nacmvc:
-    image: docker.io/munhei/nac_service:3.0.0_rc1
+    image: docker.io/munhei/nac_service:3.0.0
     container_name: nac_service
     ports:
       - 5000:5000
@@ -26,7 +26,7 @@ services:
       - "5432:5432"
     restart: always
     volumes:
-      - customer_data:/var/lib/postgresql/data/ 
+      - customer_data:/var/lib/postgresql/data/
     networks:
       - dev
     healthcheck:

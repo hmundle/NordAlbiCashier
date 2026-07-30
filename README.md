@@ -15,7 +15,7 @@ Currently you only need this command:
 # build the docker image and push to docker hub
 
 ```powershell
-$TagVersion = "2.2.1"
+$TagVersion = "3.0.0"
 # dotnet tool install -g Microsoft.Web.LibraryManager.Cli
 # cd Nac.Mvc/
 # libman restore
