@@ -3,12 +3,26 @@
   hosts: nac_servers
   become: true
 
+  vars_prompt:
+    - name: confirm_cleanup
+      prompt: >-
+        This will STOP and REMOVE the NAC containers, network, volume,
+        quadlet files, and cron jobs on all hosts in [nac_servers].
+        Type 'yes' to continue
+      private: false
+
   vars:
     # Set to true only if you also want the pg_dump backup files deleted.
     # Left false by default so backups survive a cleanup/redeploy cycle.
     wipe_backups: false
 
   tasks:
+    - name: Abort unless the user confirmed
+      ansible.builtin.fail:
+        msg: "Cleanup aborted - confirmation not given."
+      when: confirm_cleanup != 'yes'
+      run_once: true
+
     # 1. Stop the quadlet-generated services (ignore if they don't exist)
     - name: Stop NAC app and database services
       ansible.builtin.shell: "systemctl stop {{ item }} 2>/dev/null || true"
