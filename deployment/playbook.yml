@@ -49,17 +49,6 @@
       ansible.builtin.set_fact:
         primary_host: "{{ groups['nac_servers'] | map('extract', hostvars) | selectattr('db_role', 'equalto', 'primary') | map(attribute='inventory_hostname') | first }}"
 
-    # 2. PostgreSQL Configuration Options
-    # No replication - both hosts run a plain, independent Postgres instance.
-    # Host 2's database is kept up to date separately via periodic pg_dump
-    # backups pulled from host 1 (see the backup cron task below).
-    - name: Set DB environment & options
-      ansible.builtin.set_fact:
-        pg_env:
-          POSTGRES_USER: "{{ db_user }}"
-          POSTGRES_PASSWORD: "{{ db_password }}"
-          POSTGRES_DB: "{{ db_name }}"
-
     # 3. Define PostgreSQL Database Quadlet Container
     - name: Container for NAC Database
       containers.podman.podman_container:
@@ -119,8 +108,11 @@
     - name: Configure cron job to clean up old backups
       ansible.builtin.cron:
         name: "nac_db backup cleanup"
-        special_time: daily
-        job: "find {{ backup_dir }} -name 'nac_db_*.dump' -mtime +{{ backup_retention_days }} -delete"
+        special_time: hourly
+        job: >-
+          ls -1t {{ backup_dir }}/nac_db_*.dump 2>/dev/null
+          | tail -n +{{ backup_keep_count + 1 }}
+          | xargs -r rm --
       when: db_role != 'primary'
 
     # 5. Define Main Application Container (Runs on both hosts)
