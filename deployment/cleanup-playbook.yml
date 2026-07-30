@@ -1,0 +1,89 @@
+---
+- name: Clean up NAC podman/quadlet deployment
+  hosts: nac_servers
+  become: true
+
+  vars:
+    # Set to true only if you also want the pg_dump backup files deleted.
+    # Left false by default so backups survive a cleanup/redeploy cycle.
+    wipe_backups: false
+
+  tasks:
+    # 1. Stop the quadlet-generated services (ignore if they don't exist)
+    - name: Stop NAC app and database services
+      ansible.builtin.shell: "systemctl stop {{ item }} 2>/dev/null || true"
+      loop:
+        - nac.service
+        - nac_db.service
+        - nac-network.service
+        - nac_db_data-volume.service
+      changed_when: false
+
+    # 2. Remove any leftover containers/network/volume known to podman directly
+    - name: Remove containers
+      containers.podman.podman_container:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - nac
+        - nac_db
+
+    - name: Remove network
+      containers.podman.podman_network:
+        name: nac
+        state: absent
+
+    - name: Remove volume
+      containers.podman.podman_volume:
+        name: nac_db_data
+        state: absent
+
+    # 3. Full podman prune (images, build cache, everything unused)
+    - name: Prune all podman data
+      containers.podman.podman_prune:
+        system: true
+        system_all: true
+        system_volumes: true
+
+    # 4. Delete the quadlet source files
+    - name: Remove quadlet unit files
+      ansible.builtin.file:
+        path: "/etc/containers/systemd/{{ item }}"
+        state: absent
+      loop:
+        - nac.container
+        - nac_db.container
+        - nac_db_data.volume
+        - nac.network
+
+    # 5. Reload systemd so it forgets the generated units
+    - name: Reload systemd daemon
+      ansible.builtin.systemd_service:
+        daemon_reload: true
+
+    - name: Reset failed unit states
+      ansible.builtin.command: systemctl reset-failed
+      changed_when: false
+
+    # 6. Remove the cron jobs created by the deployment playbook
+    - name: Remove podman prune cron job
+      ansible.builtin.cron:
+        name: "podman system prune"
+        state: absent
+
+    - name: Remove database backup cron job
+      ansible.builtin.cron:
+        name: "nac_db backup from primary"
+        state: absent
+
+    - name: Remove backup cleanup cron job
+      ansible.builtin.cron:
+        name: "nac_db backup cleanup"
+        state: absent
+
+    # 7. Optionally remove the backup files themselves
+    - name: Remove backup directory and its contents
+      ansible.builtin.file:
+        path: "{{ backup_dir }}"
+        state: absent
+      when: wipe_backups | bool

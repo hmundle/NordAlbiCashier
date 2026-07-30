@@ -120,8 +120,11 @@ cluster_sudo_pass: <your sudo password>
 ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yml
 ```
 
-You have to enter two passwords: one for the common vault and another password
-for your personal vault you created.
+4. Run the playbook for cleanup
+
+```bash
+ANSIBLE_CONFIG=./ansible.cfg ansible-playbook cleanup-playbook.yml
+```
 
 # Command list
 
