@@ -97,12 +97,18 @@
         name: "nac_db backup from primary"
         minute: "*/2"
         job: >-
-          podman run --rm
-          -e PGPASSWORD='{{ db_password }}'
+          bash -c '
+          f="{{ backup_dir }}/nac_db_$(date +\%Y\%m\%dT\%H\%M\%S).dump";
+          err=$(mktemp);
+          if podman run --rm -e PGPASSWORD="{{ db_password }}"
           docker.io/library/postgres:17-alpine
           pg_dump -h {{ primary_host }} -p 5432 -U {{ db_user }} -Fc {{ db_name }}
-          > {{ backup_dir }}/nac_db_$(date +\%Y\%m\%dT\%H\%M\%S).dump
-          2>&1 | systemd-cat -t nac-db-backup
+          > "$f.part" 2>"$err";
+          then mv "$f.part" "$f";
+          else cat "$err" | systemd-cat -t nac-db-backup; rm -f "$f.part";
+          fi;
+          rm -f "$err"
+          '
       when: db_role != 'primary'
 
     - name: Configure cron job to clean up old backups
@@ -112,7 +118,8 @@
         job: >-
           ls -1t {{ backup_dir }}/nac_db_*.dump 2>/dev/null
           | tail -n +{{ backup_keep_count + 1 }}
-          | xargs -r rm --
+          | xargs -r rm --;
+          find {{ backup_dir }} -name '*.dump.part' -mmin +60 -delete
       when: db_role != 'primary'
 
     # 5. Define Main Application Container (Runs on both hosts)
