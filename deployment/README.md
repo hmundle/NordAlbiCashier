@@ -150,9 +150,9 @@ reachable there. `podman cp` copies it in without needing a bind mount.
 ```bash
 BACKUP_FILE=/var/backups/nac_db/nac_db_20260730211801.dump   # <-- adjust
 
-podman cp "$BACKUP_FILE" nac_db:/tmp/restore.dump
+sudo podman cp "$BACKUP_FILE" nac_db:/tmp/restore.dump
 
-podman exec nac_db pg_restore \
+sudo podman exec nac_db pg_restore \
   -U postgres \
   -d NacDB \
   --clean \
@@ -173,14 +173,14 @@ podman exec nac_db pg_restore \
 ## 5. Clean up the temp file in the container
 
 ```bash
-podman exec nac_db rm -f /tmp/restore.dump
+sudo podman exec nac_db rm -f /tmp/restore.dump
 ```
 
 ## 6. Verify the data
 
 ```bash
-podman exec nac_db psql -U postgres -d NacDB -c "\dt"
-podman exec nac_db psql -U postgres -d NacDB -c "SELECT count(*) FROM <a_known_table>;"
+sudo podman exec nac_db psql -U postgres -d NacDB -c "\dt"
+sudo podman exec nac_db psql -U postgres -d NacDB -c "SELECT count(*) FROM <a_known_table>;"
 ```
 
 Compare row counts / recent records against what you'd expect from host 1
