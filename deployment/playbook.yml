@@ -49,40 +49,16 @@
       ansible.builtin.set_fact:
         primary_host: "{{ groups['nac_servers'] | map('extract', hostvars) | selectattr('db_role', 'equalto', 'primary') | map(attribute='inventory_hostname') | first }}"
 
-    # Resolve the standby's current IP from Ansible facts, so the pg_hba.conf
-    # replication rule on the primary always matches reality - even if the
-    # standby's IP changes (new network/DHCP lease/etc.), just re-run the play.
-    - name: Determine standby host name from inventory
-      ansible.builtin.set_fact:
-        standby_host: "{{ groups['nac_servers'] | map('extract', hostvars) | selectattr('db_role', 'equalto', 'standby') | map(attribute='inventory_hostname') | first }}"
-
-    - name: Determine standby host IP address
-      ansible.builtin.set_fact:
-        standby_ip: "{{ hostvars[standby_host]['ansible_default_ipv4']['address'] }}"
-
     # 2. PostgreSQL Configuration Options
-    # Primary setup: Enable replication settings and custom startup command
-    - name: Set DB environment & options for Primary (Host 1)
+    # No replication - both hosts run a plain, independent Postgres instance.
+    # Host 2's database is kept up to date separately via periodic pg_dump
+    # backups pulled from host 1 (see the backup cron task below).
+    - name: Set DB environment & options
       ansible.builtin.set_fact:
         pg_env:
           POSTGRES_USER: "{{ db_user }}"
           POSTGRES_PASSWORD: "{{ db_password }}"
           POSTGRES_DB: "{{ db_name }}"
-        pg_exec_cmd: >-
-          postgres
-          -c wal_level=replica
-          -c max_wal_senders=10
-          -c max_replication_slots=10
-          -c hot_standby=on
-      when: db_role == 'primary'
-
-    # Standby setup: Connects to Primary via pg_basebackup on first boot
-    - name: Set DB environment & options for Standby (Host 2)
-      ansible.builtin.set_fact:
-        pg_env:
-          POSTGRES_PASSWORD: "{{ db_password }}"
-        pg_exec_cmd: 'bash -c "if [ ! -s /var/lib/postgresql/data/PG_VERSION ]; then rm -rf /var/lib/postgresql/data/* && PGPASSWORD=\"{{ db_repl_password }}\" pg_basebackup -h {{ primary_host }} -p 5432 -U {{ db_repl_user }} -D /var/lib/postgresql/data -Fp -Xs -R; fi; exec gosu postgres postgres;"'
-      when: db_role == 'standby'
 
     # 3. Define PostgreSQL Database Quadlet Container
     - name: Container for NAC Database
@@ -96,8 +72,10 @@
           - "nac_db_data:/var/lib/postgresql/data/"
         ports:
           - "5432:5432"
-        env: "{{ pg_env }}"
-        command: "{{ pg_exec_cmd }}"
+        env:
+          POSTGRES_USER: "{{ db_user }}"
+          POSTGRES_PASSWORD: "{{ db_password }}"
+          POSTGRES_DB: "{{ db_name }}"
         healthcheck: "su -c 'pg_isready -U {{ db_user }}' postgres"
         healthcheck_interval: 10s
         healthcheck_timeout: 5s
@@ -113,47 +91,37 @@
             WantedBy=default.target
       notify: Reload systemd and restart Quadlet services
 
-    # Handlers only run at the end of the play by default, but the next task
-    # needs `nac_db` to already be up and running (podman exec into it).
-    # Flushing here forces the "Reload systemd and restart Quadlet services"
-    # handler to run now instead of after the whole play finishes.
-    - name: Flush handlers so nac_db is running before we exec into it
-      ansible.builtin.meta: flush_handlers
+    # 4. Periodic backup of the primary's database, taken from host 2
+    # (RPO of a few minutes, restored by hand onto host 2 if host 1 fails).
+    # Uses a throwaway container so the host doesn't need a Postgres client
+    # installed, and the client version always matches the server image.
+    - name: Ensure backup directory exists
+      ansible.builtin.file:
+        path: "{{ backup_dir }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        mode: "0750"
+      when: db_role != 'primary'
 
-    # 4. Create Replication User and Rules on Primary
-    - name: Setup Replication User on Primary
-      ansible.builtin.command: >
-        podman exec nac_db psql -U {{ db_user }} -d {{ db_name }} -c
-        "DO $$ BEGIN
-           IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = '{{ db_repl_user }}') THEN
-             CREATE ROLE {{ db_repl_user }} WITH REPLICATION LOGIN PASSWORD '{{ db_repl_password }}';
-           END IF;
-         END $$;"
-      when: db_role == 'primary'
-      changed_when: false
+    - name: Configure cron job for periodic database backup
+      ansible.builtin.cron:
+        name: "nac_db backup from primary"
+        minute: "*/2"
+        job: >-
+          podman run --rm
+          -e PGPASSWORD='{{ db_password }}'
+          docker.io/library/postgres:17-alpine
+          pg_dump -h {{ primary_host }} -p 5432 -U {{ db_user }} -Fc {{ db_name }}
+          > {{ backup_dir }}/nac_db_$(date +\%Y\%m\%dT\%H\%M\%S).dump
+          2>&1 | systemd-cat -t nac-db-backup
+      when: db_role != 'primary'
 
-    # Allow the standby to actually connect for replication. The rule uses
-    # the standby's current IP (resolved above via Ansible facts) instead of
-    # a hardcoded address, so it stays correct even if the standby moves to
-    # a different network - just re-run the playbook.
-    - name: Check if replication rule for standby already present in pg_hba.conf
-      ansible.builtin.command: >
-        podman exec nac_db grep -qF "host replication {{ db_repl_user }} {{ standby_ip }}/32" /var/lib/postgresql/data/pg_hba.conf
-      register: hba_rule_check
-      failed_when: false
-      changed_when: false
-      when: db_role == 'primary'
-
-    - name: Add replication rule for standby to pg_hba.conf
-      ansible.builtin.command: >
-        podman exec nac_db bash -c 'echo "host replication {{ db_repl_user }} {{ standby_ip }}/32 scram-sha-256" >> /var/lib/postgresql/data/pg_hba.conf'
-      when: db_role == 'primary' and hba_rule_check.rc != 0
-
-    - name: Reload PostgreSQL configuration to apply pg_hba.conf changes
-      ansible.builtin.command: >
-        podman exec nac_db psql -U {{ db_user }} -c "SELECT pg_reload_conf();"
-      when: db_role == 'primary' and hba_rule_check.rc != 0
-      changed_when: false
+    - name: Configure cron job to clean up old backups
+      ansible.builtin.cron:
+        name: "nac_db backup cleanup"
+        special_time: daily
+        job: "find {{ backup_dir }} -name 'nac_db_*.dump' -mtime +{{ backup_retention_days }} -delete"
+      when: db_role != 'primary'
 
     # 5. Define Main Application Container (Runs on both hosts)
     - name: Container for NAC service
