@@ -170,31 +170,106 @@ ansible-vault rekey $BASE_PATH/common-vault.yaml
 - Create Ansible common vault password  
   Generate with Password Depot -> Lowercase, Numbers, Uppercase, Length: 32, exclude characters: oO0LlI1,´`'"
 
-# Manual failover procedure (host 1 primary → host 2 promoted) (written by AI)
+# Restoring the NAC Database Backup on Host 2
 
-**1. Confirm host 1 is actually down** (not just a network blip) — avoid a split-brain where both nodes think they're primary.
+This runbook restores the latest `pg_dump` backup (taken every 2 minutes from
+host 1) into host 2's local `nac_db` container. Use this when host 1 has
+failed and host 2 needs to take over with the most recent available data.
 
-**2. Promote the standby database on host 2:**
+**Data loss window:** up to 2 minutes (the backup interval) plus however long
+host 1 was down before the last successful backup.
+
+---
+
+## 1. Stop the app on host 2 (avoid writes during restore)
 
 ```bash
-podman exec nac_db psql -U postgres -c "SELECT pg_promote();"
+sudo systemctl stop nac.service
 ```
 
-This ends the standby's recovery mode and makes it a normal read-write primary. Verify with:
+## 2. Pick the backup file to restore
 
 ```bash
-podman exec nac_db psql -U postgres -c "SELECT pg_is_in_recovery();"
+ls -lt /var/backups/nac_db/nac_db_*.dump | head -5
 ```
 
-should return `f`.
+Choose the newest file (or an older one if the newest is suspected corrupt).
+Note the full filename, e.g. `nac_db_20260730211801.dump`.
 
-**3. Point clients at host 2** — update DNS/load balancer/reverse proxy so the app URL clients use resolves to host 2 instead of host 1. (The app on host 2 already connects to its local `nac_db`, so no app-side reconfiguration needed — it just needs to start receiving writes, which `pg_promote()` now allows.)
+## 3. Make sure `nac_db` is running
 
-**4. When host 1 comes back**, it must **not** simply rejoin as if nothing happened — its data has diverged from the new primary (host 2) during the outage. Options:
+```bash
+sudo systemctl status nac_db.service
+# if not running:
+sudo systemctl start nac_db.service
+```
 
-- Wipe host 1's `nac_db_data` volume and re-run the playbook's standby setup (`pg_basebackup -R` from host 2) to resync it as the new standby, or
-- Use `pg_rewind` against the new primary if you want to avoid a full re-copy.
+## 4. Copy the dump into the container and restore
 
-**5. Decide long-term roles** — either keep host 2 as primary going forward (update `db_role` in `hosts.ini` for both hosts and re-run the playbook so quadlet unit descriptions/labels reflect it), or fail back to host 1 once it's resynced as standby, by repeating steps 2–4 in reverse during a maintenance window.
+`pg_restore` runs inside the `nac_db` container, so the dump file needs to be
+reachable there. `podman cp` copies it in without needing a bind mount.
 
-**Note:** this is a fully manual process — nothing in the current setup detects host 1 going down, and there's no automatic client redirect. If failover speed matters, this whole flow (detection, promotion, DNS/proxy switch) is exactly what tools like Patroni or repmgr automate; worth keeping in mind even if you're going manual for now.
+```bash
+BACKUP_FILE=/var/backups/nac_db/nac_db_20260730211801.dump   # <-- adjust
+
+podman cp "$BACKUP_FILE" nac_db:/tmp/restore.dump
+
+podman exec nac_db pg_restore \
+  -U postgres \
+  -d NacDB \
+  --clean \
+  --if-exists \
+  --no-owner \
+  --verbose \
+  /tmp/restore.dump
+```
+
+- `--clean --if-exists` drops existing objects before recreating them, so the
+  restore fully replaces whatever is currently in `NacDB` (safe even if
+  host 2's DB already has stale/partial data).
+- `--no-owner` avoids errors if role names ever differ between hosts.
+- Expect some warnings in the output (e.g. about the `postgres` role already
+  existing) — these are normal with `--clean` and can be ignored as long as
+  the command finishes without fatal errors.
+
+## 5. Clean up the temp file in the container
+
+```bash
+podman exec nac_db rm -f /tmp/restore.dump
+```
+
+## 6. Verify the data
+
+```bash
+podman exec nac_db psql -U postgres -d NacDB -c "\dt"
+podman exec nac_db psql -U postgres -d NacDB -c "SELECT count(*) FROM <a_known_table>;"
+```
+
+Compare row counts / recent records against what you'd expect from host 1
+before it failed.
+
+## 7. Start the app on host 2
+
+```bash
+sudo systemctl start nac.service
+sudo systemctl status nac.service
+```
+
+## 8. Redirect clients to host 2
+
+Update DNS / load balancer / reverse proxy so the app URL clients use points
+to host 2.
+
+---
+
+## Notes
+
+- This restores into the **existing** `NacDB` database inside the running
+  `nac_db` container — it does not recreate the container or volume.
+- If `nac_db`'s volume is corrupted or missing entirely, first let the
+  playbook (or a manual `podman_container`/quadlet start) recreate the
+  container so Postgres initializes a fresh `NacDB`, _then_ run this runbook.
+- Once host 1 is repaired, decide whether to keep host 2 as the primary going
+  forward (update `db_role` in `hosts.ini` and re-run the playbook so the
+  backup cron job direction flips) or fail back to host 1 after resyncing it
+  from a fresh dump of host 2.
