@@ -1,0 +1,59 @@
+---
+- name: Install SAMBA, actually NetBIOS
+  hosts: nac_servers
+  become: true # Escalates to sudo to run apt commands
+
+  tasks:
+    - name: Install Samba packages
+      ansible.builtin.apt:
+        name:
+          - samba
+          # - samba-common
+        state: present
+        update_cache: yes
+
+    - name: Ensure NetBIOS is enabled in smb.conf (replace default disable line)
+      ansible.builtin.lineinfile:
+        path: /etc/samba/smb.conf
+        regexp: '^\s*disable netbios\s*='
+        line: "   disable netbios = no"
+        state: present
+      notify: Restart NetBIOS service
+
+    - name: Set NetBIOS name and workgroup in smb.conf
+      ansible.builtin.blockinfile:
+        path: /etc/samba/smb.conf
+        insertafter: '\[global\]'
+        block: |
+          workgroup = WORKGROUP
+          netbios name = {{ inventory_hostname }}
+          server string = %h server (Samba, Ubuntu)
+      notify: Restart NetBIOS service
+
+    - name: Ensure nmbd service is enabled and running
+      ansible.builtin.systemd:
+        name: nmbd
+        state: started
+        enabled: yes
+
+    - name: Disable file sharing service (keep only name resolution)
+      ansible.builtin.systemd:
+        name: smbd
+        state: stopped
+        enabled: no
+
+    - name: Allow NetBIOS traffic in UFW (if UFW is active)
+      community.general.ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: udp
+      loop:
+        - "137"
+        - "138"
+
+  # Handlers section to place at the end of your playbook (or in handlers/main.yml)
+  handlers:
+    - name: Restart NetBIOS service
+      ansible.builtin.systemd:
+        name: nmbd
+        state: restarted

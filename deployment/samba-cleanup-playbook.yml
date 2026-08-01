@@ -1,0 +1,38 @@
+---
+- name: Remove SAMBA together with NetBIOS
+  hosts: nac_servers
+  become: true # Escalates to sudo to run apt commands
+
+  tasks:
+    - name: Stop and disable Samba NetBIOS service
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      ignore_errors: yes
+      loop:
+        - nmbd
+        - smbd
+
+    - name: Remove Samba packages and configuration files
+      ansible.builtin.apt:
+        name:
+          - samba
+          # - samba-common
+        state: absent
+        purge: yes
+
+    - name: Remove NetBIOS firewall rules from UFW
+      community.general.ufw:
+        rule: allow
+        port: "{{ item }}"
+        proto: udp
+        delete: yes
+      ignore_errors: yes
+      loop:
+        - "137"
+        - "138"
+
+    - name: Autoremove unneeded packages
+      ansible.builtin.apt:
+        autoremove: yes

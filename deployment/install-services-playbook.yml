@@ -1,5 +1,5 @@
 ---
-- name: OS Update for Ubuntu 26.04 Hosts
+- name: Install NordAlbiCashier system
   hosts: nac_servers
   become: true # Escalates to sudo to run apt commands
 

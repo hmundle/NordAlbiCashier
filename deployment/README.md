@@ -96,16 +96,32 @@ ANSIBLE_CONFIG=./ansible.cfg ansible nac_servers -m ping
 % export EDITOR=vi
 ```
 
-3. Run the playbook for deployment
+3. Run the playbook for deployment of services
 
 ```bash
-ANSIBLE_CONFIG=./ansible.cfg ansible-playbook playbook.yml
+ANSIBLE_CONFIG=./ansible.cfg ansible-playbook install-services-playbook.yml
 ```
 
-4. Run the playbook for cleanup
+4. Run the playbook for cleanup of services
 
 ```bash
-ANSIBLE_CONFIG=./ansible.cfg ansible-playbook cleanup-playbook.yml
+ANSIBLE_CONFIG=./ansible.cfg ansible-playbook cleanup-services-playbook.yml
+```
+
+## SAMBA setup
+
+For name resolution in unconfigured networks SAMBA is helpful if using windows as well as linux OS.
+
+1. Run the playbook for deployment of services
+
+```bash
+ANSIBLE_CONFIG=./ansible.cfg ansible-playbook samba-setup-playbook.yml
+```
+
+2. Run the playbook for cleanup of services
+
+```bash
+ANSIBLE_CONFIG=./ansible.cfg ansible-playbook samba-cleanup-playbook.yml
 ```
 
 # Restoring the NAC Database Backup on Host 2
