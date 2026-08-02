@@ -24,12 +24,12 @@
     #   containers.podman.podman_prune:
     #     system: true
 
-    - name: Prune podman's unused data (images) weekly
-      ansible.builtin.cron:
-        name: "podman system prune"
-        special_time: weekly
-        # delete unused images/containers, which are not new, and log to journal (searchable with `sudo journalctl -rt cron-podman-prune`)
-        job: "/usr/bin/podman system prune --all --filter 'until=168h' --force 2>&1 | systemd-cat -t cron-podman-prune"
+    # - name: Prune podman's unused data (images) weekly
+    #   ansible.builtin.cron:
+    #     name: "podman system prune"
+    #     special_time: weekly
+    #     # delete unused images/containers, which are not new, and log to journal (searchable with `sudo journalctl -rt cron-podman-prune`)
+    #     job: "/usr/bin/podman system prune --all --filter 'until=168h' --force 2>&1 | systemd-cat -t cron-podman-prune"
 
     # 1. Quadlet Infrastructure (Network and Volumes)
     - name: Create Quadlet network
