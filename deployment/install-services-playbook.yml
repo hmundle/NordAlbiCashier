@@ -128,7 +128,6 @@
         name: nac
         image: "docker.io/munhei/nac_service:{{ nac_image_tag | default('latest') }}"
         state: quadlet
-        pull: always
         network:
           - nac.network
         healthcheck: "curl http://localhost:5000/Home/Index --fail" # --fail forces to restart, as soon as request return any error HTTP code
