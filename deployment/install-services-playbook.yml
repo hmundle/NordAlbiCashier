@@ -42,12 +42,12 @@
         name: nac_db_data
         state: quadlet
 
-    # Resolve the primary's inventory hostname from db_role.
-    # Requires that hosts can resolve each other's hostnames
-    # (DNS or /etc/hosts).
-    - name: Determine primary host name from inventory
-      ansible.builtin.set_fact:
-        primary_host: "{{ groups['nac_servers'] | map('extract', hostvars) | selectattr('db_role', 'equalto', 'primary') | map(attribute='inventory_hostname') | first }}"
+    # # Resolve the primary's inventory hostname from db_role.
+    # # Requires that hosts can resolve each other's hostnames
+    # # (DNS or /etc/hosts).
+    # - name: Determine primary host name from inventory
+    #   ansible.builtin.set_fact:
+    #     primary_host: "{{ groups['nac_servers'] | map('extract', hostvars) | selectattr('db_role', 'equalto', 'primary') | map(attribute='inventory_hostname') | first }}"
 
     # 3. Define PostgreSQL Database Quadlet Container
     - name: Container for NAC Database
@@ -100,9 +100,9 @@
           bash -c '
           f="{{ backup_dir }}/nac_db_$(date +\%Y\%m\%dT\%H\%M\%S).dump";
           err=$(mktemp);
-          if podman run --rm -e PGPASSWORD="{{ db_password }}"
+          if podman run --rm -e PGPASSWORD="{{ db_password }}" -e PGCONNECT_TIMEOUT=10
           docker.io/library/postgres:17-alpine
-          pg_dump -h {{ primary_host }} -p 5432 -U {{ db_user }} -Fc {{ db_name }}
+          pg_dump -h {{ primary_host_ip }} -p 5432 -U {{ db_user }} -Fc {{ db_name }}
           > "$f.part" 2>"$err";
           then mv "$f.part" "$f";
           else cat "$err" | systemd-cat -t nac-db-backup; rm -f "$f.part";
